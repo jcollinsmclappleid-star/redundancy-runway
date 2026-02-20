@@ -1,0 +1,498 @@
+MASTER BUILD & REPOSITION PROMPT
+
+Project: RedundancyRunway
+
+Objective: Transform into a Premium Redundancy-Native Capital Modelling Platform
+
+⸻
+
+1️⃣ STRATEGIC REPOSITIONING
+
+RedundancyRunway must no longer feel like:
+	•	A budgeting calculator
+	•	A generic runway app
+	•	A redundancy pay estimator
+	•	A financial advice tool
+
+It must feel like:
+
+A structured capital sustainability modelling platform for mid-career professionals facing income disruption.
+
+Primary target user:
+	•	Age 30–55
+	•	Mortgage holder or high housing cost
+	•	£10k–£100k+ savings
+	•	Corporate / professional background
+	•	Experiencing redundancy or at risk
+	•	Values structure and clarity
+
+Tone:
+	•	Calm
+	•	Analytical
+	•	Institutional
+	•	Clinical
+	•	Precise
+	•	Never prescriptive
+
+⸻
+
+2️⃣ LANDING PAGE REWRITE (FULL RESTRUCTURE)
+
+Hero Section
+
+Headline:
+Model Your Financial Runway Under Income Disruption
+
+Subheading:
+Structured capital projection and scenario modelling for redundancy and income shock.
+
+Primary CTA:
+Start Your Projection
+
+Secondary CTA:
+View Sample Report
+
+No emotional hype. No urgency copy.
+
+⸻
+
+Section 2 — Who This Is For
+
+“For individuals who:”
+	•	Have received or are at risk of redundancy
+	•	Want to understand how long capital may sustain current lifestyle
+	•	Prefer structured modelling over generic budgeting tools
+	•	Need scenario comparison before making financial decisions
+
+⸻
+
+Section 3 — What It Does
+
+Three core pillars:
+
+1. Redundancy Package Modelling
+
+Estimate statutory redundancy under modelling assumptions.
+
+2. Capital Sustainability Projection
+
+Month-by-month capital trajectory under income disruption.
+
+3. Scenario & Sensitivity Analysis
+
+Compare income recovery timelines and stress-test assumptions.
+
+⸻
+
+Section 4 — Differentiation
+
+Unlike statutory calculators:
+This models long-term capital sustainability.
+
+Unlike budgeting apps:
+This projects multi-scenario financial trajectories.
+
+Unlike financial advisers:
+This provides structured modelling without recommendation.
+
+⸻
+
+Section 5 — Pricing Framing
+
+Headline:
+Full Analysis Access – £39
+
+Includes:
+	•	60-month projection
+	•	Multi-scenario comparison
+	•	Capital recovery modelling
+	•	Expense sensitivity analysis
+	•	Stress testing
+	•	Sector employment context
+	•	Unlimited re-runs for 6 months
+
+⸻
+
+3️⃣ WIZARD FLOW RESTRUCTURE
+
+STEP 0 — Context Layer (NEW)
+
+Title:
+Your Current Position
+
+Fields:
+	•	Employment status (Redundant / At risk / Other disruption)
+	•	Housing type
+	•	Household structure
+	•	Dependents (Y/N)
+	•	Confidence level (Comfortable / Uncertain / Under pressure)
+
+Purely contextual. No impact on engine.
+
+⸻
+
+STEP 1 — Redundancy Package (MANDATORY)
+
+Collect:
+	•	Age
+	•	Years of service (max 20)
+	•	Weekly gross pay
+	•	Notice weeks
+	•	Holiday weeks
+	•	Enhanced package?
+	•	Manual override amount
+
+Compute:
+	•	Estimated statutory redundancy
+	•	Estimated notice pay
+	•	Estimated total redundancy
+	•	Display tax modelling assumption (up to £30k tax-free threshold assumption)
+
+Display:
+
+Estimated redundancy total under statutory assumptions: £X
+You may adjust this figure if your actual package differs.
+
+No “you are owed” language.
+
+⸻
+
+STEP 2 — Capital Snapshot
+
+Inputs:
+	•	Cash savings
+	•	Liquid investments
+	•	Other lump sums
+
+Display running total:
+Starting Capital
+
+⸻
+
+STEP 3 — Income Assumptions
+
+Inputs:
+	•	Previous monthly net income
+	•	Replacement income
+	•	Benefit estimate
+	•	Sector selection
+
+Display sector data immediately:
+
+25th percentile
+Median
+75th percentile
+
+Allow slider for monthsUntilNewJob anchored to sector distribution.
+
+⸻
+
+STEP 4 — Essential Expenses
+
+Housing
+Utilities
+Food
+Insurance
+Transport
+Debt
+Childcare
+Other essential
+
+Display housing % of total essential.
+
+⸻
+
+STEP 5 — Flexible Spending
+
+Subscriptions
+Leisure
+Travel
+Other discretionary
+
+Toggle:
+Include discretionary in burn rate
+
+Rename section:
+Flexible Spending Assumptions
+
+⸻
+
+4️⃣ ENGINE ENHANCEMENTS
+
+A. Capital Recovery Projection
+
+If income resumes:
+
+Compute:
+	•	Month capital returns to starting baseline
+	•	Rebuild duration
+	•	Capital level at 12 months post-reemployment
+
+Display:
+
+Under these assumptions, capital returns to starting level in Month X.
+
+⸻
+
+B. Custom Shock Builder
+
+Allow:
+	•	Add one-off cost (amount + month)
+	•	Add expense inflation %
+	•	Add income delay months
+	•	Add housing cost increase %
+
+All phrased:
+
+If X occurred…
+
+Never advisory.
+
+⸻
+
+C. Mortgage Sensitivity Module
+
+If housing type = mortgage:
+
+Allow simulation:
+
+If housing cost increased by 1% / 2% / custom %
+
+Display runway difference.
+
+⸻
+
+5️⃣ STABILITY CLASSIFICATION REWRITE
+
+Replace band display with:
+
+Projection Classification: Stable / Watch / High Pressure
+
+Below classification:
+
+Under these assumptions:
+• Runway projected at X months
+• Housing represents Y% of essential costs
+• Gap income covers Z% of prior earnings
+
+No moralising.
+
+⸻
+
+6️⃣ RESULTS DASHBOARD RESTRUCTURE
+
+Rename tabs:
+	1.	Capital Trajectory
+	2.	Income Recovery Scenarios
+	3.	Capital Threshold Events
+	4.	Expense Sensitivity Modelling
+	5.	Assumption Stress Testing
+	6.	Supplementary Analysis
+
+⸻
+
+Capital Trajectory
+
+Area chart
+Month-by-month table
+Highlight depletion month
+Highlight recovery month
+
+⸻
+
+Income Recovery Scenarios
+
+Three:
+
+Zero income
+50% income indefinitely
+Full income after X months
+
+Overlay chart
+Runway comparison
+Capital at 3/6/12 months
+
+No recommendation language.
+
+⸻
+
+Capital Threshold Events
+
+List:
+
+Capital below 50%
+Capital below emergency buffer
+One month expenses remaining
+Capital depletion
+
+Purely descriptive.
+
+⸻
+
+Expense Sensitivity Modelling
+
+Replace prescriptive phrasing.
+
+Instead of:
+Cancel subscriptions
+
+Use:
+
+If subscription spending were £0
+
+Instead of:
+Reduce transport 30%
+
+Use:
+
+If transport spending were 30% lower
+
+Rank by runway extension.
+
+⸻
+
+Assumption Stress Testing
+
+Six baseline tests:
+
++10% essential
++20% essential
+Income resumes 3 months later
+Income resumes 6 months later
+All discretionary removed
+Starting savings 50% lower
+
+Add custom shock option.
+
+⸻
+
+7️⃣ PREVIEW PAGE (CONVERSION UPGRADE)
+
+Free shows:
+
+Projected Financial Runway: X Months
+Starting Capital
+Monthly Burn
+Projection Classification
+
+Locked modules displayed visibly:
+
+🔒 Income Recovery Scenarios
+🔒 Capital Recovery Timeline
+🔒 Capital Threshold Events
+🔒 Expense Sensitivity Ranking
+🔒 Stress Testing
+
+Make depth visible.
+
+⸻
+
+8️⃣ LANGUAGE HARDENING (GLOBAL)
+
+Prohibited phrases:
+
+You should
+We recommend
+Best option
+Quick wins
+Cancel
+Switch
+Contact lender
+Critical action
+
+Replace with:
+
+Under this assumption
+If adjusted
+This projection indicates
+Runway difference
+
+Every text string must pass this filter.
+
+⸻
+
+9️⃣ DESIGN SYSTEM REFINEMENT
+
+Colour:
+Deep navy-teal primary
+Muted neutrals
+Higher contrast
+
+Typography:
+Large numeric emphasis
+Clear hierarchy
+More whitespace
+Reduced density
+
+Charts:
+Thicker lines
+Less gradient
+Institutional tone
+
+Overall aesthetic:
+Private wealth dashboard
+Not fintech startup
+Not budgeting app
+
+⸻
+
+🔟 PRICING & ACCESS
+
+£39
+6-month unlimited re-runs
+Session-based access
+
+Maintain premium tone.
+No discount banners.
+
+⸻
+
+1️⃣1️⃣ LIABILITY FRAMEWORK
+
+Persistent banner:
+
+This tool provides illustrative financial projections based on assumptions entered. It does not provide financial, employment, tax, or debt advice.
+
+Section disclaimers:
+
+Redundancy modelling:
+Estimates based on statutory assumptions. Actual outcomes may differ.
+
+Sector data:
+Historical averages. Individual outcomes vary.
+
+Stress testing:
+Hypothetical modelling only.
+
+⸻
+
+1️⃣2️⃣ MVP PRIORITY LOCK
+
+Launch Version Must Include:
+	•	Structured redundancy estimator
+	•	Capital trajectory modelling
+	•	Scenario comparison
+	•	Capital recovery modelling
+	•	Expense sensitivity modelling
+	•	Stability classification
+	•	Preview gating
+	•	Language compliance
+
+Custom shock builder optional if timeline tight.
+
+⸻
+
+FINAL SUCCESS STANDARD
+
+After implementation, the product must:
+
+Feel institutional
+Feel structured
+Feel controlled
+Feel premium
+Feel calm
+
+Not feel like:
+A budgeting calculator
+A startup SaaS dashboard
+A financial advice tool

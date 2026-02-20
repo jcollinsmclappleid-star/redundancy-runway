@@ -1,0 +1,290 @@
+Below is the ready-to-paste UI copy pack for every new data panel and benchmark layer.
+
+All language is neutral, non-advisory, premium tone, and compliant.
+
+⸻
+
+🔷 REDUNDANCYRUNWAY – DATA LAYER UI COPY PACK
+
+⸻
+
+1️⃣ Wizard – Income Assumptions Step
+
+Reemployment Context Panel
+
+Panel Title
+
+Reemployment Timeline (Historical Context)
+
+Body Copy
+
+“Based on published UK labour market statistics for your selected sector and age group.”
+
+Data Display Labels
+	•	Faster Outcome (25th percentile):
+	•	Typical Outcome (Median):
+	•	Slower Outcome (75th percentile):
+
+Include weeks and month equivalents:
+12 weeks (~2.8 months)
+
+Helper Text (small, muted)
+
+“Percentiles reflect historical outcomes and do not predict individual job search duration.”
+
+⸻
+
+Optional Button (safe framing)
+
+Set Typical Timeline as Assumption
+
+Tooltip:
+“Applies the median timeline to your projection assumptions.”
+
+(Important: do not say “recommended”)
+
+⸻
+
+2️⃣ Wizard – Capital Step
+
+Household Savings Benchmark
+
+Place below “Starting Capital” total.
+
+Micro Panel Header
+
+UK Household Savings Benchmark
+
+Copy
+
+“UK median household savings: £8,500 (2025 data)”
+“Upper quartile threshold: £35,000+”
+
+Small Disclaimer Text
+
+“Contextual national data. Your circumstances may differ.”
+
+Keep this visually subtle (muted text, small card).
+
+⸻
+
+3️⃣ Wizard – Essential Expenses Step
+
+Housing Burden Context
+
+When housing ratio is calculated:
+
+Label
+
+Housing Cost Ratio
+
+Display:
+“Your housing represents 42% of essential expenses.”
+
+Below that:
+
+Context Line
+
+“UK typical housing burden ~32% of net income (ONS, 2025).”
+
+Reference Line
+
+“Model reference threshold: 45% (contextual indicator only).”
+
+No “stress”, no alarm tone.
+
+⸻
+
+4️⃣ Results Dashboard
+
+NEW: Projection Range Panel
+
+Place near the top of Results (high visibility).
+
+Section Title
+
+Projection Range
+
+Subtitle
+
+“Modelled using historical reemployment percentiles.”
+
+⸻
+
+Display Format
+
+Fast Reemployment Scenario (25th percentile)
+Runway: 8.4 months
+Capital depletion: Month 9
+
+Typical Reemployment Scenario (Median)
+Runway: 6.2 months
+Capital depletion: Month 7
+
+Slower Reemployment Scenario (75th percentile)
+Runway: 3.9 months
+Capital depletion: Month 4
+
+⸻
+
+Small Footnote
+
+“These projections are derived from historical labour market percentiles applied to your assumptions. They do not predict individual outcomes.”
+
+⸻
+
+5️⃣ Results – Capital Recovery Indicator (if income resumes)
+
+Place below scenario comparison.
+
+Section Title
+
+Capital Recovery Estimate
+
+Copy Example
+
+“Under the median reemployment assumption, capital returns to starting level in Month 14.”
+
+If capital never recovers:
+“Under these assumptions, capital does not return to starting level within the 60-month projection window.”
+
+⸻
+
+6️⃣ Results – Redundancy Environment Context
+
+Place inside “Supplementary Analysis” tab.
+
+Section Title
+
+UK Redundancy Environment (Context)
+
+Display
+
+Total redundancies (latest quarter): 98,000
+Year-on-year change: +14%
+Data last updated: Q4 2025
+
+Optional sector note:
+“Technology sector redundancies: +22% YoY.”
+
+⸻
+
+Disclaimer (small text)
+
+“National labour market statistics provided for context only. These figures do not affect your individual projection.”
+
+⸻
+
+7️⃣ Results – Savings Position Comparison
+
+Add to capital summary card.
+
+Label
+
+Starting Capital Position (UK Comparison)
+
+If above median:
+“Your starting capital is above the current UK median household savings benchmark.”
+
+If below:
+“Your starting capital is below the current UK median household savings benchmark.”
+
+If in upper quartile:
+“Your starting capital falls within the upper quartile of UK household savings.”
+
+No judgement, no advice.
+
+⸻
+
+8️⃣ Results – Housing Exposure Indicator
+
+Under expenses summary:
+
+Title
+
+Housing Exposure Context
+
+Display:
+“Your housing costs represent 48% of essential expenditure.”
+
+Context line:
+“Reference housing burden benchmark: 32% (UK average).”
+
+If above reference threshold:
+“Your housing exposure is above the model reference threshold (45%).”
+
+No alarm icons. Neutral colour.
+
+⸻
+
+9️⃣ Sensitivity / Shock Builder Panel Copy
+
+Section Title
+
+Assumption Sensitivity Modelling
+
+Intro Copy
+
+“Adjust key assumptions to observe how changes may affect projected capital duration.”
+
+For custom shock:
+
+“If a one-off cost of £2,000 occurred in Month 3…”
+
+For inflation adjustment:
+
+“If essential expenses increased by 10%…”
+
+No emotional framing.
+
+⸻
+
+🔟 Global Persistent Banner (all modelling screens)
+
+“This tool provides illustrative financial projections based on user-entered assumptions and historical statistics.
+It does not provide financial, employment, tax, debt, or benefits advice.”
+
+Keep it clean, single-line if possible.
+
+⸻
+
+1️⃣1️⃣ Footer Data Attribution
+
+Place at bottom of Results and Export:
+
+“Data sources:
+Office for National Statistics (Labour Market Statistics, Wealth & Assets Survey, Household Expenditure Data).
+Benchmark data last updated: Q4 2025.”
+
+⸻
+
+1️⃣2️⃣ Tone & Typography Guidance (for UI team)
+
+Headings:
+	•	Sentence case
+	•	No exclamation marks
+	•	No emotive verbs
+
+Numbers:
+	•	Large
+	•	High contrast
+	•	Primary focus
+
+Context text:
+	•	Muted grey
+	•	Smaller size
+	•	Calm spacing
+
+No red warning tones unless capital reaches zero.
+
+⸻
+
+Summary
+
+With this copy pack implemented:
+	•	Benchmarks increase authority
+	•	Projection range increases perceived sophistication
+	•	Redundancy context increases relevance
+	•	Housing/savings comparisons increase depth
+	•	No advisory language is introduced
+	•	Premium tone preserved

@@ -39,10 +39,36 @@ export type InsertPurchase = z.infer<typeof insertPurchaseSchema>;
 export type Calculation = typeof calculations.$inferSelect;
 export type InsertCalculation = z.infer<typeof insertCalculationSchema>;
 
+export const contextSchema = z.object({
+  employmentStatus: z.enum(["redundant", "at_risk", "other_disruption"]).default("redundant"),
+  housingType: z.enum(["mortgage", "renting", "owned_outright", "other"]).default("mortgage"),
+  householdStructure: z.enum(["single", "couple", "family"]).default("single"),
+  hasDependents: z.boolean().default(false),
+  confidenceLevel: z.enum(["comfortable", "uncertain", "under_pressure"]).default("uncertain"),
+});
+
+export type ContextInputs = z.infer<typeof contextSchema>;
+
+export const redundancyPackageSchema = z.object({
+  age: z.number().int().min(16).max(100).default(35),
+  yearsOfService: z.number().min(0).max(20).default(5),
+  weeklyGrossPay: z.number().min(0).default(0),
+  noticeWeeks: z.number().min(0).max(52).default(0),
+  holidayWeeks: z.number().min(0).max(10).default(0),
+  enhancedPackage: z.boolean().default(false),
+  enhancedAmount: z.number().min(0).default(0),
+  useManualOverride: z.boolean().default(false),
+  manualOverrideAmount: z.number().min(0).default(0),
+});
+
+export type RedundancyPackageInputs = z.infer<typeof redundancyPackageSchema>;
+
 export const runwayInputSchema = z.object({
+  context: contextSchema.default({}),
+  redundancyPackage: redundancyPackageSchema.default({}),
+
   cashSavings: z.number().min(0),
   liquidInvestments: z.number().min(0),
-  redundancyPayout: z.number().min(0).default(0),
   otherOneOffIncome: z.number().min(0).default(0),
 
   currentMonthlyNetIncome: z.number().min(0),
@@ -68,6 +94,8 @@ export const runwayInputSchema = z.object({
 
   emergencyBuffer: z.number().min(0).default(5000),
   sector: z.string().default("all"),
+
+  mortgageSensitivityPercent: z.number().min(0).max(100).default(0),
 });
 
 export type RunwayInputs = z.infer<typeof runwayInputSchema>;
@@ -79,6 +107,39 @@ export interface MonthProjection {
   expenses: number;
   netBurn: number;
   milestones: string[];
+}
+
+export interface StabilityExplanation {
+  runwayMonths: number;
+  housingPercent: number;
+  debtPercent: number;
+  gapIncomePercent: number;
+  capitalCoverMonths: number;
+  nonEssentialPercent: number;
+  factors: string[];
+}
+
+export interface CapitalRecovery {
+  recoveryMonth: number | null;
+  rebuildDuration: number | null;
+  capitalAt12MonthsPostReemployment: number;
+  recovers: boolean;
+}
+
+export interface MortgageSensitivityResult {
+  label: string;
+  increasePercent: number;
+  adjustedRunway: number;
+  difference: number;
+  newHousingCost: number;
+}
+
+export interface RedundancyEstimate {
+  statutoryRedundancy: number;
+  noticePay: number;
+  holidayPay: number;
+  totalEstimated: number;
+  taxFreeThreshold: number;
 }
 
 export interface RunwayResult {
@@ -94,7 +155,9 @@ export interface RunwayResult {
   projections: MonthProjection[];
   stabilityScore: number;
   stabilityBand: "Stable" | "Watch" | "High Pressure";
+  stabilityExplanation: StabilityExplanation;
   milestones: Array<{ month: number; description: string; severity: "info" | "warning" | "critical" }>;
+  capitalRecovery: CapitalRecovery;
 }
 
 export interface ScenarioComparison {

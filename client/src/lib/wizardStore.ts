@@ -2,9 +2,26 @@ import { useState, useCallback } from "react";
 import type { RunwayInputs } from "@shared/schema";
 
 const defaultInputs: RunwayInputs = {
+  context: {
+    employmentStatus: "redundant",
+    housingType: "mortgage",
+    householdStructure: "single",
+    hasDependents: false,
+    confidenceLevel: "uncertain",
+  },
+  redundancyPackage: {
+    age: 35,
+    yearsOfService: 5,
+    weeklyGrossPay: 0,
+    noticeWeeks: 0,
+    holidayWeeks: 0,
+    enhancedPackage: false,
+    enhancedAmount: 0,
+    useManualOverride: false,
+    manualOverrideAmount: 0,
+  },
   cashSavings: 0,
   liquidInvestments: 0,
-  redundancyPayout: 0,
   otherOneOffIncome: 0,
   currentMonthlyNetIncome: 0,
   replacementMonthlyIncome: 0,
@@ -25,6 +42,7 @@ const defaultInputs: RunwayInputs = {
   includeNonEssential: true,
   emergencyBuffer: 5000,
   sector: "all",
+  mortgageSensitivityPercent: 0,
 };
 
 const STORAGE_KEY = "redundancy_runway_inputs";
@@ -34,7 +52,12 @@ function loadInputs(): RunwayInputs {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       const parsed = JSON.parse(saved);
-      return { ...defaultInputs, ...parsed };
+      return {
+        ...defaultInputs,
+        ...parsed,
+        context: { ...defaultInputs.context, ...(parsed.context || {}) },
+        redundancyPackage: { ...defaultInputs.redundancyPackage, ...(parsed.redundancyPackage || {}) },
+      };
     }
   } catch {}
   return { ...defaultInputs };

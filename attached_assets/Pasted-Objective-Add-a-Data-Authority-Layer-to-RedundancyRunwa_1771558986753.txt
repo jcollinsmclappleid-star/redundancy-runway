@@ -1,0 +1,220 @@
+Objective
+
+Add a “Data Authority Layer” to RedundancyRunway to increase credibility and perceived value, without introducing advice or prediction. All data is contextual, benchmark-only, and clearly dated.
+
+Do not build live integrations initially. Use static datasets bundled with the app and update quarterly/annually as appropriate.
+
+⸻
+
+A) Data to add (exclude salary benchmarks)
+
+1) UK redundancy environment overview (ONS context)
+
+Add national context metrics:
+	•	Latest quarter total redundancies
+	•	YoY change %
+	•	Optional: sector-level YoY deltas (high-level, not granular)
+
+Purpose: validate relevance and give institutional credibility.
+
+⸻
+
+2) Household savings benchmarks (UK-wide)
+
+Add benchmark points:
+	•	UK median household savings
+	•	Upper quartile (or “top quartile threshold”)
+	•	Date of benchmark (year)
+
+Purpose: gives the user a reference point for starting capital.
+
+⸻
+
+3) Housing cost burden benchmarks
+
+Add reference:
+	•	Typical housing burden % (e.g., average as % of net income or similar published benchmark)
+	•	“Stress reference” threshold (e.g., 45%) used only as contextual label, not advice
+
+Purpose: legitimises your housing ratio outputs.
+
+⸻
+
+4) Reemployment timelines: add age dimension (in addition to sector)
+
+You already have sector percentiles (p25/median/p75). Add:
+	•	Age-band median reemployment time (and if available p25/p75)
+	•	“UK average” fallback
+
+Purpose: makes monthsUntilNewJob feel evidence-anchored, not guessed.
+
+⸻
+
+5) Projection range (derived modelling, not external data)
+
+Using reemployment percentiles, generate three trajectories:
+	•	Fast (p25)
+	•	Median (p50)
+	•	Slow (p75)
+
+Compute and display:
+	•	runway months for each
+	•	depletion month (if applicable)
+	•	recovery month (if income resumes) if you support recovery tracking
+
+Purpose: the “premium” feeling—range, not a single point estimate.
+
+⸻
+
+B) Data sourcing & “live feeds” policy
+
+Are there live feeds?
+	•	ONS has APIs/datasets (often quarterly/monthly updates depending on series).
+	•	Savings benchmarks and some housing burden datasets update annually/multi-year.
+
+What to implement now (recommended)
+
+Do not implement live API calls at launch. Instead:
+	•	Bundle data in a versioned static file.
+	•	Display “Data last updated: Qx YYYY”.
+	•	Add a simple internal update workflow (replace values quarterly).
+
+Rationale: live feeds add complexity, failure modes, and ongoing maintenance for limited conversion benefit initially.
+
+⸻
+
+C) Implementation approach (clean + low maintenance)
+
+1) Create a single data module
+
+Create: src/data/ukBenchmarks.ts
+
+Structure example:
+	•	meta: { lastUpdated: "Q4 2025", sources: [...] }
+	•	redundancyContext: {...}
+	•	savingsBenchmarks: {...}
+	•	housingBurden: {...}
+	•	reemployment: { bySector: {...}, byAge: {...}, ukAverage: {...} }
+
+2) Keep it client-side
+
+Your architecture already supports client-side computation. Keep benchmarks client-side too:
+	•	No backend required
+	•	Faster
+	•	No privacy issues
+	•	No API fragility
+
+3) Version + date everything
+
+Every benchmark block must include:
+	•	lastUpdated
+	•	sourceLabel (e.g., “ONS Labour Market Statistics”)
+	•	optional sourceNotes
+
+⸻
+
+D) UI design: where to place this data (minimal scroll, premium feel)
+
+Placement principles
+	•	Use benchmarks where they answer a user question at the moment it arises
+	•	Avoid dumping all benchmarks in one long section
+	•	Benchmarks should be “context chips” or “small comparison cards,” not big essays
+
+⸻
+
+1) Wizard: Income assumptions step (highest impact)
+
+When user selects sector and age band, show a compact panel:
+
+“Reemployment context (historical)”
+	•	Fast / typical / slower timeline (weeks + month equivalents)
+	•	Toggle: “Use typical timeline” (sets monthsUntilNewJob = median) but label as “Set assumption” (not recommendation)
+
+Copy style:
+	•	“Historical median” / “percentile range”
+	•	Avoid “you will find work”
+
+⸻
+
+2) Wizard: Capital step (benchmarks in-line)
+
+Under “Starting Capital” show a single line:
+	•	“UK median household savings: £X (Year). Upper quartile: £Y+.”
+
+This should be a subtle info block.
+
+⸻
+
+3) Expenses step: housing burden context
+
+When calculating housing ratio:
+	•	Show user’s housing as % of essentials
+	•	Add small benchmark line below:
+	•	“UK typical housing burden ~32% of net income (Year).”
+
+No “stress” words unless you keep it neutral:
+	•	“Reference threshold used in this model: 45% (context only).”
+
+⸻
+
+4) Results: Projection Range (new panel/tab)
+
+Add a dedicated “Projection Range” card or section near top of Results:
+
+“Projection Range (based on historical reemployment percentiles)”
+	•	Fast / Median / Slow runway months
+	•	Visual: 3 thin lines overlaid or a band (shaded range)
+	•	Keep this above deep tabs so value is obvious
+
+Include disclaimer text in small type.
+
+⸻
+
+5) Results: “UK redundancy environment” in Supplementary (not primary)
+
+Add a small “Context” card in Supplementary Analysis:
+	•	total redundancies + YoY change + date
+	•	one sentence disclaimer
+
+Don’t distract from the user’s own outputs.
+
+⸻
+
+E) Compliance wording (must be consistent everywhere)
+
+Every benchmark panel must include (short form):
+	•	“Contextual data only.”
+	•	“Historical statistics; not a prediction.”
+	•	“Does not constitute employment/financial/tax/debt advice.”
+
+Avoid:
+	•	“You should plan for…”
+	•	“You need to…”
+	•	“Consider contacting…”
+
+Use:
+	•	“If assumed…”
+	•	“Under this assumption…”
+	•	“Historical median…”
+
+⸻
+
+F) Testing requirements (for data layer)
+
+Add tests to ensure:
+	•	Benchmarks render with dates
+	•	If benchmark missing → graceful fallback (“Data unavailable”)
+	•	Range trajectories always reconcile with base engine outputs (no NaN)
+	•	p25 ≤ p50 ≤ p75 enforced
+	•	60-month cap applied consistently across all variants
+
+⸻
+
+G) Optional “Phase 2: live feeds” (not now)
+
+If later needed:
+	•	Create backend job to fetch ONS series
+	•	Cache results in DB
+	•	Expose a /api/benchmarks endpoint
+	•	Use stale-while-revalidate strategy
+But only after product-market proof.

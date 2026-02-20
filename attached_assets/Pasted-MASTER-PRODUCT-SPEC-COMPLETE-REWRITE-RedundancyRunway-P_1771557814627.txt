@@ -1,0 +1,376 @@
+MASTER PRODUCT SPEC – COMPLETE REWRITE
+
+RedundancyRunway — Premium Income Shock Modelling Platform
+
+Full Strategic, UX, Engine, Design & Compliance Specification
+
+⸻
+
+1️⃣ PRODUCT DEFINITION (REWRITE)
+
+RedundancyRunway is:
+
+A structured capital sustainability modelling platform designed for mid-career UK professionals experiencing redundancy or income disruption.
+
+It is NOT:
+	•	A budgeting app
+	•	A debt advice tool
+	•	A redundancy rights calculator
+	•	A benefits advisory platform
+	•	A financial advisory service
+
+It IS:
+	•	A deterministic financial projection engine
+	•	A capital trajectory modelling tool
+	•	A scenario comparison framework
+	•	A structured income shock simulator
+
+Every feature must reinforce this identity.
+
+⸻
+
+2️⃣ TARGET MARKET (LOCK THIS IN)
+
+Primary Segment:
+	•	Age 30–55
+	•	Mortgage or high housing cost
+	•	£10k–£100k savings
+	•	Corporate / professional roles
+	•	Facing redundancy or at-risk
+	•	Values modelling, clarity, structure
+
+Do NOT design for:
+	•	Extreme hardship users
+	•	Long-term unemployed
+	•	Low-asset households
+
+Premium tone requires defined segment.
+
+⸻
+
+3️⃣ REDUNDANCY-NATIVE INTAKE (MANDATORY UPGRADE)
+
+Replace basic redundancyPayout field with:
+
+STEP A — Redundancy Framework Capture
+
+Collect:
+	•	Age
+	•	Years of service (cap at 20)
+	•	Weekly gross pay (apply statutory cap)
+	•	Notice period weeks
+	•	Accrued holiday weeks
+	•	Enhanced package offered? (Y/N)
+	•	If enhanced: manual override amount
+
+⸻
+
+Statutory Redundancy Model
+
+Implement UK statutory rules:
+	•	0.5 week per year (under 22)
+	•	1 week per year (22–40)
+	•	1.5 weeks per year (41+)
+	•	Cap weekly pay
+	•	Cap years at 20
+
+Compute:
+	•	Statutory redundancy estimate
+	•	Notice pay estimate
+	•	Total estimated redundancy
+
+Display:
+
+“Estimated redundancy total under statutory assumptions.”
+
+No:
+	•	“You are owed”
+	•	“You should receive”
+	•	“Employer must”
+
+Allow override:
+“Use actual package amount instead”
+
+All modelling remains assumption-based.
+
+⸻
+
+4️⃣ PRE-WIZARD RELATIONSHIP LAYER
+
+Add contextual pre-step:
+
+Title:
+“Your Current Position”
+
+Collect:
+	•	Housing status
+	•	Household structure
+	•	Sole or dual income
+	•	Confidence level (purely contextual)
+
+This does not change engine.
+It changes tone.
+
+⸻
+
+5️⃣ ENGINE ENHANCEMENTS (FULL SPEC)
+
+A. Capital Recovery Modelling
+
+When income resumes:
+	•	Project capital rebuild curve
+	•	Calculate month capital returns to starting baseline
+	•	Show rebuild duration
+
+This increases sophistication dramatically.
+
+⸻
+
+B. Custom Shock Builder
+
+Allow:
+	•	Add one-off cost (amount + month)
+	•	Add % expense inflation
+	•	Add delayed income resumption
+	•	Add housing cost increase %
+
+All framed:
+“If X occurred…”
+
+Never:
+“You should plan for…”
+
+⸻
+
+C. Mortgage Sensitivity
+
+Because core audience = mortgage holders.
+
+Allow:
+	•	+1% housing increase
+	•	+2%
+	•	Custom %
+
+Show impact on runway.
+
+⸻
+
+D. Enhanced Stability Classification
+
+Keep deterministic scoring.
+
+But display with explanation:
+
+Projection Classification: Watch
+
+Under these assumptions:
+• Runway below 9 months
+• Housing > 45% essential
+• Gap income < 50% prior income
+
+This improves transparency.
+
+⸻
+
+6️⃣ LANGUAGE COMPLIANCE HARDENING
+
+Globally prohibit:
+	•	“You should”
+	•	“We recommend”
+	•	“Best option”
+	•	“Critical action required”
+	•	“Quick wins”
+	•	“Cancel”
+	•	“Switch”
+	•	“Contact”
+
+Allowed phrasing:
+	•	“Under this assumption…”
+	•	“If X were adjusted…”
+	•	“This projection indicates…”
+	•	“Runway difference between scenarios…”
+
+Every module must pass this filter.
+
+⸻
+
+7️⃣ PREVIEW MONETISATION PSYCHOLOGY
+
+Free shows:
+	•	Projected runway (headline)
+	•	Starting capital
+	•	Burn rate
+	•	Projection classification
+
+Locked cards must visibly show:
+
+🔒 Income recovery scenario comparison
+🔒 Capital rebuild timeline
+🔒 Capital threshold events
+🔒 Expense sensitivity ranking
+🔒 Custom stress testing
+
+Make depth visible.
+
+Premium users pay for depth, not number.
+
+⸻
+
+8️⃣ RESULTS DASHBOARD RESTRUCTURE
+
+Rename tabs:
+
+Capital Trajectory
+Income Recovery Scenarios
+Capital Threshold Events
+Expense Sensitivity Modelling
+Assumption Stress Testing
+Supplementary Analysis
+
+Remove generic “Timeline” etc.
+
+Increase institutional feel.
+
+⸻
+
+9️⃣ VISUAL DESIGN SYSTEM (UPGRADE)
+
+Move from SaaS teal to:
+
+Primary:
+Deep muted navy-teal
+Lower saturation
+Higher contrast
+
+Typography:
+	•	Serif accent for headings (subtle authority)
+	•	Sans for body
+	•	Large numeric emphasis (capital + runway)
+	•	Clear grid alignment
+
+Whitespace:
+Increase 20%
+Reduce density
+
+Charts:
+Thicker lines
+Less gradient
+More institutional tone
+
+Goal:
+Private wealth dashboard.
+Not startup SaaS.
+
+⸻
+
+🔟 DIFFERENTIATION STRATEGY
+
+Make clear on landing:
+
+Not:
+Redundancy pay calculator
+
+Not:
+Budget planner
+
+Not:
+Financial advice
+
+Position as:
+
+“Structured capital modelling under income disruption.”
+
+Explain:
+
+Unlike statutory calculators:
+This models long-term capital sustainability.
+
+Unlike budgeting apps:
+This models scenario recovery and depletion.
+
+Unlike advisers:
+This provides deterministic projection without recommendation.
+
+⸻
+
+1️⃣1️⃣ PRICING STRATEGY
+
+Anchor pricing:
+
+Position against:
+	•	£150+ financial consultation
+	•	Spreadsheet modelling time
+	•	Emotional cost of uncertainty
+
+Price band:
+£39–49
+
+Add:
+6-month unlimited re-runs
+
+Do not discount early.
+Maintain premium tone.
+
+⸻
+
+1️⃣2️⃣ LIABILITY HARDENING
+
+Add persistent banner:
+
+“This tool provides illustrative financial projections based on assumptions entered. It does not provide financial, employment, tax, or debt advice.”
+
+Add section-level disclaimers for:
+	•	Statutory redundancy modelling
+	•	Sector employment timelines
+	•	Stress testing
+
+No liability exposure expansion.
+
+⸻
+
+1️⃣3️⃣ MVP vs V2 CLARITY
+
+MVP (Launch Version):
+	•	Structured redundancy intake
+	•	Capital trajectory modelling
+	•	Scenario comparison
+	•	Capital recovery modelling
+	•	Expense sensitivity modelling
+	•	Stability classification
+	•	Sector context
+	•	Preview gating
+
+V2:
+	•	Advanced shock layering
+	•	Custom scenario builder
+	•	PDF formatting upgrade
+	•	Partner summary mode
+
+Control scope.
+
+⸻
+
+1️⃣4️⃣ FINAL QUALITY STANDARD
+
+If someone sees this product, it should feel like:
+
+• Institutional
+• Structured
+• Calm
+• Sophisticated
+• Precise
+
+Not:
+• App-y
+• Startup
+• Budget tool
+• Advice-driven
+
+⸻
+
+FINAL VERDICT
+
+With these enhancements:
+
+This becomes:
+A defensible £39–49 modelling platform.
