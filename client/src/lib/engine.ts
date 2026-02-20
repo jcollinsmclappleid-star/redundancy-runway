@@ -10,7 +10,11 @@ import type {
   RedundancyEstimate,
   MortgageSensitivityResult,
   RedundancyPackageInputs,
+  ProjectionRange,
+  ProjectionRangeScenario,
 } from "@shared/schema";
+import { getSectorData } from "@/lib/sectorData";
+import { getAgeBandData, weeksToMonths } from "@/lib/ukBenchmarks";
 
 const MAX_PROJECTION_MONTHS = 60;
 const UK_STATUTORY_WEEKLY_PAY_CAP = 643;
@@ -515,6 +519,57 @@ export function computeMortgageSensitivity(inputs: RunwayInputs): MortgageSensit
       newHousingCost: round2(inputs.mortgageOrRent + increase),
     };
   });
+}
+
+export function computeProjectionRange(inputs: RunwayInputs): ProjectionRange {
+  const sectorData = getSectorData(inputs.sector);
+  const ageBandData = getAgeBandData(inputs.redundancyPackage.age);
+
+  const effectiveP25 = Math.min(sectorData.p25Weeks, ageBandData.p25Weeks);
+  const effectiveP50 = Math.round((sectorData.medianWeeks + ageBandData.medianWeeks) / 2);
+  const effectiveP75 = Math.max(sectorData.p75Weeks, ageBandData.p75Weeks);
+
+  function buildScenario(
+    label: string,
+    percentileLabel: string,
+    weeks: number,
+  ): ProjectionRangeScenario {
+    const months = Math.max(1, Math.round(weeksToMonths(weeks)));
+    const scenarioInputs: RunwayInputs = {
+      ...inputs,
+      monthsUntilNewJob: months,
+    };
+    const scenarioResult = computeRunway(scenarioInputs);
+
+    let depletionMonth: number | null = null;
+    let recoveryMonth: number | null = null;
+
+    for (const p of scenarioResult.projections) {
+      if (p.capital <= 0 && depletionMonth === null) {
+        depletionMonth = p.month;
+      }
+    }
+
+    if (scenarioResult.capitalRecovery.recovers) {
+      recoveryMonth = scenarioResult.capitalRecovery.recoveryMonth;
+    }
+
+    return {
+      label,
+      percentileLabel,
+      reemploymentWeeks: weeks,
+      reemploymentMonths: weeksToMonths(weeks),
+      runwayMonths: scenarioResult.monthsUntilDepletion,
+      depletionMonth,
+      recoveryMonth,
+    };
+  }
+
+  return {
+    fast: buildScenario("Fast Reemployment Scenario", "25th percentile", effectiveP25),
+    typical: buildScenario("Typical Reemployment Scenario", "Median", effectiveP50),
+    slow: buildScenario("Slower Reemployment Scenario", "75th percentile", effectiveP75),
+  };
 }
 
 export function formatGBP(amount: number): string {

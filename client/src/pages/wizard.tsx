@@ -12,6 +12,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { useWizardStore } from "@/lib/wizardStore";
 import { getAllSectors, getSectorData } from "@/lib/sectorData";
 import { formatGBP, computeRedundancyEstimate } from "@/lib/engine";
+import { ukBenchmarks, getAgeBandData, formatWeeksAndMonths, weeksToMonths } from "@/lib/ukBenchmarks";
 import type { RunwayInputs, RedundancyPackageInputs } from "@shared/schema";
 import { useMemo } from "react";
 import { DisclaimerBanner } from "@/components/DisclaimerBanner";
@@ -267,6 +268,19 @@ function StepCapital({ inputs, setInputs }: { inputs: RunwayInputs; setInputs: (
           Starting Capital: {formatGBP(total)}
         </p>
       </div>
+
+      <div className="rounded-md border border-border/50 p-3 mt-3 space-y-1" data-testid="panel-savings-benchmark">
+        <p className="text-xs font-medium text-foreground">UK Household Savings Benchmark</p>
+        <p className="text-xs text-muted-foreground">
+          UK median household savings: {formatGBP(ukBenchmarks.savingsBenchmarks.medianHouseholdSavings)} ({ukBenchmarks.savingsBenchmarks.year} data)
+        </p>
+        <p className="text-xs text-muted-foreground">
+          Upper quartile threshold: {formatGBP(ukBenchmarks.savingsBenchmarks.upperQuartileThreshold)}+
+        </p>
+        <p className="text-xs text-muted-foreground/70 italic mt-1">
+          Contextual national data. Your circumstances may differ.
+        </p>
+      </div>
     </div>
   );
 }
@@ -274,13 +288,63 @@ function StepCapital({ inputs, setInputs }: { inputs: RunwayInputs; setInputs: (
 function StepIncome({ inputs, setInputs }: { inputs: RunwayInputs; setInputs: (u: ((prev: RunwayInputs) => RunwayInputs) | Partial<RunwayInputs>) => void }) {
   const sectors = getAllSectors();
   const sectorData = useMemo(() => getSectorData(inputs.sector), [inputs.sector]);
+  const ageBandData = useMemo(() => getAgeBandData(inputs.redundancyPackage.age), [inputs.redundancyPackage.age]);
   const gapIncome = inputs.replacementMonthlyIncome + inputs.benefitSupportEstimate;
+
+  const effectiveMedianMonths = useMemo(() => {
+    const combined = Math.round((sectorData.medianWeeks + ageBandData.medianWeeks) / 2);
+    return Math.max(1, Math.round(weeksToMonths(combined)));
+  }, [sectorData, ageBandData]);
 
   return (
     <div className="space-y-4">
       <CurrencyInput label="Previous Monthly Net Income" value={inputs.currentMonthlyNetIncome} onChange={(v) => setInputs({ currentMonthlyNetIncome: v })} tooltip="Your previous take-home pay per month (used for scenario modelling)" id="currentMonthlyNetIncome" />
       <CurrencyInput label="Replacement Monthly Income" value={inputs.replacementMonthlyIncome} onChange={(v) => setInputs({ replacementMonthlyIncome: v })} tooltip="Any current part-time, freelance, or gig income during the gap period" id="replacementMonthlyIncome" />
       <CurrencyInput label="Benefit Support Estimate" value={inputs.benefitSupportEstimate} onChange={(v) => setInputs({ benefitSupportEstimate: v })} tooltip="Estimated monthly benefits if applicable. Eligibility not assessed here." id="benefitSupportEstimate" />
+
+      <div className="space-y-1.5">
+        <Label htmlFor="sector" className="text-sm">Employment Sector</Label>
+        <Select value={inputs.sector} onValueChange={(v) => setInputs({ sector: v })}>
+          <SelectTrigger data-testid="select-sector">
+            <SelectValue placeholder="Select sector" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Sectors (UK Average)</SelectItem>
+            {sectors.map(s => (
+              <SelectItem key={s} value={s}>{s}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {inputs.sector && (
+        <div className="rounded-md border border-border/50 p-3 space-y-2" data-testid="panel-reemployment-context">
+          <p className="text-xs font-medium text-foreground">Reemployment Timeline (Historical Context)</p>
+          <p className="text-xs text-muted-foreground">
+            Based on published UK labour market statistics for your selected sector and age group.
+          </p>
+          <div className="space-y-1 mt-2">
+            <div className="flex items-center justify-between gap-2 text-xs">
+              <span className="text-muted-foreground">Faster Outcome (25th percentile):</span>
+              <span className="font-medium text-foreground" data-testid="text-p25-timeline">{formatWeeksAndMonths(Math.min(sectorData.p25Weeks, ageBandData.p25Weeks))}</span>
+            </div>
+            <div className="flex items-center justify-between gap-2 text-xs">
+              <span className="text-muted-foreground">Typical Outcome (Median):</span>
+              <span className="font-medium text-foreground" data-testid="text-p50-timeline">{formatWeeksAndMonths(Math.round((sectorData.medianWeeks + ageBandData.medianWeeks) / 2))}</span>
+            </div>
+            <div className="flex items-center justify-between gap-2 text-xs">
+              <span className="text-muted-foreground">Slower Outcome (75th percentile):</span>
+              <span className="font-medium text-foreground" data-testid="text-p75-timeline">{formatWeeksAndMonths(Math.max(sectorData.p75Weeks, ageBandData.p75Weeks))}</span>
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground/70 italic mt-2">
+            Percentiles reflect historical outcomes and do not predict individual job search duration.
+          </p>
+          <p className="text-xs text-muted-foreground/70 italic">
+            Source: {sectorData.source} ({sectorData.lastUpdated}). Age band: {ageBandData.ageBand}.
+          </p>
+        </div>
+      )}
 
       <div className="space-y-1.5">
         <div className="flex items-center gap-1.5">
@@ -303,38 +367,25 @@ function StepIncome({ inputs, setInputs }: { inputs: RunwayInputs; setInputs: (u
           data-testid="input-monthsUntilNewJob"
         />
         <p className="text-xs text-muted-foreground">After this period, projection assumes previous income resumes</p>
+        {inputs.sector && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className="mt-1"
+                onClick={() => setInputs({ monthsUntilNewJob: effectiveMedianMonths })}
+                data-testid="button-set-typical-timeline"
+              >
+                Set Typical Timeline as Assumption
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent className="max-w-xs text-xs">
+              Applies the median timeline to your projection assumptions.
+            </TooltipContent>
+          </Tooltip>
+        )}
       </div>
-
-      <div className="space-y-1.5">
-        <Label htmlFor="sector" className="text-sm">Employment Sector</Label>
-        <Select value={inputs.sector} onValueChange={(v) => setInputs({ sector: v })}>
-          <SelectTrigger data-testid="select-sector">
-            <SelectValue placeholder="Select sector" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Sectors (UK Average)</SelectItem>
-            {sectors.map(s => (
-              <SelectItem key={s} value={s}>{s}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      {inputs.sector && (
-        <div className="rounded-md bg-muted/50 p-3 space-y-1" data-testid="text-sector-data">
-          <p className="text-xs font-medium text-foreground">{sectorData.sector} — Reemployment Timeline</p>
-          <p className="text-xs text-muted-foreground">
-            25th percentile: {sectorData.p25Weeks} weeks ({(sectorData.p25Weeks / 4.33).toFixed(1)} months)
-          </p>
-          <p className="text-xs text-muted-foreground">
-            Median: {sectorData.medianWeeks} weeks ({(sectorData.medianWeeks / 4.33).toFixed(1)} months)
-          </p>
-          <p className="text-xs text-muted-foreground">
-            75th percentile: {sectorData.p75Weeks} weeks ({(sectorData.p75Weeks / 4.33).toFixed(1)} months)
-          </p>
-          <p className="text-xs text-muted-foreground italic mt-1">Source: {sectorData.source} ({sectorData.lastUpdated})</p>
-        </div>
-      )}
 
       <div className="rounded-md bg-muted/50 p-3">
         <p className="text-xs text-muted-foreground">
@@ -367,9 +418,19 @@ function StepEssential({ inputs, setInputs }: { inputs: RunwayInputs; setInputs:
           Essential total: <span className="font-medium text-foreground" data-testid="text-essential-total">{formatGBP(total)}/mo</span>
         </p>
         {total > 0 && (
-          <p className="text-xs text-muted-foreground" data-testid="text-housing-percent">
-            Housing represents {housingPercent}% of total essential expenses
-          </p>
+          <>
+            <p className="text-xs text-muted-foreground" data-testid="text-housing-percent">
+              Your housing represents {housingPercent}% of essential expenses.
+            </p>
+            <p className="text-xs text-muted-foreground">
+              UK typical housing burden ~{ukBenchmarks.housingBurden.typicalBurdenPercent}% of net income (ONS, {ukBenchmarks.housingBurden.year}).
+            </p>
+            {Number(housingPercent) > ukBenchmarks.housingBurden.stressReferenceThresholdPercent && (
+              <p className="text-xs text-muted-foreground">
+                Model reference threshold: {ukBenchmarks.housingBurden.stressReferenceThresholdPercent}% (contextual indicator only).
+              </p>
+            )}
+          </>
         )}
       </div>
     </div>

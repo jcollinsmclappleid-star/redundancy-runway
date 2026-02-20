@@ -38,9 +38,11 @@ import {
   computeSensitivity,
   computeEssentialOnlyComparison,
   computeMortgageSensitivity,
+  computeProjectionRange,
   formatGBP,
   formatMonths,
 } from "@/lib/engine";
+import { ukBenchmarks, getSavingsPosition, getSavingsPositionLabel } from "@/lib/ukBenchmarks";
 import type { RunwayResult, MonthProjection } from "@shared/schema";
 import { DisclaimerBanner } from "@/components/DisclaimerBanner";
 import { Logo } from "@/components/Logo";
@@ -255,6 +257,12 @@ export default function ResultsPage() {
     () => (inputs.mortgageOrRent > 0 ? computeMortgageSensitivity(inputs) : []),
     [inputs]
   );
+  const projectionRange = useMemo(() => computeProjectionRange(inputs), [inputs]);
+  const savingsPosition = useMemo(() => getSavingsPosition(result.startingCapital), [result.startingCapital]);
+  const savingsLabel = useMemo(() => getSavingsPositionLabel(savingsPosition), [savingsPosition]);
+  const housingPercent = useMemo(() => {
+    return result.essentialExpenses > 0 ? Math.round((inputs.mortgageOrRent / result.essentialExpenses) * 100) : 0;
+  }, [inputs.mortgageOrRent, result.essentialExpenses]);
 
   const showMortgageTab = inputs.mortgageOrRent > 0;
 
@@ -334,6 +342,66 @@ export default function ResultsPage() {
           </p>
         </div>
 
+        <Card className="mb-8" data-testid="card-projection-range">
+          <CardHeader className="pb-2">
+            <CardTitle className="font-serif text-lg font-semibold">Projection Range</CardTitle>
+            <p className="text-xs text-muted-foreground">Modelled using historical reemployment percentiles.</p>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {[projectionRange.fast, projectionRange.typical, projectionRange.slow].map((scenario, i) => (
+                <div key={i} className="rounded-md bg-muted/50 p-4 space-y-2" data-testid={`projection-scenario-${i}`}>
+                  <Badge variant="outline" className="text-xs">{scenario.percentileLabel}</Badge>
+                  <p className="text-sm font-medium">{scenario.label}</p>
+                  <p className="text-2xl font-bold" data-testid={`text-range-runway-${i}`}>
+                    {formatMonths(scenario.runwayMonths)}
+                  </p>
+                  {scenario.depletionMonth !== null && (
+                    <p className="text-xs text-muted-foreground">
+                      Capital depletion: Month {scenario.depletionMonth}
+                    </p>
+                  )}
+                  {scenario.recoveryMonth !== null && (
+                    <p className="text-xs text-muted-foreground">
+                      Capital recovery: Month {scenario.recoveryMonth}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground/70 italic mt-4">
+              These projections are derived from historical labour market percentiles applied to your assumptions. They do not predict individual outcomes.
+            </p>
+          </CardContent>
+        </Card>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+          <Card data-testid="card-savings-position">
+            <CardContent className="pt-4 pb-4">
+              <p className="text-xs font-medium mb-1">Starting Capital Position (UK Comparison)</p>
+              <p className="text-xs text-muted-foreground" data-testid="text-savings-position">{savingsLabel}</p>
+            </CardContent>
+          </Card>
+          {inputs.mortgageOrRent > 0 && (
+            <Card data-testid="card-housing-exposure">
+              <CardContent className="pt-4 pb-4">
+                <p className="text-xs font-medium mb-1">Housing Exposure Context</p>
+                <p className="text-xs text-muted-foreground" data-testid="text-housing-exposure">
+                  Your housing costs represent {housingPercent}% of essential expenditure.
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Reference housing burden benchmark: {ukBenchmarks.housingBurden.typicalBurdenPercent}% (UK average).
+                </p>
+                {housingPercent > ukBenchmarks.housingBurden.stressReferenceThresholdPercent && (
+                  <p className="text-xs text-muted-foreground">
+                    Your housing exposure is above the model reference threshold ({ukBenchmarks.housingBurden.stressReferenceThresholdPercent}%).
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          )}
+        </div>
+
         <Tabs defaultValue="trajectory" className="space-y-6">
           <TabsList className="flex flex-wrap h-auto gap-1" data-testid="tabs-list">
             <TabsTrigger value="trajectory" data-testid="tab-trajectory">Capital Trajectory</TabsTrigger>
@@ -344,6 +412,7 @@ export default function ResultsPage() {
             {showMortgageTab && (
               <TabsTrigger value="mortgage" data-testid="tab-mortgage">Mortgage Sensitivity</TabsTrigger>
             )}
+            <TabsTrigger value="supplementary" data-testid="tab-supplementary">Supplementary</TabsTrigger>
           </TabsList>
 
           <TabsContent value="trajectory" className="space-y-6">
@@ -792,11 +861,108 @@ export default function ResultsPage() {
               </Card>
             </TabsContent>
           )}
+          <TabsContent value="supplementary" className="space-y-6">
+            <div className="mb-2">
+              <h2 className="font-serif text-lg font-semibold mb-1">Supplementary Analysis</h2>
+              <p className="text-xs text-muted-foreground">
+                Contextual UK data provided for reference only. These figures do not affect your individual projection.
+              </p>
+            </div>
+
+            <Card data-testid="card-redundancy-environment">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium">UK Redundancy Environment (Context)</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between gap-4 text-sm">
+                    <span className="text-muted-foreground">Total redundancies (latest quarter):</span>
+                    <span className="font-medium" data-testid="text-total-redundancies">{ukBenchmarks.redundancyContext.totalRedundanciesLabel}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-4 text-sm">
+                    <span className="text-muted-foreground">Year-on-year change:</span>
+                    <span className="font-medium" data-testid="text-yoy-change">+{ukBenchmarks.redundancyContext.yoyChangePercent}%</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-4 text-sm">
+                    <span className="text-muted-foreground">Data last updated:</span>
+                    <span className="font-medium">{ukBenchmarks.redundancyContext.quarter}</span>
+                  </div>
+                  {ukBenchmarks.redundancyContext.sectorHighlights.length > 0 && (
+                    <div className="mt-3 pt-3 border-t space-y-1">
+                      {ukBenchmarks.redundancyContext.sectorHighlights.map((s, i) => (
+                        <p key={i} className="text-xs text-muted-foreground" data-testid={`text-sector-highlight-${i}`}>
+                          {s.sector} redundancies: +{s.yoyChangePercent}% YoY.
+                        </p>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <p className="text-xs text-muted-foreground/70 italic mt-4">
+                  National labour market statistics provided for context only. These figures do not affect your individual projection.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card data-testid="card-savings-benchmark-context">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium">Savings Position Context</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between gap-4 text-sm">
+                    <span className="text-muted-foreground">Your starting capital:</span>
+                    <span className="font-medium">{formatGBP(result.startingCapital)}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-4 text-sm">
+                    <span className="text-muted-foreground">UK median household savings:</span>
+                    <span className="font-medium">{formatGBP(ukBenchmarks.savingsBenchmarks.medianHouseholdSavings)}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-4 text-sm">
+                    <span className="text-muted-foreground">Upper quartile threshold:</span>
+                    <span className="font-medium">{formatGBP(ukBenchmarks.savingsBenchmarks.upperQuartileThreshold)}+</span>
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground mt-3" data-testid="text-savings-context-label">{savingsLabel}</p>
+                <p className="text-xs text-muted-foreground/70 italic mt-2">
+                  Source: {ukBenchmarks.savingsBenchmarks.source} ({ukBenchmarks.savingsBenchmarks.year}).
+                </p>
+              </CardContent>
+            </Card>
+
+            {inputs.mortgageOrRent > 0 && (
+              <Card data-testid="card-housing-context-detail">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium">Housing Exposure Detail</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    <p className="text-sm">
+                      Your housing costs represent <span className="font-medium">{housingPercent}%</span> of essential expenditure.
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Reference housing burden benchmark: {ukBenchmarks.housingBurden.typicalBurdenPercent}% (UK average, ONS {ukBenchmarks.housingBurden.year}).
+                    </p>
+                    {housingPercent > ukBenchmarks.housingBurden.stressReferenceThresholdPercent && (
+                      <p className="text-xs text-muted-foreground">
+                        Your housing exposure is above the model reference threshold ({ukBenchmarks.housingBurden.stressReferenceThresholdPercent}%).
+                      </p>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent>
         </Tabs>
 
-        <p className="text-xs text-muted-foreground text-center mt-8 max-w-lg mx-auto">
-          Illustrative projection only. Based entirely on the assumptions you entered. This tool does not provide financial, employment, debt, or benefits advice.
-        </p>
+        <div className="mt-8 pt-6 border-t text-center space-y-2">
+          <p className="text-xs text-muted-foreground">
+            Illustrative projection only. Based entirely on the assumptions you entered. This tool does not provide financial, employment, debt, or benefits advice.
+          </p>
+          <p className="text-xs text-muted-foreground/70">
+            Data sources: Office for National Statistics (Labour Market Statistics, Wealth & Assets Survey, Household Expenditure Data).
+            Benchmark data last updated: {ukBenchmarks.meta.lastUpdated}.
+          </p>
+        </div>
       </main>
     </div>
   );

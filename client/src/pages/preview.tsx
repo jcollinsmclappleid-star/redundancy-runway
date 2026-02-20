@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Lock, ArrowRight, ArrowLeft, BarChart2, TrendingDown, Shield, Activity, FileText, Home, Layers } from "lucide-react";
+import { Lock, ArrowRight, ArrowLeft, BarChart2, TrendingDown, Shield, Activity, FileText, Home, Layers, Database } from "lucide-react";
 import { useWizardStore } from "@/lib/wizardStore";
 import { computeRunway, computeEssentialOnlyComparison, formatGBP, formatMonths } from "@/lib/engine";
 import { Logo } from "@/components/Logo";
@@ -130,11 +130,13 @@ export default function PreviewPage() {
         )}
 
         <div className="space-y-3 mb-10">
+          <LockedCard title="Projection Range" icon={Layers} />
           <LockedCard title="Income Recovery Scenarios" icon={BarChart2} />
           <LockedCard title="Capital Recovery Timeline" icon={TrendingDown} />
           <LockedCard title="Capital Threshold Events" icon={Shield} />
           <LockedCard title="Expense Sensitivity Ranking" icon={FileText} />
           <LockedCard title="Stress Testing" icon={Activity} />
+          <LockedCard title="UK Benchmark Context" icon={Database} />
           {inputs.mortgageOrRent > 0 && (
             <LockedCard title="Mortgage Sensitivity" icon={Home} />
           )}
@@ -142,19 +144,22 @@ export default function PreviewPage() {
 
         <Card className="mb-8">
           <CardContent className="pt-8 pb-8 text-center">
-            <h3 className="font-serif font-semibold text-lg mb-2">Unlock Full Analysis</h3>
+            <h3 className="font-serif font-semibold text-lg mb-2">Access Full Projection Analysis</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Access income recovery scenarios, capital recovery timeline, threshold events,
-              expense sensitivity ranking, stress testing, and mortgage sensitivity modelling.
+              Access projection range, income recovery scenarios, capital recovery timeline, threshold events,
+              expense sensitivity ranking, stress testing, UK benchmark context, and mortgage sensitivity modelling.
             </p>
             <div className="text-3xl font-bold mb-1">
-              Coming Soon
+              &pound;49
             </div>
-            <p className="text-xs text-muted-foreground mb-4">6 months unlimited access</p>
+            <p className="text-xs text-muted-foreground mb-4">One-time payment. 6 months modelling access.</p>
             <Button className="w-full max-w-xs" onClick={() => navigate("/results")} data-testid="button-unlock">
-              View Full Results (Preview Mode)
+              Unlock Full Model &mdash; &pound;49
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
+            <p className="text-xs text-muted-foreground mt-3">
+              Access valid for six months from purchase date.
+            </p>
           </CardContent>
         </Card>
 

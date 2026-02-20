@@ -6,7 +6,8 @@ export function DisclaimerBanner() {
       <div className="max-w-5xl mx-auto flex items-center gap-2 text-xs text-muted-foreground">
         <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
         <span>
-          This tool produces illustrative capital projections based on assumptions you enter. It does not constitute financial, employment, debt, or benefits advice. All outputs are estimates and may not reflect actual outcomes.
+          This tool provides illustrative financial projections based on user-entered assumptions and historical statistics.
+          It does not provide financial, employment, tax, debt, or benefits advice.
         </span>
       </div>
     </div>

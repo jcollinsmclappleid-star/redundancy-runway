@@ -190,3 +190,19 @@ export interface SectorData {
   source: string;
   lastUpdated: string;
 }
+
+export interface ProjectionRangeScenario {
+  label: string;
+  percentileLabel: string;
+  reemploymentWeeks: number;
+  reemploymentMonths: number;
+  runwayMonths: number;
+  depletionMonth: number | null;
+  recoveryMonth: number | null;
+}
+
+export interface ProjectionRange {
+  fast: ProjectionRangeScenario;
+  typical: ProjectionRangeScenario;
+  slow: ProjectionRangeScenario;
+}
