@@ -1,0 +1,305 @@
+BUILD INSTRUCTION – REDUNDANCYRUNWAY (RISK-ADJUSTED ENHANCED MVP)
+
+Proceed with build using a Conservative Enhanced MVP approach.
+
+The objective is to deliver a premium decision-support modelling tool while remaining clearly outside financial advice territory.
+
+This is illustrative financial modelling only.
+
+⸻
+
+1️⃣ Core Positioning
+
+RedundancyRunway is:
+	•	A cashflow projection and scenario modelling tool
+	•	Based solely on user-entered assumptions
+	•	Non-advisory
+	•	Non-regulated
+	•	Quantitative and neutral in tone
+
+It must not:
+	•	Recommend actions
+	•	Suggest “best” choices
+	•	Provide suitability assessments
+	•	Refer users to specific financial products
+	•	Provide debt restructuring guidance
+	•	Make claims about lender behaviour or eligibility thresholds
+
+⸻
+
+2️⃣ Feature Scope – Approved for Build
+
+Implement the following features only:
+
+✅ Core Engine
+	•	Capital depletion projection (monthly)
+	•	60-month cap
+	•	3 scenario comparison
+	•	Deterministic stability scoring
+	•	Sensitivity analysis (expenses +%, income delay)
+
+⸻
+
+✅ Milestone Timeline (Numeric + User Threshold Only)
+
+Implement milestone markers that are strictly quantitative.
+
+Allowed:
+	•	“Month 4: Capital falls below £8,200”
+	•	“Month 5: Capital falls below your selected emergency buffer (£5,000)”
+	•	“Month 3: Capital equals one month of essential expenses”
+
+Not allowed:
+	•	“Contact lender”
+	•	“Apply for payment holiday”
+	•	“Critical action required”
+	•	Behavioural instructions of any kind
+
+Milestones must be:
+	•	Numeric
+	•	Based on user-defined thresholds
+	•	Neutral
+	•	Non-prescriptive
+
+⸻
+
+✅ Decision Scenario Templates (Limit to 3)
+
+Implement 3 predefined scenario comparison templates:
+	1.	Lower Income Now vs Delayed Higher Income
+	2.	Reduce Spending by X% vs Y%
+	3.	One-Off Cost Shock at Month N
+
+All scenarios must:
+	•	Require user-entered inputs
+	•	Display projected runway differences
+	•	Show capital at month 12
+	•	Show depletion month (if applicable)
+
+Do NOT include mortgage overpayment vs buffer decision in MVP.
+
+Rename module:
+“Scenario Comparison Templates”
+
+Never use:
+	•	“Should you…”
+	•	“Best option”
+	•	“Recommended choice”
+
+⸻
+
+✅ Spending Impact Ranking (User-Driven)
+
+Rename from “Optimizer” to:
+
+“Runway Impact of Spending Adjustments”
+
+User must:
+	•	Select categories
+	•	Enter potential reduction amounts
+	•	Optionally tag effort (Low / Medium / High) themselves
+
+System may:
+	•	Rank by “Runway extension per £1 reduced”
+	•	Allow filtering by user-selected effort
+
+System must NOT:
+	•	Recommend cancellations
+	•	Label items as “Quick wins”
+	•	Use prescriptive language
+
+⸻
+
+✅ Stress Testing (Rename to Sensitivity Analysis)
+
+Title: “Sensitivity Analysis”
+
+Allowed:
+	•	“If expenses increase by 10%, runway reduces to X months.”
+	•	“If income resumes 3 months later than assumed, depletion shifts to Month Y.”
+
+Not allowed:
+	•	Fear-based framing (e.g., “Murphy’s Law”)
+	•	Alarmist language
+	•	Implied probability stacking
+
+⸻
+
+✅ Sector Reemployment Intelligence (Factual Only)
+
+Display:
+	•	Historical median timelines
+	•	25th / 75th percentile ranges
+	•	Source citation
+	•	Last updated date
+
+Must include:
+“Individual outcomes vary significantly. This data does not predict your specific job search duration.”
+
+No predictive phrasing.
+
+⸻
+
+✅ Monthly Check-In Mode
+
+Allow:
+	•	User to enter actual remaining capital
+	•	Show projected vs actual comparison
+	•	Show variance
+	•	Update runway based on new inputs
+
+Do NOT:
+	•	Criticize overspending
+	•	Suggest corrective actions
+
+Frame as:
+“Variance tracking under updated assumptions.”
+
+⸻
+
+✅ PDF Export
+
+Two modes:
+	1.	Analytical Report (clinical tone)
+	2.	Family Summary Mode (plain English, still neutral)
+
+No recommendations.
+No directives.
+All outputs assumption-based.
+
+⸻
+
+3️⃣ Language Controls (Mandatory)
+
+Replace any advisory phrasing with neutral modelling language.
+
+Avoid:
+	•	“You should”
+	•	“You need to”
+	•	“Best option”
+	•	“Recommended”
+	•	“Critical action”
+	•	“Must”
+
+Use:
+	•	“This projection suggests…”
+	•	“Under these assumptions…”
+	•	“Runway difference between scenarios…”
+	•	“Capital falls below…”
+
+All outputs must be framed as:
+Illustrative.
+Assumption-driven.
+Non-deterministic.
+
+⸻
+
+4️⃣ Disclaimer Framework
+
+Persistent Banner:
+
+“This tool provides illustrative financial projections based on assumptions you enter. It does not provide financial, employment, debt, or benefits advice. All projections are estimates and may not reflect your actual circumstances.”
+
+Decision Template Disclaimer:
+
+“This comparison shows projected financial outcomes under different income assumptions. It does not recommend which option is suitable for you.”
+
+Sector Data Disclaimer:
+
+“Reemployment timelines are historical averages. Individual outcomes vary.”
+
+Spending Impact Disclaimer:
+
+“Rankings show projected runway impact per £1 reduced. This is not advice on which expenses to adjust.”
+
+⸻
+
+5️⃣ Assumptions Panel (Required)
+
+Every scenario view must visibly display:
+	•	Income assumptions
+	•	Expense totals
+	•	One-off shocks
+	•	Replacement income start month
+	•	Sensitivity toggles
+
+Users must clearly see that outputs change when assumptions change.
+
+This protects against reliance claims.
+
+⸻
+
+6️⃣ Stability Scoring
+
+Keep deterministic.
+
+Rename if necessary to:
+“Projection Stability Index”
+
+Make clear:
+“Score reflects modelled cashflow sustainability under current assumptions.”
+
+Avoid emotional band names.
+
+Use:
+Stable / Watch / High Pressure
+Not:
+Safe / Unsafe
+
+⸻
+
+7️⃣ SEO & Positioning
+
+Approved tagline:
+
+“See how long your savings may last — and how assumptions change the projection.”
+
+Avoid:
+“Know what to do”
+“Survive redundancy”
+“Plan your recovery strategy”
+
+⸻
+
+8️⃣ Risk Guardrails
+
+The system must not:
+	•	Provide debt prioritisation guidance
+	•	Advise on lender communication
+	•	Suggest benefit eligibility
+	•	Predict job outcomes
+	•	Optimise financial decisions for the user
+	•	Use behavioural nudging language
+
+This is a modelling engine, not an advisory engine.
+
+⸻
+
+9️⃣ Deliverables Required
+
+Before release:
+	•	Unit test suite (15+ edge cases)
+	•	Projection invariants validation
+	•	Language scan for advisory phrasing
+	•	Confirmation of assumption transparency
+	•	Confirmation that no external behavioural claims remain
+
+⸻
+
+1️⃣0️⃣ Build Confirmation
+
+Proceed with:
+
+Conservative Enhanced MVP
+3-week build timeline
+Clinical language
+Quantitative framing
+No prescriptive logic
+
+⸻
+
+If any feature requires external behavioural claims (e.g., lender policies, benefit eligibility, regulatory thresholds), pause implementation and request clarification before proceeding.
+
+⸻
+
+This version maintains commercial strength while reducing regulatory and misrepresentation exposure.

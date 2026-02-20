@@ -1,0 +1,300 @@
+It is designed to:
+	•	Reuse your existing architecture
+	•	Avoid regulatory overlap
+	•	Stay monetisable
+	•	Avoid statutory redundancy trap
+	•	Focus on runway / sustainability
+	•	Be UK-first but not regulation-heavy
+
+⸻
+
+MASTER BUILD PROMPT
+
+Project: RedundancyRunway.co.uk
+
+Product: Income Shock Runway Calculator (UK)
+
+⸻
+
+1️⃣ Objective
+
+Build a consumer-facing web application that answers:
+
+“If my income stops or drops, how long will my savings last?”
+
+This is NOT a statutory redundancy calculator.
+This is a financial runway / sustainability modelling tool.
+
+It must:
+	•	Be mobile-first
+	•	Be premium-feeling
+	•	Be non-advisory
+	•	Be deterministic and testable
+	•	Reuse existing projection and scoring logic from DivorceCalculatorUK where possible
+
+⸻
+
+2️⃣ Core Use Case
+
+User has:
+	•	Lost job
+	•	At risk of redundancy
+	•	Considering quitting
+	•	Facing income reduction
+
+They want:
+	•	Months until depletion
+	•	Scenario comparison
+	•	Stress testing
+
+⸻
+
+3️⃣ Architecture Reuse Requirements
+
+Reuse from existing codebase:
+	•	Projection engine (capital depletion logic)
+	•	Scenario comparison pattern
+	•	Stability scoring framework (adapted)
+	•	Collapsible UI sections
+	•	Freemium preview → unlock flow
+	•	Stripe integration pattern
+	•	PDF summary export pattern
+	•	Invariant testing structure
+
+Do NOT reuse divorce-specific logic.
+
+Create new engine:
+
+computeIncomeRunway(inputs)
+
+⸻
+
+4️⃣ Input Schema (MVP)
+
+4.1 Capital
+	•	cashSavings (GBP)
+	•	liquidInvestments (GBP)
+	•	redundancyPayout (GBP, optional)
+	•	otherOneOffIncome (GBP, optional)
+
+Derived:
+startingCapital = sum(all above)
+
+⸻
+
+4.2 Monthly Income Assumptions
+	•	currentMonthlyNetIncome
+	•	replacementMonthlyIncome (default 0)
+	•	monthsUntilNewJob (integer, optional)
+	•	benefitSupportEstimate (manual input only, optional)
+
+No benefit entitlement calculation.
+
+⸻
+
+4.3 Monthly Expenses
+
+Essential Expenses
+	•	mortgageOrRent
+	•	utilities
+	•	food
+	•	insurance
+	•	transport
+	•	debtRepayments
+	•	childcare
+	•	otherEssential
+
+Non-Essential Expenses
+	•	subscriptions
+	•	leisure
+	•	travel
+	•	discretionaryOther
+
+Toggle:
+Include non-essential in burn? (true/false)
+
+⸻
+
+5️⃣ Engine Logic
+
+Step 1: Monthly Burn Rate
+
+For each month:
+
+If month <= monthsUntilNewJob:
+income = replacementMonthlyIncome + benefitSupportEstimate
+Else:
+income = assumed new income
+
+NetBurn = totalExpenses - income
+
+If NetBurn < 0:
+surplus = abs(NetBurn)
+Else:
+deficit = NetBurn
+
+⸻
+
+Step 2: Capital Projection
+
+Simulate month-by-month:
+
+capital(t+1) = capital(t) - deficit + surplus
+
+Stop when:
+capital <= 0
+
+Output:
+	•	monthsUntilDepletion
+	•	capitalAfter3Months
+	•	capitalAfter6Months
+	•	capitalAfter12Months
+	•	depletionDate (optional)
+
+Cap projection at 60 months for MVP.
+
+⸻
+
+Step 3: Scenario Comparison (MVP = 3 scenarios)
+
+Scenario A: Income = 0
+Scenario B: 50% income
+Scenario C: New job after X months
+
+Allow user to adjust X.
+
+Display side-by-side cards:
+	•	Runway months
+	•	Remaining capital at 12 months
+	•	Stability band
+
+⸻
+
+6️⃣ Stability Scoring (Deterministic)
+
+Start score = 100
+
+Deductions:
+	•	< 3 months runway → -40
+	•	< 6 months runway → -25
+	•	Mortgage > 40% of essential expenses → -10
+	•	Debt repayments > 25% of total expenses → -10
+	•	Replacement income < 50% of original → -10
+
+Band:
+
+80–100 = Stable
+60–79 = Watch
+<60 = High Pressure
+
+No subjective logic.
+
+⸻
+
+7️⃣ Outputs (Paid vs Free)
+
+Free Preview
+
+Show:
+	•	“Your savings may last approximately X months.”
+
+Blur:
+	•	Stability score
+	•	Scenario comparison
+	•	Stress test
+	•	Projection breakdown
+
+⸻
+
+Paid (£29–£39 range)
+
+Unlock:
+	•	Full scenario comparison
+	•	5-year projection
+	•	Stability scoring explanation
+	•	Sensitivity testing:
+	•	Expenses +10%
+	•	Income delayed +3 months
+	•	Downloadable summary PDF
+	•	Unlimited reruns for 6 months
+
+⸻
+
+8️⃣ PDF Summary Structure
+
+Sections:
+	1.	Financial Snapshot
+	2.	Monthly Burn Analysis
+	3.	Runway Projection
+	4.	Scenario Comparison
+	5.	Risk & Sensitivity Analysis
+	6.	Assumptions & Limitations
+
+No advice language.
+
+⸻
+
+9️⃣ Liability Controls
+
+Persistent banner:
+
+“This tool provides illustrative financial modelling only. It does not provide financial, tax, employment, or benefits advice.”
+
+Replace all:
+“You should” → “Consider”
+
+No statutory redundancy calculation in MVP.
+
+⸻
+
+🔟 Edge Case Testing Required
+
+Agent must test:
+	1.	Zero savings
+	2.	Zero expenses
+	3.	Surplus income
+	4.	Massive redundancy payout
+	5.	monthsUntilNewJob > runway
+	6.	Negative inputs rejected
+	7.	Decimal inputs
+	8.	Large numbers
+	9.	Capital increasing scenario
+	10.	60-month projection cap
+
+All outputs must:
+	•	Avoid NaN
+	•	Avoid Infinity
+	•	Round to 2dp
+	•	Never show negative runway
+
+⸻
+
+1️⃣1️⃣ UX Requirements
+	•	Mobile scroll reduced via collapsibles
+	•	Sticky summary header showing:
+	•	Runway months
+	•	Stability band
+	•	No horizontal scroll tables
+	•	Clean, premium palette
+	•	No countdown timers
+	•	No fear-based red flashing UI
+
+⸻
+
+1️⃣2️⃣ Deliverables Agent Must Return
+	1.	% code reuse from divorce app
+	2.	Estimated build time
+	3.	New modules required
+	4.	Risk assessment
+	5.	Suggested refinements to improve conversion
+	6.	Unit test suite
+
+⸻
+
+1️⃣3️⃣ Future Roadmap (Do NOT build yet)
+	•	Add statutory redundancy module
+	•	Add tax-on-redundancy modelling
+	•	Add UK benefits estimator
+	•	Add US localisation
+
+These are Phase 2 only.

@@ -1,0 +1,259 @@
+
+⸻
+
+Master Prompt for Agent: Build “Care Funding Calculator UK” as a Separate Engine + Brand (Reuse Existing App Framework)
+
+0) Context & Objective
+
+You are extending an existing React SPA calculator codebase (built for DivorceCalculatorUK) by adding a separate product with a separate engine, branding, and copy:
+
+New product concept (separate brand):
+	•	Working name: CareFundingCalculatorUK (or alternative brand you propose)
+	•	Purpose: Illustrative adult social care cost / contribution modelling for UK users (start with England rules; add jurisdiction toggles later)
+	•	User goal: understand likely weekly contribution and runway under common care scenarios (home care vs residential), with clear caveats.
+
+Critical constraints (liability/compliance):
+	•	Must be illustrative modelling only.
+	•	Must not present as legal/financial/regulatory advice.
+	•	Must not claim FCA/SRA/NHS affiliation.
+	•	Must avoid “you will pay” / “you are eligible” language; use “estimate”, “indicative”, “may”, “often”.
+
+1) Product Positioning & UX Principles
+
+Tone: calm, premium, structured, reassuring; “clarity before expensive decisions” without implying advice.
+
+Core value prop:
+“See how care costs and means-testing mechanics may affect your contribution and how long your capital might last—based solely on what you enter.”
+
+Mobile-first:
+	•	Reduce scroll by using collapsible sections + summary-first cards.
+	•	Use one primary CTA: “Start My Care Funding Estimate”.
+	•	Provide Example Scenarios similar to DivorceCalculatorUK (to improve conversion).
+
+2) What Existing Care Calculators Typically Ask For (Use as Requirements Baseline)
+
+Model the input structure around what UK councils request for illustrative financial assessment estimates:
+	•	Age group bands
+	•	Weekly income categories (state pension, pension credit, attendance allowance, DLA/PIP care component, universal credit, carers allowance, private pensions, other income)
+	•	Weekly outgoings (rent/mortgage, council tax)
+	•	Savings/investments total
+	•	Number of properties owned
+	•	Separate outputs for care at home vs residential/nursing and show “capital tariff” / assumed tariff income concept  ￼
+
+3) Scope: What the Engine Should Cover (MVP → V1 → V2)
+
+MVP (ship-fast, high value, low risk)
+A) Care context selection
+	•	Care setting:
+	1.	Care at home (domiciliary)
+	2.	Residential care home
+	3.	Nursing home (residential + nursing component)
+
+B) Means-test estimate (England-first)
+	•	Savings/capital thresholds and tariff mechanics must be configurable (constants file), not hard-coded.
+	•	Show clear warnings where rules vary and where councils apply discretion.
+
+C) Outputs
+	•	Estimated weekly contribution (user pays) vs assumed local authority contribution (if relevant—keep this conservative)
+	•	A “capital runway” projection: “If you paid £X/week from capital, how many weeks/months until your savings reach lower threshold.”
+	•	A “risk/pressure flags” panel (non-advisory): e.g., “high capital depletion risk”, “property factor likely relevant”, “benefit assumptions”
+
+V1 (adds differentiation as a paid tool)
+	•	Scenario comparison (2–3 scenarios side-by-side):
+	•	Home care vs Residential vs Nursing
+	•	Sensitivity toggles: care cost +10%, inflation +2%, fees increase assumption
+	•	Printable structured summary (like DivorceCalculatorUK report) but shorter and mobile-friendly
+
+V2 (advanced, optional)
+	•	Jurisdiction toggle (England / Scotland / Wales / NI) with different thresholds (requires research + careful disclaimers)
+	•	Deferred Payment Agreement (DPA) conceptual explainer + indicative modelling (only if you can do safely)
+	•	CHC/FNC informational modules (NOT eligibility decisions)
+
+4) Input Schema (Define Precisely)
+
+Implement a strict typed input model and validation layer.
+
+4.1 Core Inputs
+User profile
+	•	jurisdiction (default England)
+	•	ageBand (Under 25 / 25–64 / 65+)
+	•	careSetting (homeCare / residential / nursing)
+	•	maritalStatus or “single vs couple” toggle (optional MVP—note councils sometimes treat couples differently)
+
+Capital
+	•	savingsInvestmentsTotal (GBP)
+	•	propertyOwnedCount (0/1/2+)
+	•	If careSetting != homeCare:
+	•	primaryHomeValue (GBP, optional)
+	•	mortgageOutstanding (GBP, optional)
+	•	propertyDisregardApplies (yes/no/unsure) — show help text; do not decide for user
+
+Weekly income (GBP/week)
+	•	state pension
+	•	pension credit
+	•	attendance allowance (optional quick selector like none / lower / higher)
+	•	DLA/PIP care component
+	•	universal credit
+	•	carers allowance
+	•	private pensions
+	•	other income (explicitly exclude wages in MVP if you want to mirror council calculators)  ￼
+
+Weekly outgoings (GBP/week)
+	•	rent/mortgage
+	•	council tax
+	•	(optional) disability-related expenditure (DRE) estimate (enter manually with “what counts?” helper copy)
+
+Care cost assumptions
+	•	weeklyCareCost (GBP/week) user-entered OR use benchmark presets (with strong disclaimers)
+	•	annualFeeInflation (default configurable)
+	•	projectionYears (default 5, configurable)
+
+4.2 Validation rules
+	•	No negative values
+	•	Clamp insane inputs (very large numbers still allowed)
+	•	If propertyOwnedCount >= 2 show “likely self-funding” flag (but not definitive)  ￼
+	•	If savings exceed upper limit show “likely self-funding until capital reduces” language
+
+5) Engine Logic (Illustrative, Deterministic, Testable)
+
+Build the engine as a pure function:
+computeCareFundingEstimate(inputs, constants) -> outputs
+
+5.1 Configurable constants (England, MVP)
+Create a careConstantsEngland2025_26.ts holding:
+	•	upperCapitalLimit
+	•	lowerCapitalLimit
+	•	tariffIncomePerUnit and tariffUnit (e.g., “£1 per £250 over lower limit” — keep as config and cite assumptions)
+	•	personalExpensesAllowanceResidential (PEA)
+	•	minimumIncomeGuarantee (optional V1)
+	•	notes field for “rates may change; verify”
+
+Use published / council-cited values where available and cite in-app methodology.  ￼
+
+5.2 Core calculations (high-level)
+	1.	Assess capital band
+
+	•	If savings >= upper: user likely pays full cost (self-funder) until capital falls below upper.
+	•	If savings <= lower: tariff income = 0
+	•	Else: tariff income = ceil((savings - lower)/tariffUnit) * tariffIncomePerUnit (configurable)
+
+	2.	Assess allowable income & protected amounts
+
+	•	For residential/nursing: subtract PEA from income (protected amount) before calculating contribution (illustrative)  ￼
+	•	For home care: apply an “allowance/protected income” concept carefully—either:
+	•	keep it simple (MVP): show income, show outgoings, and present “indicative disposable income” without calling it MIG; OR
+	•	implement MIG later (V1) with a strong “varies by council” banner
+
+	3.	Estimated weekly contribution
+
+	•	For MVP, avoid claiming exact LA method; instead:
+	•	Compute an “indicative contribution capacity”:
+	•	incomeTotal + tariffIncome - protectedAmounts - allowableOutgoings - DRE
+	•	clamp at 0
+	•	Then:
+	•	estimatedUserPays = min(indicativeCapacity, weeklyCareCost)
+	•	estimatedLAContribution = max(0, weeklyCareCost - estimatedUserPays) (optional display; label as “illustrative gap”)
+	•	If self-funder: estimatedUserPays = weeklyCareCost (until capital drops)
+
+	4.	Capital runway projection
+
+	•	If user is self-funding or paying from savings:
+	•	netDrawFromCapitalPerWeek = max(0, weeklyCareCost - (incomeTotal - protected/allowable)) (keep conservative)
+	•	simulate week-by-week (or year-by-year) depletion until:
+	•	savings reaches lower (or 0)
+	•	Output:
+	•	weeks/months to hit upper threshold and lower threshold
+	•	a simple line chart (optional) like your existing projection chart
+
+	5.	Flags / warnings (non-advisory)
+
+	•	“Property may be considered in residential care”  ￼
+	•	“Inputs exclude joint benefit edge cases” if you choose not to support them (council calculators explicitly warn this)  ￼
+	•	“Figures vary by local authority; confirm with council or adviser”
+
+5.3 Determinism + test suite
+Replicate the DivorceCalculatorUK approach:
+	•	20–30 edge cases:
+	•	all zeros
+	•	very high income
+	•	high savings, low income
+	•	property owned count 2+
+	•	residential + property included
+	•	DRE > income
+	•	fees inflation extremes
+	•	Invariants:
+	•	no NaN/Infinity
+	•	currency formatting consistent
+	•	savings never increases unless surplus logic explicitly added
+	•	runway never negative; clamps properly
+
+6) Outputs & UI (Paid-feel without overpromising)
+
+Results page structure (mobile-first):
+	•	Top summary cards:
+	•	“Estimated weekly cost” (assumption)
+	•	“Indicative weekly contribution”
+	•	“Self-funding status (indicative)”
+	•	“Runway to thresholds”
+	•	Collapsible sections:
+	•	“How we calculated this” (short)
+	•	“Your income & allowances”
+	•	“Capital & property factors”
+	•	“Projection & sensitivity”
+	•	“Questions to ask your council/adviser” (self-reflective prompts)
+
+Self-reflective questions (must include)
+	•	“Which figures are estimates vs verified?”
+	•	“Have you included disability-related costs?”
+	•	“Does anyone still live in the home (if residential)?”
+	•	“Is your care likely to increase over time?”
+	•	“What would happen if fees rise 10–20%?”
+
+7) Content & Copy Requirements (Marketing psychology + trust)
+
+Emotional pull without advice
+	•	Lead with reassurance + control:
+	•	“Private. Structured. No sign-up required to explore.”
+	•	Reduce shame/friction:
+	•	“Use best estimates—you can refine later.”
+	•	Build legitimacy through transparency:
+	•	Always show assumptions + toggles
+	•	Conversion:
+	•	Offer “Example outputs”
+	•	Add “What you’ll get for £X” list
+
+Must avoid
+	•	“You qualify”
+	•	“Guaranteed”
+	•	“Council will pay”
+	•	Any implication of regulated advice
+
+8) Legal/Compliance UI Pattern (light but consistent)
+	•	Persistent top banner: “Illustrative modelling only. Not legal, tax, or financial advice.”
+	•	Footer links: Terms, Privacy, Methodology
+	•	In-tool microcopy: “This is an estimate based on what you enter.”
+
+9) Deliverables (Agent must produce)
+	1.	Engine spec + constants file
+	2.	Input schema + validation rules
+	3.	UI wireframe outline (mobile-first)
+	4.	Copy blocks (hero, benefits, disclaimers, methodology)
+	5.	Automated test cases + invariant tests
+	6.	Implementation plan: reuse existing app modules (cards, collapsibles, export/report patterns)
+
+10) Ask Before Changing (Important)
+
+Before implementing any major layout/scroll changes, present:
+	•	2–3 mobile layout options (accordion vs tabs vs summary-first + sticky header)
+	•	estimated scroll reduction
+	•	tradeoffs (discoverability vs brevity)
+
+⸻
+
+“Care idea” leverage: how this fits your strategy
+	•	This is a separate engine but uses the same UI architecture you already paid to build (cards, collapsibles, projections, export).
+	•	The “premium” differentiation vs free council calculators is:
+	•	Scenario comparison
+	•	Runway projection + sensitivity
+	•	Structured export summary
+	•	Better UX + clearer assumptions (without pretending to be official)

@@ -1,0 +1,36 @@
+🥇 #1 RECOMMENDATION: UK Inheritance Tax Calculator + Pension Impact Tool
+Why This Is Superior to Care Calculator
+Factor	IHT Calculator	Care Calculator	Winner
+Market urgency	APRIL 2027 pension changes	Gradual planning	✅ IHT
+Emotional intensity	Loss/grief + financial shock	Protective but slower	✅ IHT
+Regulatory complexity	Clear HMRC rules	152 council variations	✅ IHT
+Target market size	50,000 NEW estates/year entering IHT	Care-needy population (larger but diffuse)	✅ IHT
+Conversion catalyst	£8.7B revenue = widespread fear	Care only affects subset	✅ IHT
+Data accuracy	National thresholds (fixed)	Local authority discretion (variable)	✅ IHT
+Liability risk	Lower (illustrative + HMRC source)	Higher (health/social care regulations)	✅ IHT
+Why Your Engine Is Perfect For This
+✅ Scenario modeling - Your divorce calculator's "what-if" approach maps perfectly to IHT gifting strategies
+✅ Threshold-based calculation - Same logic as divorce settlement bands
+✅ Timeline projections - 7-year gifting rules need runway visualization (you already have this!)
+✅ Privacy-first - Even more critical for estate planning
+✅ Freemium conversion - "See if your estate owes tax" (preview) → "See 5 mitigation strategies" (paid)
+
+Revenue Model
+Freemium tiers:
+
+Free preview: "Your estate may owe £X in IHT" (shows number, locks breakdown)
+£29 unlock: Full breakdown + 2027 pension impact + basic gifting timeline
+£59 premium: 5-scenario comparison (gifts, trusts, life insurance) + downloadable estate plan summary
+Target revenue:
+
+50,000 new estates/year × 10% search for tools = 5,000 potential users
+2% conversion at £29 avg = £2,900/month = £35k/year (conservative)
+With upsells (adviser white-label, life insurance referrals) → £80-150k/year
+Competitive Differentiation
+All existing calculators are FREE lead-gen tools (Hargreaves Lansdown, Aviva, etc.). You can charge because you offer:
+
+2027 pension inclusion modeling (NO ONE has this yet - perfect timing!)
+Scenario comparison - "See your IHT bill with vs without gifting strategy"
+7-year gifting timeline visualizer (your runway chart, repurposed)
+Spousal transfer optimizer (automatically calc transferable nil-rate bands)
+PDF estate summary for solicitor/adviser meetings

@@ -1,0 +1,47 @@
+App Objective:
+A UK-specific divorce financial modelling web application that helps users understand potential financial outcomes by modelling various settlement scenarios. It's a decision-support tool (not advisory) that uses a freemium model — users complete a wizard, see a limited preview, then pay £59 for full access to detailed analysis, projections, and downloadable reports.
+
+Design & UX Features:
+
+Freemium conversion flow: Landing page → 9-step wizard → limited preview (shows just enough to prove the tool worked) → unlock/payment page → full results + downloadable PDF report
+Conversion-optimised unlock page: Price + "what you get" above the fold, side-by-side layout (value props left, price card right), terms checkbox gating checkout, trust signals, FAQ for objection handling, secondary CTA at bottom
+Preview page psychology: Shows only factual input summaries (net equity, asset pool) with locked/blurred cards for analytical outputs — enough to confirm the model ran, not enough to answer the user's core question
+Premium brand positioning: Deep navy colour scheme, Playfair Display serif headings, Inter body text, branded logo with "DivorceCalculatorUK" + "Structured Financial Modelling" tagline in sticky nav
+Streamlined landing page: 6 sections (hero → features + how it works → examples → pricing → CTA → FAQ), minimal scroll depth
+Mobile-first responsive design with no horizontal overflow issues
+Stripe payment integration with session-based access (6-month window), email recovery, admin panel
+Client-side financial engine for privacy (all calculations in browser, no sensitive data sent to server)
+Regulatory compliance: Strictly non-advisory language throughout, FCA/SRA disclaimers, methodology page, scope & limitations
+Tech Stack:
+
+React 18 + TypeScript + Vite (frontend)
+Express.js + Node.js (backend API)
+PostgreSQL + Drizzle ORM (data layer)
+Zustand + localStorage (client state)
+shadcn/ui + Tailwind CSS + Radix UI (UI components)
+Wouter (routing), TanStack React Query (data fetching)
+Stripe + stripe-replit-sync (payments)
+Recharts (charts), React Hook Form + Zod (forms/validation)
+Key Architecture Patterns:
+
+Monorepo: client/, server/, shared/
+Config-driven financial engine (tax bands, NI thresholds in JSON)
+Session token stored in localStorage, links browser to purchases
+AccessGate component wraps paid routes, checks GET /api/access/:sessionToken
+Blurred/locked card pattern for teasing premium content
+Logo component with optional showBrandName prop for branded vs compact usage
+Want me to package any of the actual source files into a downloadable format as well?
+Yh give me a downloadable attachment of everything needed to rebuild
+The full source code is ready for download. You can grab it here:
+
+Download: divorce-calculator-source.tar.gz
+
+Just navigate to that URL in your browser and it will download automatically. It's about 3.8MB and includes everything needed to rebuild:
+
+All source code (client/, server/, shared/)
+Configuration files (package.json, tsconfig.json, tailwind.config.ts, vite.config.ts, drizzle.config.ts, etc.)
+Database schema and migration setup
+Logo and brand assets
+The financial engine with UK 2025/26 tax config
+All page templates (landing, wizard, preview, unlock, results, report, admin, etc.)
+To rebuild, you'd just need to run npm install and set up a PostgreSQL database with the DATABASE_URL, SESSION_SECRET, ADMIN_PASSWORD, and Stripe keys as environment variables.
