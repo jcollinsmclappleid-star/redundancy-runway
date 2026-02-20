@@ -1,39 +1,13 @@
 import { useLocation } from "wouter";
 import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Lock, ArrowRight, ArrowLeft, BarChart2, TrendingDown, Shield, Activity, FileText, Home, Layers, Database } from "lucide-react";
+import { Lock, ArrowRight, ArrowLeft, Layers } from "lucide-react";
 import { useWizardStore } from "@/lib/wizardStore";
 import { computeRunway, computeEssentialOnlyComparison, formatGBP, formatMonths } from "@/lib/engine";
 import { Logo } from "@/components/Logo";
 import { DisclaimerBanner } from "@/components/DisclaimerBanner";
-
-function LockedCard({ title, icon: Icon }: { title: string; icon: typeof Lock }) {
-  return (
-    <Card className="relative overflow-hidden" data-testid={`locked-${title.toLowerCase().replace(/\s+/g, "-")}`}>
-      <div className="absolute inset-0 backdrop-blur-sm bg-background/60 z-10 flex items-center justify-center">
-        <div className="flex items-center gap-2 text-muted-foreground">
-          <Lock className="w-4 h-4" />
-          <span className="text-sm font-medium">Unlock full analysis</span>
-        </div>
-      </div>
-      <CardHeader className="pb-2">
-        <div className="flex items-center gap-2 flex-wrap">
-          <Icon className="w-4 h-4 text-muted-foreground" />
-          <CardTitle className="text-sm">{title}</CardTitle>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-2">
-          <div className="h-4 bg-muted rounded-md w-3/4" />
-          <div className="h-4 bg-muted rounded-md w-1/2" />
-          <div className="h-8 bg-muted rounded-md w-full mt-4" />
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
 
 export default function PreviewPage() {
   const [, navigate] = useLocation();
@@ -47,6 +21,18 @@ export default function PreviewPage() {
     : result.stabilityBand === "Watch"
     ? "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400"
     : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400";
+
+  const lockedItems = [
+    "Projection range (p25 / p50 / p75)",
+    "60-month capital trajectory",
+    "Income recovery scenarios",
+    "Capital recovery timeline",
+    "Expense sensitivity ranking",
+    "Stress testing",
+    "UK benchmark context",
+    ...(inputs.mortgageOrRent > 0 ? ["Mortgage sensitivity"] : []),
+    "Structured export",
+  ];
 
   return (
     <div className="min-h-screen">
@@ -69,7 +55,7 @@ export default function PreviewPage() {
           <p className="text-sm text-muted-foreground">Based on the assumptions entered</p>
         </div>
 
-        <Card className="mb-8">
+        <Card className="mb-6">
           <CardContent className="pt-8 pb-8 text-center">
             <p className="text-sm text-muted-foreground mb-3">Under these assumptions, capital may last approximately</p>
             <div className="text-4xl sm:text-5xl font-bold mb-3 font-serif" data-testid="text-runway-months">
@@ -84,25 +70,19 @@ export default function PreviewPage() {
           </CardContent>
         </Card>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-          <Card>
-            <CardContent className="pt-5 pb-5 text-center">
-              <p className="text-xs text-muted-foreground mb-1">Capital at 3 months</p>
-              <p className="font-semibold" data-testid="text-capital-3m">{formatGBP(result.capitalAfter3Months)}</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="pt-5 pb-5 text-center">
-              <p className="text-xs text-muted-foreground mb-1">Capital at 6 months</p>
-              <p className="font-semibold" data-testid="text-capital-6m">{formatGBP(result.capitalAfter6Months)}</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="pt-5 pb-5 text-center">
-              <p className="text-xs text-muted-foreground mb-1">Capital at 12 months</p>
-              <p className="font-semibold" data-testid="text-capital-12m">{formatGBP(result.capitalAfter12Months)}</p>
-            </CardContent>
-          </Card>
+        <div className="grid grid-cols-3 gap-3 mb-6">
+          {[
+            { label: "3 months", value: result.capitalAfter3Months, id: "3m" },
+            { label: "6 months", value: result.capitalAfter6Months, id: "6m" },
+            { label: "12 months", value: result.capitalAfter12Months, id: "12m" },
+          ].map((item) => (
+            <Card key={item.id}>
+              <CardContent className="pt-4 pb-4 text-center">
+                <p className="text-xs text-muted-foreground mb-1">Capital at {item.label}</p>
+                <p className="font-semibold text-sm" data-testid={`text-capital-${item.id}`}>{formatGBP(item.value)}</p>
+              </CardContent>
+            </Card>
+          ))}
         </div>
 
         {essentialComparison.monthlySaving > 0 && (
@@ -110,7 +90,7 @@ export default function PreviewPage() {
             <CardContent className="pt-5 pb-5">
               <div className="flex items-start gap-3">
                 <div className="w-8 h-8 rounded-md bg-primary/10 flex items-center justify-center shrink-0">
-                  <Layers className="w-4 h-4 text-primary" />
+                  <Layers className="w-4 h-4 text-muted-foreground" />
                 </div>
                 <div>
                   <p className="text-sm font-medium mb-1">Preliminary Insight</p>
@@ -121,7 +101,6 @@ export default function PreviewPage() {
                       ? ` extend by approximately ${essentialComparison.extraMonths} months under these assumptions.`
                       : " not extend further (runway already exceeds 60 months under these assumptions)."
                     }
-                    {" "}The full analysis includes individual category impact rankings.
                   </p>
                 </div>
               </div>
@@ -129,42 +108,37 @@ export default function PreviewPage() {
           </Card>
         )}
 
-        <div className="space-y-3 mb-10">
-          <LockedCard title="Projection Range" icon={Layers} />
-          <LockedCard title="Income Recovery Scenarios" icon={BarChart2} />
-          <LockedCard title="Capital Recovery Timeline" icon={TrendingDown} />
-          <LockedCard title="Capital Threshold Events" icon={Shield} />
-          <LockedCard title="Expense Sensitivity Ranking" icon={FileText} />
-          <LockedCard title="Stress Testing" icon={Activity} />
-          <LockedCard title="UK Benchmark Context" icon={Database} />
-          {inputs.mortgageOrRent > 0 && (
-            <LockedCard title="Mortgage Sensitivity" icon={Home} />
-          )}
-        </div>
-
-        <Card className="mb-8">
-          <CardContent className="pt-8 pb-8 text-center">
-            <h3 className="font-serif font-semibold text-lg mb-2">Access Full Projection Analysis</h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              Access projection range, income recovery scenarios, capital recovery timeline, threshold events,
-              expense sensitivity ranking, stress testing, UK benchmark context, and mortgage sensitivity modelling.
-            </p>
-            <div className="text-3xl font-bold mb-1">
-              &pound;49
+        <Card className="mb-6" data-testid="card-unlock-cta">
+          <CardContent className="pt-8 pb-8">
+            <div className="text-center mb-6">
+              <h3 className="font-serif font-semibold text-lg mb-1">Unlock Full Projection Model</h3>
+              <p className="text-xs text-muted-foreground">
+                See exactly how different scenarios affect your timeline.
+              </p>
             </div>
-            <p className="text-xs text-muted-foreground mb-4">One-time payment. 6 months modelling access.</p>
-            <Button className="w-full max-w-xs" onClick={() => navigate("/results")} data-testid="button-unlock">
-              Unlock Full Model &mdash; &pound;49
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
-            <p className="text-xs text-muted-foreground mt-3">
-              Access valid for six months from purchase date.
-            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 mb-6 max-w-md mx-auto">
+              {lockedItems.map((item, i) => (
+                <div key={i} className="flex items-center gap-2 text-sm" data-testid={`locked-feature-${i}`}>
+                  <Lock className="w-3 h-3 text-muted-foreground shrink-0" />
+                  <span className="text-muted-foreground text-xs">{item}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="text-center">
+              <div className="text-3xl font-bold mb-1">&pound;49</div>
+              <p className="text-xs text-muted-foreground mb-4">One-time payment. 6 months access. No subscription.</p>
+              <Button className="w-full max-w-xs" onClick={() => navigate("/results")} data-testid="button-unlock">
+                Unlock Full Model &mdash; &pound;49
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </div>
           </CardContent>
         </Card>
 
         <p className="text-xs text-muted-foreground text-center">
-          All projections are illustrative estimates based on assumptions entered. This tool does not constitute financial advice.
+          All projections are illustrative estimates based on assumptions entered. Not financial advice.
         </p>
       </div>
     </div>
