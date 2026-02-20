@@ -3,13 +3,13 @@ import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Lock, ArrowRight, Clock, BarChart3, TrendingDown, Shield, LineChart, FileText } from "lucide-react";
+import { Lock, ArrowRight, Clock, BarChart3, TrendingDown, Shield, LineChart, FileText, Scissors } from "lucide-react";
 import { useWizardStore } from "@/lib/wizardStore";
-import { computeRunway, formatGBP, formatMonths } from "@/lib/engine";
+import { computeRunway, computeEssentialOnlyComparison, formatGBP, formatMonths } from "@/lib/engine";
 
 function LockedCard({ title, icon: Icon }: { title: string; icon: typeof Lock }) {
   return (
-    <Card className="relative overflow-hidden">
+    <Card className="relative overflow-hidden" data-testid={`locked-${title.toLowerCase().replace(/\s+/g, "-")}`}>
       <div className="absolute inset-0 backdrop-blur-sm bg-background/60 z-10 flex items-center justify-center">
         <div className="flex items-center gap-2 text-muted-foreground">
           <Lock className="w-4 h-4" />
@@ -38,6 +38,7 @@ export default function PreviewPage() {
   const { inputs } = useWizardStore();
 
   const result = useMemo(() => computeRunway(inputs), [inputs]);
+  const essentialComparison = useMemo(() => computeEssentialOnlyComparison(inputs), [inputs]);
 
   const startingCapital = inputs.cashSavings + inputs.liquidInvestments + inputs.redundancyPayout + inputs.otherOneOffIncome;
 
@@ -45,7 +46,7 @@ export default function PreviewPage() {
     <div className="min-h-screen py-6 px-4">
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-8">
-          <Badge variant="secondary" className="mb-4">
+          <Badge variant="secondary" className="mb-4" data-testid="badge-free-preview">
             <Clock className="w-3 h-3 mr-1" />
             Free Preview
           </Badge>
@@ -62,6 +63,11 @@ export default function PreviewPage() {
             <p className="text-xs text-muted-foreground">
               Starting capital: {formatGBP(startingCapital)} | Monthly burn: {formatGBP(result.monthlyBurn)}
             </p>
+            <div className="mt-3 flex items-center justify-center gap-2">
+              <Badge variant={result.stabilityBand === "Stable" ? "default" : result.stabilityBand === "Watch" ? "secondary" : "destructive"} data-testid="badge-preview-stability">
+                {result.stabilityBand} ({result.stabilityScore}/100)
+              </Badge>
+            </div>
           </CardContent>
         </Card>
 
@@ -86,20 +92,42 @@ export default function PreviewPage() {
           </Card>
         </div>
 
+        {essentialComparison.monthlySaving > 0 && (
+          <Card className="mb-6" data-testid="card-preview-essential-insight">
+            <CardContent className="pt-4 pb-4">
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-md bg-primary/10 flex items-center justify-center shrink-0">
+                  <Scissors className="w-4 h-4 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium mb-1">Quick insight</p>
+                  <p className="text-xs text-muted-foreground">
+                    Removing all non-essential spending ({formatGBP(essentialComparison.monthlySaving)}/mo) would
+                    {essentialComparison.extraMonths > 0
+                      ? ` extend the projection by approximately ${essentialComparison.extraMonths} months.`
+                      : " not extend the projection further (runway already exceeds 60 months)."
+                    }
+                    {" "}Unlock full results to see individual spending impacts.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         <div className="space-y-3 mb-8">
           <LockedCard title="Scenario Comparison" icon={BarChart3} />
-          <LockedCard title="Projection Stability Index" icon={Shield} />
           <LockedCard title="Milestone Timeline" icon={TrendingDown} />
           <LockedCard title="Spending Impact Analysis" icon={LineChart} />
           <LockedCard title="Sensitivity Projections" icon={LineChart} />
-          <LockedCard title="Downloadable PDF Summary" icon={FileText} />
+          <LockedCard title="Monthly Data Table" icon={FileText} />
         </div>
 
         <Card className="mb-6">
           <CardContent className="pt-6 pb-6 text-center">
             <h3 className="font-semibold text-lg mb-2">Unlock Full Analysis</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              See scenario comparisons, milestone timeline, spending impact analysis, sensitivity projections, and download a structured PDF summary.
+              See scenario comparisons, milestone timeline, spending impact analysis, sensitivity projections, and monthly data.
             </p>
             <div className="text-3xl font-bold mb-1">
               Coming Soon

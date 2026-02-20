@@ -67,15 +67,7 @@ export function computeRunway(inputs: RunwayInputs): RunwayResult {
       continue;
     }
 
-    let income = 0;
-    if (inputs.monthsUntilNewJob > 0 && month <= inputs.monthsUntilNewJob) {
-      income = inputs.replacementMonthlyIncome + inputs.benefitSupportEstimate;
-    } else if (inputs.monthsUntilNewJob > 0 && month > inputs.monthsUntilNewJob) {
-      income = inputs.currentMonthlyNetIncome;
-    } else {
-      income = inputs.replacementMonthlyIncome + inputs.benefitSupportEstimate;
-    }
-
+    const income = computeMonthlyIncome(inputs, month);
     const netBurn = totalExpenses - income;
     capital = capital - netBurn;
 
@@ -123,10 +115,11 @@ export function computeRunway(inputs: RunwayInputs): RunwayResult {
     monthsUntilDepletion = MAX_PROJECTION_MONTHS;
   }
 
-  const monthlyBurn = totalExpenses - (inputs.replacementMonthlyIncome + inputs.benefitSupportEstimate);
+  const gapIncome = inputs.replacementMonthlyIncome + inputs.benefitSupportEstimate;
+  const monthlyBurn = totalExpenses - gapIncome;
 
-  const stabilityScore = computeStabilityScore(inputs, monthsUntilDepletion, essentialExpenses, totalExpenses);
-  const stabilityBand = stabilityScore >= 80 ? "Stable" : stabilityScore >= 60 ? "Watch" : "High Pressure";
+  const stabilityScore = computeStabilityScore(inputs, monthsUntilDepletion, essentialExpenses, totalExpenses, startingCapital);
+  const stabilityBand = stabilityScore >= 75 ? "Stable" : stabilityScore >= 45 ? "Watch" : "High Pressure";
 
   return {
     monthsUntilDepletion: Math.min(monthsUntilDepletion, MAX_PROJECTION_MONTHS),
@@ -145,25 +138,49 @@ export function computeRunway(inputs: RunwayInputs): RunwayResult {
   };
 }
 
+function computeMonthlyIncome(inputs: RunwayInputs, month: number): number {
+  if (inputs.monthsUntilNewJob > 0 && month <= inputs.monthsUntilNewJob) {
+    return inputs.replacementMonthlyIncome + inputs.benefitSupportEstimate;
+  } else if (inputs.monthsUntilNewJob > 0 && month > inputs.monthsUntilNewJob) {
+    return inputs.currentMonthlyNetIncome;
+  }
+  return inputs.replacementMonthlyIncome + inputs.benefitSupportEstimate;
+}
+
 function computeStabilityScore(
   inputs: RunwayInputs,
   monthsUntilDepletion: number,
   essentialExpenses: number,
   totalExpenses: number,
+  startingCapital: number,
 ): number {
   let score = 100;
 
   if (monthsUntilDepletion < 3) score -= 40;
-  else if (monthsUntilDepletion < 6) score -= 25;
+  else if (monthsUntilDepletion < 6) score -= 30;
+  else if (monthsUntilDepletion < 9) score -= 20;
+  else if (monthsUntilDepletion < 12) score -= 10;
 
-  if (essentialExpenses > 0 && inputs.mortgageOrRent / essentialExpenses > 0.4) score -= 10;
+  if (essentialExpenses > 0 && inputs.mortgageOrRent / essentialExpenses > 0.45) score -= 10;
+  else if (essentialExpenses > 0 && inputs.mortgageOrRent / essentialExpenses > 0.35) score -= 5;
 
-  if (totalExpenses > 0 && inputs.debtRepayments / totalExpenses > 0.25) score -= 10;
+  if (totalExpenses > 0 && inputs.debtRepayments / totalExpenses > 0.25) score -= 15;
+  else if (totalExpenses > 0 && inputs.debtRepayments / totalExpenses > 0.15) score -= 8;
 
+  const gapIncome = inputs.replacementMonthlyIncome + inputs.benefitSupportEstimate;
   const replacementRatio = inputs.currentMonthlyNetIncome > 0
-    ? (inputs.replacementMonthlyIncome + inputs.benefitSupportEstimate) / inputs.currentMonthlyNetIncome
+    ? gapIncome / inputs.currentMonthlyNetIncome
     : 0;
-  if (replacementRatio < 0.5) score -= 10;
+  if (replacementRatio < 0.25) score -= 15;
+  else if (replacementRatio < 0.5) score -= 10;
+
+  if (startingCapital > 0 && totalExpenses > 0) {
+    const monthsOfCover = startingCapital / totalExpenses;
+    if (monthsOfCover < 3) score -= 10;
+  }
+
+  const nonEssential = computeNonEssentialExpenses(inputs);
+  if (totalExpenses > 0 && nonEssential / totalExpenses > 0.3) score -= 5;
 
   return Math.max(0, Math.min(100, score));
 }
@@ -179,69 +196,95 @@ export function computeScenarios(inputs: RunwayInputs): ScenarioComparison[] {
   const halfIncomeInputs: RunwayInputs = {
     ...inputs,
     replacementMonthlyIncome: inputs.currentMonthlyNetIncome * 0.5,
+    benefitSupportEstimate: 0,
     monthsUntilNewJob: 0,
   };
 
+  const jobGapMonths = inputs.monthsUntilNewJob > 0 ? inputs.monthsUntilNewJob : 6;
   const newJobInputs: RunwayInputs = {
     ...inputs,
+    monthsUntilNewJob: jobGapMonths,
   };
 
   return [
     {
       name: "Zero Income",
-      description: "Projection assuming no replacement income or benefits",
+      description: "No replacement income or benefits for entire projection period",
       result: computeRunway(zeroIncomeInputs),
     },
     {
-      name: "50% Income",
-      description: "Projection assuming income at 50% of previous level",
+      name: "50% Previous Income",
+      description: "Income at 50% of previous level, ongoing (e.g. part-time, contract)",
       result: computeRunway(halfIncomeInputs),
     },
     {
-      name: `New role after ${inputs.monthsUntilNewJob || 6} months`,
-      description: `Projection assuming previous income resumes after ${inputs.monthsUntilNewJob || 6} months`,
+      name: `Full income after ${jobGapMonths}mo`,
+      description: `Previous income resumes after ${jobGapMonths} months of gap income only`,
       result: computeRunway(newJobInputs),
     },
   ];
 }
 
+export function computeEssentialOnlyComparison(inputs: RunwayInputs): { fullRunway: number; essentialOnlyRunway: number; extraMonths: number; monthlySaving: number } {
+  const fullResult = computeRunway(inputs);
+  const essentialOnlyInputs: RunwayInputs = { ...inputs, includeNonEssential: false };
+  const essentialResult = computeRunway(essentialOnlyInputs);
+  const nonEssential = computeNonEssentialExpenses(inputs);
+
+  return {
+    fullRunway: fullResult.monthsUntilDepletion,
+    essentialOnlyRunway: essentialResult.monthsUntilDepletion,
+    extraMonths: essentialResult.monthsUntilDepletion - fullResult.monthsUntilDepletion,
+    monthlySaving: round2(nonEssential),
+  };
+}
+
 export function computeSpendingImpact(inputs: RunwayInputs): SpendingImpact[] {
   const baseResult = computeRunway(inputs);
-  const categories: Array<{ key: keyof RunwayInputs; label: string; effort: "Low" | "Medium" | "High" }> = [
-    { key: "subscriptions", label: "Subscriptions", effort: "Low" },
-    { key: "leisure", label: "Leisure", effort: "Medium" },
-    { key: "travel", label: "Travel", effort: "Low" },
-    { key: "discretionaryOther", label: "Other Discretionary", effort: "Medium" },
-    { key: "food", label: "Food (-20%)", effort: "Medium" },
-    { key: "transport", label: "Transport (-30%)", effort: "Medium" },
-    { key: "insurance", label: "Insurance (review)", effort: "High" },
+  const categories: Array<{ key: keyof RunwayInputs; label: string; effort: "Low" | "Medium" | "High"; reductionPercent: number }> = [
+    { key: "subscriptions", label: "Subscriptions (cancel all)", effort: "Low", reductionPercent: 1.0 },
+    { key: "leisure", label: "Leisure (halve)", effort: "Medium", reductionPercent: 0.5 },
+    { key: "travel", label: "Travel & holidays (cancel)", effort: "Low", reductionPercent: 1.0 },
+    { key: "discretionaryOther", label: "Other discretionary (cancel)", effort: "Medium", reductionPercent: 1.0 },
+    { key: "food", label: "Food & groceries (-25%)", effort: "Medium", reductionPercent: 0.25 },
+    { key: "transport", label: "Transport (-30%)", effort: "Medium", reductionPercent: 0.3 },
+    { key: "insurance", label: "Insurance (review -15%)", effort: "High", reductionPercent: 0.15 },
+    { key: "utilities", label: "Utilities (-10%)", effort: "Medium", reductionPercent: 0.1 },
   ];
+
+  const baseRunway = baseResult.monthsUntilDepletion;
 
   return categories
     .map((cat) => {
       const currentAmount = Number(inputs[cat.key]) || 0;
       if (currentAmount <= 0) return null;
 
-      const isEssential = ["food", "transport", "insurance"].includes(cat.key);
-      const reductionPercent = isEssential ? (cat.key === "food" ? 0.2 : cat.key === "transport" ? 0.3 : 0.15) : 1;
-      const reductionAmount = round2(currentAmount * reductionPercent);
+      const reductionAmount = round2(currentAmount * cat.reductionPercent);
 
       const modifiedInputs = { ...inputs, [cat.key]: currentAmount - reductionAmount };
       const modifiedResult = computeRunway(modifiedInputs);
 
-      const runwayExtension = modifiedResult.monthsUntilDepletion - baseResult.monthsUntilDepletion;
+      let runwayExtension = modifiedResult.monthsUntilDepletion - baseRunway;
+      if (baseRunway >= MAX_PROJECTION_MONTHS && modifiedResult.monthsUntilDepletion >= MAX_PROJECTION_MONTHS) {
+        runwayExtension = 0;
+      }
 
       return {
         category: cat.label,
         currentAmount: round2(currentAmount),
         reductionAmount,
         runwayExtensionMonths: round2(Math.max(0, runwayExtension)),
-        impactPerPound: reductionAmount > 0 ? round2(runwayExtension / reductionAmount) : 0,
+        impactPerPound: reductionAmount > 0 && runwayExtension > 0 ? round2(runwayExtension / reductionAmount) : 0,
         effort: cat.effort,
       };
     })
     .filter((item): item is SpendingImpact => item !== null && item.reductionAmount > 0)
-    .sort((a, b) => b.impactPerPound - a.impactPerPound);
+    .sort((a, b) => {
+      if (b.runwayExtensionMonths !== a.runwayExtensionMonths) {
+        return b.runwayExtensionMonths - a.runwayExtensionMonths;
+      }
+      return b.reductionAmount - a.reductionAmount;
+    });
 }
 
 export function computeSensitivity(inputs: RunwayInputs): SensitivityResult[] {
@@ -275,6 +318,17 @@ export function computeSensitivity(inputs: RunwayInputs): SensitivityResult[] {
     monthsUntilNewJob: (inputs.monthsUntilNewJob || 6) + 6,
   });
 
+  const noNonEssential = computeRunway({
+    ...inputs,
+    includeNonEssential: false,
+  });
+
+  const halfSavings = computeRunway({
+    ...inputs,
+    cashSavings: inputs.cashSavings * 0.5,
+    liquidInvestments: inputs.liquidInvestments * 0.5,
+  });
+
   return [
     {
       label: "Essential expenses increase by 10%",
@@ -299,6 +353,18 @@ export function computeSensitivity(inputs: RunwayInputs): SensitivityResult[] {
       baseRunway: base.monthsUntilDepletion,
       adjustedRunway: delay6.monthsUntilDepletion,
       difference: round2(delay6.monthsUntilDepletion - base.monthsUntilDepletion),
+    },
+    {
+      label: "All non-essential spending removed",
+      baseRunway: base.monthsUntilDepletion,
+      adjustedRunway: noNonEssential.monthsUntilDepletion,
+      difference: round2(noNonEssential.monthsUntilDepletion - base.monthsUntilDepletion),
+    },
+    {
+      label: "Starting savings are 50% lower than assumed",
+      baseRunway: base.monthsUntilDepletion,
+      adjustedRunway: halfSavings.monthsUntilDepletion,
+      difference: round2(halfSavings.monthsUntilDepletion - base.monthsUntilDepletion),
     },
   ];
 }
