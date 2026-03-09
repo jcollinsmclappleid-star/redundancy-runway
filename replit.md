@@ -55,6 +55,17 @@ UK-focused institutional capital modelling platform for income disruption scenar
 - Deep navy-teal palette with serif accent headings
 
 ## Recent Changes
+- Mar 2026: Landing page visual redesign — "actual website" treatment
+  - Hero: Full-width dark navy (bg-primary) background, large serif headline, white/inverted CTA buttons, subtle dot-grid texture overlay
+  - Header: Now sticky with backdrop-blur, includes ThemeToggle alongside CTA button
+  - Trust strip: 4 icon+label+subtitle callouts with primary-tinted icon squares
+  - How it works: Numbered connected steps with large circle step indicators and connecting line on desktop
+  - Product preview panel: New dark section showing stylised output mockup (runway figure, stability badge, capital snapshots + full feature list)
+  - Pricing: Paid card highlighted with ring-2 ring-primary, "Full Access" floating badge, shadow elevation; free card visually quieter
+  - FAQ: Trigger text scaled up to text-base for proper readability
+  - Bottom CTA: Bold dark navy section matching hero energy with dual CTA buttons
+  - Footer: Upgraded to proper 3-column layout using Footer.tsx (Logo in brand column, Legal links, Disclaimer); split bottom row with copyright + data attribution
+
 - Feb 2026: Data Authority Layer & Projection Range
   - New module: ukBenchmarks.ts with ONS redundancy context, savings benchmarks, housing burden, age-band reemployment data
   - Engine: computeProjectionRange() for p25/p50/p75 trajectories using combined sector + age-band percentile data
