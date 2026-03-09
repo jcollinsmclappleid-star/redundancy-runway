@@ -1,13 +1,15 @@
-import { TrendingDown } from "lucide-react";
 import { Link } from "wouter";
+import logoMark from "@assets/generated_images/logo-mark.png";
 
 export function Logo({ showTagline = false }: { showTagline?: boolean }) {
   return (
     <Link href="/" data-testid="link-home">
       <div className="flex items-center gap-2.5 cursor-pointer">
-        <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center">
-          <TrendingDown className="w-4 h-4 text-primary-foreground" />
-        </div>
+        <img
+          src={logoMark}
+          alt="RedundancyRunway logo"
+          className="w-8 h-8 rounded-md object-cover"
+        />
         <div className="flex flex-col">
           <span className="font-serif font-semibold text-sm tracking-tight">RedundancyRunway</span>
           {showTagline && (
