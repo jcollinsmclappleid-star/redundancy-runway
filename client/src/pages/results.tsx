@@ -39,6 +39,7 @@ import {
   computeEssentialOnlyComparison,
   computeMortgageSensitivity,
   computeProjectionRange,
+  computeVoluntaryRedundancyComparison,
   formatGBP,
   formatMonths,
 } from "@/lib/engine";
@@ -265,6 +266,11 @@ export default function ResultsPage() {
   }, [inputs.mortgageOrRent, result.essentialExpenses]);
 
   const showMortgageTab = inputs.mortgageOrRent > 0;
+  const showVRComparison = inputs.context.employmentStatus === "voluntary_redundancy" && (inputs.voluntaryRedundancyAmount ?? 0) > 0;
+  const vrComparison = useMemo(
+    () => (showVRComparison ? computeVoluntaryRedundancyComparison(inputs) : null),
+    [inputs, showVRComparison]
+  );
 
   const handleCopySummary = () => {
     const lines = [
@@ -609,6 +615,42 @@ export default function ResultsPage() {
                 </div>
               </CardContent>
             </Card>
+
+            {showVRComparison && vrComparison && (
+              <Card data-testid="card-vr-comparison">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium">Voluntary Redundancy — Package Comparison</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p className="text-xs text-muted-foreground">
+                    Under these assumptions, the table below compares the runway projected from your statutory entitlement against the voluntary redundancy package amount entered.
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div className="rounded-lg border p-3 space-y-1" data-testid="card-vr-statutory">
+                      <p className="text-xs text-muted-foreground">Statutory package</p>
+                      <p className="text-xl font-bold">{formatGBP(vrComparison.statutoryPackageTotal)}</p>
+                      <p className="text-sm font-semibold mt-1">{formatMonths(vrComparison.statutoryRunway)}</p>
+                      <p className="text-xs text-muted-foreground">projected runway</p>
+                    </div>
+                    <div className="rounded-lg border p-3 space-y-1 bg-primary/5" data-testid="card-vr-voluntary">
+                      <p className="text-xs text-muted-foreground">Voluntary redundancy package</p>
+                      <p className="text-xl font-bold">{formatGBP(vrComparison.vrPackageTotal)}</p>
+                      <p className="text-sm font-semibold mt-1">{formatMonths(vrComparison.vrRunway)}</p>
+                      <p className="text-xs text-muted-foreground">projected runway</p>
+                    </div>
+                    <div className="rounded-lg border p-3 space-y-1" data-testid="card-vr-delta">
+                      <p className="text-xs text-muted-foreground">Package difference</p>
+                      <p className="text-xl font-bold">{vrComparison.delta >= 0 ? "+" : ""}{formatMonths(vrComparison.delta)}</p>
+                      <p className="text-sm font-semibold mt-1">{formatGBP(vrComparison.vrPackageTotal - vrComparison.statutoryPackageTotal)}</p>
+                      <p className="text-xs text-muted-foreground">additional capital</p>
+                    </div>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Illustrative projection only. VR package tax treatment may differ from statutory. Consult a tax adviser for your specific circumstances.
+                  </p>
+                </CardContent>
+              </Card>
+            )}
           </TabsContent>
 
           <TabsContent value="milestones" className="space-y-6">

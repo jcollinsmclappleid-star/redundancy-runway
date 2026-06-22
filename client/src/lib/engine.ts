@@ -75,11 +75,15 @@ export function computeRedundancyEstimate(pkg: RedundancyPackageInputs): Redunda
   if (!qualifyingServiceMet) {
     const noticePay = round2(pkg.noticeWeeks * pkg.weeklyGrossPay);
     const holidayPay = round2(pkg.holidayWeeks * pkg.weeklyGrossPay);
+    let totalEstimated = noticePay + holidayPay;
+    if (pkg.enhancedPackage && pkg.enhancedAmount > 0) {
+      totalEstimated = pkg.enhancedAmount + noticePay + holidayPay;
+    }
     return {
       statutoryRedundancy: 0,
       noticePay,
       holidayPay,
-      totalEstimated: round2(noticePay + holidayPay),
+      totalEstimated: round2(totalEstimated),
       taxFreeThreshold: UK_TAX_FREE_THRESHOLD,
       qualifyingServiceMet: false,
     };
@@ -361,12 +365,11 @@ export function computeScenarios(inputs: RunwayInputs): ScenarioComparison[] {
     monthsUntilNewJob: jobGapMonths,
   };
 
-  const structuralGapMonths = Math.max(jobGapMonths, 12);
   const structuralInputs: RunwayInputs = {
     ...inputs,
     replacementMonthlyIncome: inputs.currentMonthlyNetIncome * 0.3,
     benefitSupportEstimate: 0,
-    monthsUntilNewJob: structuralGapMonths,
+    monthsUntilNewJob: 12,
     currentMonthlyNetIncome: inputs.currentMonthlyNetIncome * 0.8,
   };
 
