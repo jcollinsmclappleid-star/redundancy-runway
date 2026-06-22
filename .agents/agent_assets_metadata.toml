@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "E101z20A4upDkutP0nitb"
+uri = "file://PROJECT_RUNDOWN.md"
+type = "text"
+title = "RedundancyRunway — Comprehensive Project Rundown"
