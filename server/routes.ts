@@ -177,8 +177,8 @@ export async function registerRoutes(
 
   // POST /api/stripe-webhook
   // Handles Stripe checkout.session.completed events.
-  // Uses the webhookSecret from the Replit Stripe integration credentials —
-  // NOT from process.env.STRIPE_WEBHOOK_SECRET.
+  // Webhook secret is sourced directly from the Replit integration credentials
+  // via getStripeCredentials() — the same source used by getUncachableStripeClient().
   app.post("/api/stripe-webhook", async (req, res) => {
     try {
       const sig = req.headers["stripe-signature"] as string;
@@ -188,27 +188,20 @@ export async function registerRoutes(
         return res.status(400).json({ message: "Missing signature or body" });
       }
 
-      // Import here to avoid crash at startup when integration not yet connected
-      const { getUncachableStripeClient } = await import("./stripeClient");
+      const { getStripeCredentials, getUncachableStripeClient } = await import("./stripeClient");
 
-      // Fetch webhook secret from the same integration credentials source
-      // so we never rely on a separately-maintained env var.
       let webhookSecret: string | undefined;
       try {
-        // Dynamically resolve from integration credentials
-        const credModule = await import("./stripeClient");
-        // getStripeSync reads webhookSecret from the connector; we mirror that approach
-        const { getStripeSync } = credModule;
-        const sync = await getStripeSync();
-        // StripeSync exposes its webhookSecret via its config — fall back to env if unavailable
-        webhookSecret = (sync as any).webhookSecret ?? process.env.STRIPE_WEBHOOK_SECRET;
-      } catch {
-        webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+        const creds = await getStripeCredentials();
+        webhookSecret = creds.webhookSecret;
+      } catch (credErr: any) {
+        console.error("Could not fetch Stripe credentials for webhook:", credErr.message);
+        return res.status(500).json({ message: "Webhook configuration error" });
       }
 
       if (!webhookSecret) {
-        console.error("Stripe webhook secret not available — cannot verify signature");
-        return res.status(500).json({ message: "Webhook configuration error" });
+        console.error("Stripe webhook secret not available in integration credentials");
+        return res.status(500).json({ message: "Webhook configuration error — no webhook secret" });
       }
 
       const stripe = await getUncachableStripeClient();
@@ -256,22 +249,31 @@ export async function registerRoutes(
         return res.status(403).json({ message: "Checkout session not found. Please complete payment first." });
       }
 
-      // If not yet marked paid by webhook, try to verify with Stripe API
+      // If not yet marked paid by webhook, verify directly with Stripe API.
+      // This gate is fail-closed: if verification cannot confirm payment, intake is rejected.
       if (existingReset.paid !== "paid") {
+        let verified = false;
+        let verifyError: string | undefined;
+
         try {
           const { getUncachableStripeClient } = await import("./stripeClient");
           const stripe = await getUncachableStripeClient();
           const session = await stripe.checkout.sessions.retrieve(stripeSessionId);
           if (session.payment_status === "paid") {
             await storage.updateResetPaid(stripeSessionId, "paid");
+            verified = true;
           } else {
-            return res.status(402).json({ message: "Payment not yet confirmed. Please wait a moment and try again." });
+            verifyError = "Payment not yet confirmed. Please wait a moment and try again.";
           }
         } catch (stripeError: any) {
-          // If Stripe not connected but we have a server-created pending record,
-          // we allow the intake to proceed in dev/test mode — the paid status
-          // will be reconciled when the webhook or manual verification arrives.
-          console.warn("Stripe verification unavailable during intake; proceeding with server-created session:", stripeError.message);
+          // Stripe unavailable (connector not connected, network error, etc.) —
+          // gate is fail-closed: do NOT allow intake through without confirmed payment.
+          console.error("Stripe verification failed during intake submission:", stripeError.message);
+          verifyError = "Payment verification is temporarily unavailable. Please try again in a moment.";
+        }
+
+        if (!verified) {
+          return res.status(402).json({ message: verifyError ?? "Payment not confirmed." });
         }
       }
 
