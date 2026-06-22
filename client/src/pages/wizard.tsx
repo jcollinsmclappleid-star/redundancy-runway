@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -732,6 +733,12 @@ export default function WizardPage() {
   ];
 
   return (
+    <>
+      <Helmet>
+        <title>Build Your Redundancy Report — RedundancyCalculatorUK</title>
+        <meta name="description" content="Enter your redundancy package, savings, income assumptions and monthly costs to build your private financial runway report. UK statutory calculation built in." />
+        <meta name="robots" content="noindex" />
+      </Helmet>
     <div className="min-h-screen">
       <DisclaimerBanner />
       <header className="flex items-center justify-between gap-4 px-6 py-4 border-b flex-wrap" data-testid="wizard-header">
@@ -788,5 +795,6 @@ export default function WizardPage() {
         </p>
       </div>
     </div>
+    </>
   );
 }

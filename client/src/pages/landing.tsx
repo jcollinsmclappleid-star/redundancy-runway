@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import { useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -26,6 +27,38 @@ export default function LandingPage() {
   const [, navigate] = useLocation();
 
   return (
+    <>
+      <Helmet>
+        <title>RedundancyCalculatorUK | UK Statutory Redundancy Pay & Runway Calculator</title>
+        <meta name="description" content="Calculate your UK statutory redundancy pay and model how long your money may last. Free redundancy runway report with mortgage sensitivity, income scenarios and expense analysis. Not financial advice." />
+        <link rel="canonical" href="https://redundancycalculatoruk.com/" />
+        <meta property="og:title" content="RedundancyCalculatorUK | UK Statutory Redundancy Pay & Runway Calculator" />
+        <meta property="og:description" content="Calculate your UK statutory redundancy pay and model how long your money may last. Free redundancy runway report with mortgage sensitivity, income scenarios and expense analysis." />
+        <meta property="og:url" content="https://redundancycalculatoruk.com/" />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          "name": "RedundancyCalculatorUK",
+          "url": "https://redundancycalculatoruk.com",
+          "description": "UK statutory redundancy pay calculator and financial runway modelling tool. Model how long your money may last under different income recovery scenarios.",
+          "applicationCategory": "FinanceApplication",
+          "operatingSystem": "Web",
+          "offers": [
+            { "@type": "Offer", "price": "0", "priceCurrency": "GBP", "name": "Free Preview" },
+            { "@type": "Offer", "price": "39", "priceCurrency": "GBP", "name": "Private Runway Report" }
+          ],
+          "provider": { "@type": "Organization", "name": "RedundancyCalculatorUK", "url": "https://redundancycalculatoruk.com" }
+        })}</script>
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            { "@type": "Question", "name": "Is this financial advice?", "acceptedAnswer": { "@type": "Answer", "text": "No. RedundancyCalculatorUK is a non-advisory modelling tool. It produces illustrative projections based on assumptions you enter. It does not constitute financial, legal, tax, employment, debt, or benefits advice." } },
+            { "@type": "Question", "name": "Is statutory redundancy pay included?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The calculator uses current UK statutory redundancy rules including age-band multipliers (0.5x, 1x and 1.5x weeks per year of service), the £643 weekly pay cap, and the 20-year service cap." } },
+            { "@type": "Question", "name": "Is my data private?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. All financial calculations run entirely in your browser. No sensitive financial data is transmitted to or stored on servers." } }
+          ]
+        })}</script>
+      </Helmet>
     <div className="min-h-screen flex flex-col">
       <DisclaimerBanner />
 
@@ -519,5 +552,6 @@ export default function LandingPage() {
 
       <Footer />
     </div>
+    </>
   );
 }

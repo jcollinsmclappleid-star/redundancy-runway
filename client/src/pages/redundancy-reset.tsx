@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import { useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -43,6 +44,26 @@ export default function RedundancyResetPage() {
   const checkout = useResetCheckout();
 
   return (
+    <>
+      <Helmet>
+        <title>7-Day Redundancy Reset — Private Written Support | RedundancyCalculatorUK</title>
+        <meta name="description" content="A private written intake and 7-day action plan for people facing redundancy. Share your situation by WhatsApp or web. Receive a calm written response within 1 working day. Not financial advice." />
+        <link rel="canonical" href="https://redundancycalculatoruk.com/redundancy-reset" />
+        <meta property="og:title" content="7-Day Redundancy Reset — Private Written Support" />
+        <meta property="og:description" content="A private written intake and 7-day action plan for people facing redundancy. Share your situation by WhatsApp or web. Receive a calm written response within 1 working day." />
+        <meta property="og:url" content="https://redundancycalculatoruk.com/redundancy-reset" />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Service",
+          "name": "7-Day Redundancy Reset",
+          "provider": { "@type": "Organization", "name": "RedundancyCalculatorUK", "url": "https://redundancycalculatoruk.com" },
+          "description": "Private written intake and 7-day action plan for people facing redundancy. Not financial, legal or employment advice.",
+          "offers": [
+            { "@type": "Offer", "price": "79", "priceCurrency": "GBP", "name": "Launch Price" },
+            { "@type": "Offer", "price": "99", "priceCurrency": "GBP", "name": "Standard Price" }
+          ]
+        })}</script>
+      </Helmet>
     <div className="min-h-screen flex flex-col">
       <DisclaimerBanner />
 
@@ -407,5 +428,6 @@ export default function RedundancyResetPage() {
 
       <Footer />
     </div>
+    </>
   );
 }

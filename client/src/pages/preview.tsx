@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import { useLocation } from "wouter";
 import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
@@ -36,6 +37,12 @@ export default function PreviewPage() {
   ];
 
   return (
+    <>
+      <Helmet>
+        <title>Your Free Preview — RedundancyCalculatorUK</title>
+        <meta name="description" content="Your free redundancy runway preview — baseline estimate, stability classification and capital snapshots. Unlock the full report for detailed scenario analysis." />
+        <meta name="robots" content="noindex" />
+      </Helmet>
     <div className="min-h-screen">
       <DisclaimerBanner />
 
@@ -187,5 +194,6 @@ export default function PreviewPage() {
         </p>
       </div>
     </div>
+    </>
   );
 }

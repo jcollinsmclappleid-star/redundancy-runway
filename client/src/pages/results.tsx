@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import { useLocation } from "wouter";
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -310,6 +311,12 @@ export default function ResultsPage() {
   };
 
   return (
+    <>
+      <Helmet>
+        <title>Your Private Runway Report — RedundancyCalculatorUK</title>
+        <meta name="description" content="Your full private redundancy runway report — capital trajectory, income recovery scenarios, mortgage sensitivity, expense analysis and stress testing." />
+        <meta name="robots" content="noindex" />
+      </Helmet>
     <div className="min-h-screen bg-background" data-testid="page-results">
       <DisclaimerBanner />
 
@@ -1149,5 +1156,6 @@ export default function ResultsPage() {
         </div>
       </main>
     </div>
+    </>
   );
 }

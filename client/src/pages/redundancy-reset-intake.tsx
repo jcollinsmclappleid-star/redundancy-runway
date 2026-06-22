@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
@@ -292,6 +293,12 @@ export default function RedundancyResetIntakePage() {
   }
 
   return (
+    <>
+      <Helmet>
+        <title>7-Day Redundancy Reset — Intake | RedundancyCalculatorUK</title>
+        <meta name="description" content="Complete your 7-Day Redundancy Reset intake — share your situation privately and receive a written response within 1 working day." />
+        <meta name="robots" content="noindex" />
+      </Helmet>
     <div className="min-h-screen flex flex-col">
       <DisclaimerBanner />
 
@@ -445,5 +452,6 @@ export default function RedundancyResetIntakePage() {
         </div>
       </main>
     </div>
+    </>
   );
 }
