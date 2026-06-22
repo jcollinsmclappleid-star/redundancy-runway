@@ -6,8 +6,7 @@ export function DisclaimerBanner() {
       <div className="max-w-5xl mx-auto flex items-center gap-2 text-xs text-muted-foreground">
         <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
         <span>
-          This tool provides illustrative financial projections based on user-entered assumptions and historical statistics.
-          It does not provide financial, employment, tax, debt, or benefits advice.
+          RedundancyCalculatorUK is a non-advisory modelling tool. Outputs are based on the assumptions entered and do not constitute financial, legal, tax or employment advice.
         </span>
       </div>
     </div>

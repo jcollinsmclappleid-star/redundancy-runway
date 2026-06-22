@@ -10,8 +10,7 @@ export function Footer() {
               <Logo showTagline />
             </div>
             <p className="text-muted-foreground text-xs leading-relaxed mt-3">
-              Illustrative capital projection modelling for UK income disruption scenarios.
-              Based solely on user-entered assumptions.
+              A private redundancy runway report. Model how long your money may last if work changes — based solely on the assumptions you enter.
             </p>
           </div>
           <div>
@@ -25,14 +24,14 @@ export function Footer() {
           <div>
             <p className="text-sm font-medium mb-3">Important</p>
             <p className="text-muted-foreground text-xs leading-relaxed">
-              This tool does not provide financial, employment, debt, or benefits advice.
-              All projections are estimates and may not reflect actual outcomes.
+              This tool does not provide financial, legal, tax, employment, debt, or benefits advice.
+              All projections are illustrative estimates based on the assumptions entered and do not predict individual outcomes.
             </p>
           </div>
         </div>
         <div className="mt-8 pt-6 border-t flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-muted-foreground">
-          <span>&copy; {new Date().getFullYear()} RedundancyRunway. All rights reserved.</span>
-          <span>Data: Office for National Statistics. Benchmark data updated Q4 2025.</span>
+          <span>&copy; {new Date().getFullYear()} RedundancyCalculatorUK. All rights reserved.</span>
+          <span>Benchmark data: Office for National Statistics. Last updated Q4 2025.</span>
         </div>
       </div>
     </footer>
