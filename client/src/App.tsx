@@ -14,6 +14,7 @@ import AdminResetsPage from "@/pages/admin/resets";
 import StatutoryRedundancyPayPage from "@/pages/seo/statutory-redundancy-pay";
 import RedundancyMortgagePage from "@/pages/seo/redundancy-mortgage";
 import VoluntaryRedundancyPage from "@/pages/seo/voluntary-redundancy";
+import AboutPage from "@/pages/about";
 
 function Router() {
   return (
@@ -28,6 +29,7 @@ function Router() {
       <Route path="/statutory-redundancy-pay" component={StatutoryRedundancyPayPage} />
       <Route path="/redundancy-mortgage" component={RedundancyMortgagePage} />
       <Route path="/voluntary-redundancy" component={VoluntaryRedundancyPage} />
+      <Route path="/about" component={AboutPage} />
       <Route component={NotFound} />
     </Switch>
   );
