@@ -124,7 +124,7 @@ function ScenarioOverlayChart({ scenarios }: { scenarios: ReturnType<typeof comp
     ),
   }));
 
-  const colors = ["hsl(var(--chart-1))", "hsl(var(--chart-2))", "hsl(var(--chart-3))"];
+  const colors = ["hsl(var(--chart-1))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))"];
 
   return (
     <ResponsiveContainer width="100%" height={320}>
@@ -274,8 +274,8 @@ export default function ResultsPage() {
 
   const handleCopySummary = () => {
     const lines = [
-      "Capital Modelling — Projection Summary",
-      "========================================",
+      "RedundancyCalculatorUK — Private Runway Report Summary",
+      "=======================================================",
       `Date: ${new Date().toLocaleDateString("en-GB")}`,
       "",
       "ASSUMPTIONS:",
@@ -341,12 +341,95 @@ export default function ResultsPage() {
       <main className="max-w-6xl mx-auto p-8">
         <div className="mb-8">
           <h1 className="font-serif text-2xl font-bold mb-2" data-testid="text-page-title">
-            Capital Projection Dashboard
+            Your Private Runway Report
           </h1>
           <p className="text-sm text-muted-foreground">
             Illustrative projection only. Based on the assumptions entered. This is not financial advice.
           </p>
         </div>
+
+        {/* Executive Summary */}
+        <Card className="mb-6" data-testid="card-executive-summary">
+          <CardContent className="pt-6 pb-6">
+            <div className="flex items-center gap-3 mb-5">
+              <StabilityBadge band={result.stabilityBand} score={result.stabilityScore} />
+              <p className="text-xs text-muted-foreground">Stability classification under these assumptions</p>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-5">
+              <div data-testid="exec-runway">
+                <p className="text-xs text-muted-foreground mb-0.5">Estimated runway</p>
+                <p className="text-2xl font-bold font-serif">{formatMonths(result.monthsUntilDepletion)}</p>
+              </div>
+              <div data-testid="exec-capital">
+                <p className="text-xs text-muted-foreground mb-0.5">Starting capital</p>
+                <p className="text-2xl font-bold">{formatGBP(result.startingCapital)}</p>
+              </div>
+              <div data-testid="exec-burn">
+                <p className="text-xs text-muted-foreground mb-0.5">Net monthly burn</p>
+                <p className="text-2xl font-bold">{formatGBP(result.monthlyBurn)}</p>
+              </div>
+              <div data-testid="exec-expenses">
+                <p className="text-xs text-muted-foreground mb-0.5">Total expenses/mo</p>
+                <p className="text-2xl font-bold">{formatGBP(result.totalExpenses)}</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-3 gap-3 mb-5">
+              {[
+                { label: "3 months", value: result.capitalAfter3Months },
+                { label: "6 months", value: result.capitalAfter6Months },
+                { label: "12 months", value: result.capitalAfter12Months },
+              ].map((item) => (
+                <div key={item.label} className="rounded-md bg-muted/40 p-3 text-center">
+                  <p className="text-xs text-muted-foreground mb-0.5">Capital at {item.label}</p>
+                  <p className="font-semibold text-sm">{formatGBP(item.value)}</p>
+                </div>
+              ))}
+            </div>
+            <div className="rounded-md border p-3 mb-4">
+              <p className="text-xs font-medium mb-2">Projection range (historical reemployment percentiles)</p>
+              <div className="grid grid-cols-3 gap-3">
+                {[projectionRange.fast, projectionRange.typical, projectionRange.slow].map((s, i) => (
+                  <div key={i} className="text-center">
+                    <p className="text-xs text-muted-foreground">{s.percentileLabel}</p>
+                    <p className="font-semibold text-sm">{formatMonths(s.runwayMonths)}</p>
+                    <p className="text-xs text-muted-foreground">{s.label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="text-xs text-muted-foreground space-y-0.5 pt-2 border-t">
+              <p>Essential expenses: {formatGBP(result.essentialExpenses)}/mo · Non-essential: {formatGBP(result.nonEssentialExpenses)}/mo</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* 7-Day Reset CTAs */}
+        {result.stabilityBand === "High Pressure" ? (
+          <Card className="mb-6 border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-900/10" data-testid="card-reset-cta-urgent">
+            <CardContent className="pt-5 pb-5">
+              <p className="text-sm font-medium mb-1">Your next step matters.</p>
+              <p className="text-sm text-muted-foreground mb-4">
+                Get a private written plan for the next 7 days — structured actions, clarity on what to prioritise, and a clear picture of your position.
+              </p>
+              <Button onClick={() => navigate("/redundancy-reset")} data-testid="button-reset-cta-urgent">
+                Get my 7-day written reset
+                <ArrowLeft className="w-4 h-4 ml-2 rotate-180" />
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          <Card className="mb-6" data-testid="card-reset-cta-standard">
+            <CardContent className="pt-5 pb-5 flex items-center justify-between gap-4 flex-wrap">
+              <p className="text-sm text-muted-foreground max-w-md">
+                If your result has left you unsure what to do next, start a 7-Day Redundancy Reset.
+              </p>
+              <Button variant="outline" onClick={() => navigate("/redundancy-reset")} data-testid="button-reset-cta-standard">
+                Start 7-Day Redundancy Reset
+                <ArrowLeft className="w-4 h-4 ml-2 rotate-180" />
+              </Button>
+            </CardContent>
+          </Card>
+        )}
 
         <Card className="mb-8" data-testid="card-projection-range">
           <CardHeader className="pb-2">
@@ -410,15 +493,15 @@ export default function ResultsPage() {
 
         <Tabs defaultValue="trajectory" className="space-y-6">
           <TabsList className="flex flex-wrap h-auto gap-1" data-testid="tabs-list">
-            <TabsTrigger value="trajectory" data-testid="tab-trajectory">Capital Trajectory</TabsTrigger>
-            <TabsTrigger value="scenarios" data-testid="tab-scenarios">Income Recovery Scenarios</TabsTrigger>
-            <TabsTrigger value="milestones" data-testid="tab-milestones">Capital Threshold Events</TabsTrigger>
-            <TabsTrigger value="spending" data-testid="tab-spending">Expense Sensitivity Ranking</TabsTrigger>
-            <TabsTrigger value="stress" data-testid="tab-stress">Stress Testing</TabsTrigger>
+            <TabsTrigger value="trajectory" data-testid="tab-trajectory">Capital path</TabsTrigger>
+            <TabsTrigger value="scenarios" data-testid="tab-scenarios">Income recovery</TabsTrigger>
+            <TabsTrigger value="milestones" data-testid="tab-milestones">Pressure points</TabsTrigger>
+            <TabsTrigger value="spending" data-testid="tab-spending">Expense sensitivity</TabsTrigger>
+            <TabsTrigger value="stress" data-testid="tab-stress">Stress cases</TabsTrigger>
             {showMortgageTab && (
-              <TabsTrigger value="mortgage" data-testid="tab-mortgage">Mortgage Sensitivity</TabsTrigger>
+              <TabsTrigger value="mortgage" data-testid="tab-mortgage">Housing pressure</TabsTrigger>
             )}
-            <TabsTrigger value="supplementary" data-testid="tab-supplementary">Supplementary</TabsTrigger>
+            <TabsTrigger value="supplementary" data-testid="tab-supplementary">Assumptions &amp; sources</TabsTrigger>
           </TabsList>
 
           <TabsContent value="trajectory" className="space-y-6">
@@ -525,7 +608,7 @@ export default function ResultsPage() {
 
           <TabsContent value="scenarios" className="space-y-6">
             <div className="mb-2">
-              <h2 className="font-serif text-lg font-semibold mb-1">Income Recovery Scenarios</h2>
+              <h2 className="font-serif text-lg font-semibold mb-1">Income recovery</h2>
               <p className="text-xs text-muted-foreground">
                 Illustrative comparison of capital trajectories under different income assumptions.
               </p>
@@ -655,7 +738,7 @@ export default function ResultsPage() {
 
           <TabsContent value="milestones" className="space-y-6">
             <div className="mb-2">
-              <h2 className="font-serif text-lg font-semibold mb-1">Capital Threshold Events</h2>
+              <h2 className="font-serif text-lg font-semibold mb-1">Pressure points</h2>
               <p className="text-xs text-muted-foreground">
                 Under these assumptions, the following threshold events are projected to occur.
               </p>
@@ -735,7 +818,7 @@ export default function ResultsPage() {
 
           <TabsContent value="spending" className="space-y-6">
             <div className="mb-2">
-              <h2 className="font-serif text-lg font-semibold mb-1">Expense Sensitivity Ranking</h2>
+              <h2 className="font-serif text-lg font-semibold mb-1">Expense sensitivity</h2>
               <p className="text-xs text-muted-foreground">
                 Rankings show the projected runway impact of each spending adjustment, sorted by extension impact. This is not advice on which expenses to adjust.
               </p>
@@ -802,7 +885,7 @@ export default function ResultsPage() {
 
           <TabsContent value="stress" className="space-y-6">
             <div className="mb-2">
-              <h2 className="font-serif text-lg font-semibold mb-1">Stress Testing</h2>
+              <h2 className="font-serif text-lg font-semibold mb-1">Stress cases</h2>
               <p className="text-xs text-muted-foreground">
                 Under these assumptions, this illustrates how the projection changes when key variables are adjusted. These are not predictions.
               </p>
@@ -845,7 +928,7 @@ export default function ResultsPage() {
           {showMortgageTab && (
             <TabsContent value="mortgage" className="space-y-6">
               <div className="mb-2">
-                <h2 className="font-serif text-lg font-semibold mb-1">Mortgage Sensitivity</h2>
+                <h2 className="font-serif text-lg font-semibold mb-1">Housing pressure</h2>
                 <p className="text-xs text-muted-foreground">
                   Under these assumptions, this illustrates the impact of potential housing cost increases on the capital projection.
                 </p>
@@ -905,15 +988,73 @@ export default function ResultsPage() {
           )}
           <TabsContent value="supplementary" className="space-y-6">
             <div className="mb-2">
-              <h2 className="font-serif text-lg font-semibold mb-1">Supplementary Analysis</h2>
+              <h2 className="font-serif text-lg font-semibold mb-1">Assumptions &amp; sources</h2>
               <p className="text-xs text-muted-foreground">
-                Contextual UK data provided for reference only. These figures do not affect your individual projection.
+                Model methodology, statutory assumptions, and data attribution.
               </p>
             </div>
 
+            <Card data-testid="card-methodology">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium">Methodology</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2 text-xs text-muted-foreground">
+                <p>
+                  This tool uses a <span className="font-medium text-foreground">deterministic, assumption-based model</span>. All outputs are projections derived directly from the values entered — they are not forecasts, recommendations, or advice of any kind.
+                </p>
+                <p>
+                  Capital runway is calculated by projecting monthly cash flows from starting capital, applying income (gap period and post-reemployment) and total expenses, until capital reaches zero or the 60-month projection limit.
+                </p>
+                <p>
+                  Projection range (fast/typical/slow) is derived by applying historical labour market reemployment percentiles from ONS data to the income assumptions entered. These percentiles represent population-level distributions — they do not predict individual outcomes.
+                </p>
+                <p>
+                  Stability classification is a model score (0–100) based on runway duration, housing exposure, debt load, gap income coverage, capital cover, and non-essential spending share. It is illustrative only.
+                </p>
+                <p className="italic">
+                  This tool does not provide financial, employment, debt, tax, or benefits advice. Outputs should not be relied upon as the basis for financial decisions.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card data-testid="card-statutory-assumptions">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium">Statutory Assumptions</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2 text-xs text-muted-foreground">
+                <div className="flex items-center justify-between gap-2 border-b pb-2">
+                  <span>Weekly pay cap (statutory)</span>
+                  <span className="font-medium text-foreground">£643/week</span>
+                </div>
+                <div className="flex items-center justify-between gap-2 border-b pb-2">
+                  <span>Maximum service for statutory calculation</span>
+                  <span className="font-medium text-foreground">20 years</span>
+                </div>
+                <div className="flex items-center justify-between gap-2 border-b pb-2">
+                  <span>Minimum qualifying service</span>
+                  <span className="font-medium text-foreground">2 years</span>
+                </div>
+                <div className="flex items-center justify-between gap-2 border-b pb-2">
+                  <span>Tax-free redundancy threshold</span>
+                  <span className="font-medium text-foreground">£30,000</span>
+                </div>
+                <div className="flex items-center justify-between gap-2 border-b pb-2">
+                  <span>Age bands (multiplier per year of service)</span>
+                  <span className="font-medium text-foreground">Under 22: ×0.5 · 22–40: ×1 · 41+: ×1.5</span>
+                </div>
+                <p className="pt-1">
+                  Statutory figures last checked: <span className="font-medium text-foreground">April 2025</span>.
+                  Source: <a href="https://www.gov.uk/calculate-your-redundancy-pay" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 text-primary">GOV.UK — Calculate your statutory redundancy pay</a>.
+                </p>
+                <p>
+                  Tax treatment depends on individual circumstances. Notice pay and holiday pay are separate from statutory redundancy and may be taxable. Always verify your specific entitlement with your employer and/or a qualified adviser.
+                </p>
+              </CardContent>
+            </Card>
+
             <Card data-testid="card-redundancy-environment">
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">UK Redundancy Environment (Context)</CardTitle>
+                <CardTitle className="text-sm font-medium">UK Redundancy Environment</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
@@ -941,13 +1082,14 @@ export default function ResultsPage() {
                 </div>
                 <p className="text-xs text-muted-foreground/70 italic mt-4">
                   National labour market statistics provided for context only. These figures do not affect your individual projection.
+                  Source: Office for National Statistics (ONS), Labour Market Statistics.
                 </p>
               </CardContent>
             </Card>
 
             <Card data-testid="card-savings-benchmark-context">
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">Savings Position Context</CardTitle>
+                <CardTitle className="text-sm font-medium">Savings Position (UK comparison)</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
@@ -974,7 +1116,7 @@ export default function ResultsPage() {
             {inputs.mortgageOrRent > 0 && (
               <Card data-testid="card-housing-context-detail">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium">Housing Exposure Detail</CardTitle>
+                  <CardTitle className="text-sm font-medium">Housing Exposure</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">

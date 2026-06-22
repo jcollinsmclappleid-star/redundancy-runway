@@ -3,9 +3,9 @@ import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Lock, ArrowRight, ArrowLeft, Layers } from "lucide-react";
+import { Lock, ArrowRight, ArrowLeft, Layers, Info } from "lucide-react";
 import { useWizardStore } from "@/lib/wizardStore";
-import { computeRunway, computeEssentialOnlyComparison, formatGBP, formatMonths } from "@/lib/engine";
+import { computeRunway, computeEssentialOnlyComparison, computeRedundancyEstimate, formatGBP, formatMonths } from "@/lib/engine";
 import { Logo } from "@/components/Logo";
 import { DisclaimerBanner } from "@/components/DisclaimerBanner";
 
@@ -15,6 +15,7 @@ export default function PreviewPage() {
 
   const result = useMemo(() => computeRunway(inputs), [inputs]);
   const essentialComparison = useMemo(() => computeEssentialOnlyComparison(inputs), [inputs]);
+  const redundancyEstimate = useMemo(() => computeRedundancyEstimate(inputs.redundancyPackage), [inputs.redundancyPackage]);
 
   const stabilityColor = result.stabilityBand === "Stable"
     ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400"
@@ -23,15 +24,15 @@ export default function PreviewPage() {
     : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400";
 
   const lockedItems = [
-    "Projection range (p25 / p50 / p75)",
-    "60-month capital trajectory",
-    "Income recovery scenarios",
+    "Projection range (fast / typical / slow)",
+    "60-month capital trajectory chart",
+    "Income recovery scenarios (4 paths)",
     "Capital recovery timeline",
     "Expense sensitivity ranking",
-    "Stress testing",
+    "Stress cases",
     "UK benchmark context",
-    ...(inputs.mortgageOrRent > 0 ? ["Mortgage sensitivity"] : []),
-    "Structured export",
+    ...(inputs.mortgageOrRent > 0 ? ["Housing pressure analysis"] : []),
+    "Structured report export",
   ];
 
   return (
@@ -51,7 +52,7 @@ export default function PreviewPage() {
           <Badge variant="secondary" className="mb-4" data-testid="badge-free-preview">
             Free Preview
           </Badge>
-          <h1 className="font-serif text-2xl sm:text-3xl font-bold mb-2">Projection Summary</h1>
+          <h1 className="font-serif text-2xl sm:text-3xl font-bold mb-2">Your Projection Summary</h1>
           <p className="text-sm text-muted-foreground">Based on the assumptions entered</p>
         </div>
 
@@ -85,6 +86,47 @@ export default function PreviewPage() {
           ))}
         </div>
 
+        <Card className="mb-6" data-testid="card-preview-redundancy-estimate">
+          <CardContent className="pt-5 pb-5">
+            <div className="flex items-start gap-3 mb-3">
+              <div className="w-8 h-8 rounded-md bg-primary/10 flex items-center justify-center shrink-0">
+                <Info className="w-4 h-4 text-muted-foreground" />
+              </div>
+              <div>
+                <p className="text-sm font-medium mb-0.5">Redundancy Package Estimate</p>
+                <p className="text-xs text-muted-foreground">Based on the package details entered</p>
+              </div>
+            </div>
+            <div className="space-y-2">
+              {redundancyEstimate.qualifyingServiceMet ? (
+                <div className="flex items-center justify-between text-sm gap-2">
+                  <span className="text-muted-foreground text-xs">Statutory redundancy</span>
+                  <span className="font-semibold" data-testid="text-statutory-redundancy">{formatGBP(redundancyEstimate.statutoryRedundancy)}</span>
+                </div>
+              ) : (
+                <div className="flex items-start gap-2 text-xs text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 rounded p-2">
+                  <span>Under these assumptions, the 2-year qualifying service minimum has not been met. Statutory redundancy is estimated at £0.</span>
+                </div>
+              )}
+              <div className="flex items-center justify-between text-sm gap-2">
+                <span className="text-muted-foreground text-xs">Notice pay</span>
+                <span className="font-semibold" data-testid="text-notice-pay">{formatGBP(redundancyEstimate.noticePay)}</span>
+              </div>
+              <div className="flex items-center justify-between text-sm gap-2">
+                <span className="text-muted-foreground text-xs">Holiday pay</span>
+                <span className="font-semibold" data-testid="text-holiday-pay">{formatGBP(redundancyEstimate.holidayPay)}</span>
+              </div>
+              <div className="flex items-center justify-between text-sm gap-2 pt-2 border-t">
+                <span className="text-xs font-medium">Estimated total package</span>
+                <span className="font-bold text-base" data-testid="text-total-package">{formatGBP(redundancyEstimate.totalEstimated)}</span>
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground/80 mt-3 leading-relaxed">
+              Statutory redundancy pay is the estimated qualifying amount. Notice pay and holiday pay are separate and may be subject to tax. The first £30,000 of a genuine redundancy payment is generally tax-free. Tax treatment depends on individual circumstances — GOV.UK, last checked April 2025.
+            </p>
+          </CardContent>
+        </Card>
+
         {essentialComparison.monthlySaving > 0 && (
           <Card className="mb-8" data-testid="card-preview-essential-insight">
             <CardContent className="pt-5 pb-5">
@@ -111,9 +153,9 @@ export default function PreviewPage() {
         <Card className="mb-6" data-testid="card-unlock-cta">
           <CardContent className="pt-8 pb-8">
             <div className="text-center mb-6">
-              <h3 className="font-serif font-semibold text-lg mb-1">Unlock Full Projection Model</h3>
-              <p className="text-xs text-muted-foreground">
-                See exactly how different scenarios affect your timeline.
+              <h3 className="font-serif font-semibold text-xl mb-2">Your free preview shows the baseline. The full report shows the stress cases.</h3>
+              <p className="text-sm text-muted-foreground max-w-sm mx-auto">
+                Under the assumptions entered, your preview shows the first layer of the model. The full Private Runway Report unlocks the scenarios that usually matter most when income is uncertain.
               </p>
             </div>
 
@@ -127,12 +169,15 @@ export default function PreviewPage() {
             </div>
 
             <div className="text-center">
-              <div className="text-3xl font-bold mb-1">&pound;49</div>
-              <p className="text-xs text-muted-foreground mb-4">One-time payment. 6 months access. No subscription.</p>
+              <div className="text-3xl font-bold mb-1">&pound;39</div>
+              <p className="text-xs text-muted-foreground mb-4">One-off payment. No subscription. Access your report for 6 months.</p>
               <Button className="w-full max-w-xs" onClick={() => navigate("/results")} data-testid="button-unlock">
-                Unlock Full Model &mdash; &pound;49
+                Unlock my private report
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
+              <p className="text-xs text-muted-foreground mt-3 max-w-xs mx-auto">
+                If the full report does not add meaningful clarity beyond the free preview, contact support within 7 days.
+              </p>
             </div>
           </CardContent>
         </Card>
