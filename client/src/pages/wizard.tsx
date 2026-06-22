@@ -737,7 +737,15 @@ export default function WizardPage() {
       <Helmet>
         <title>Build Your Redundancy Report — RedundancyCalculatorUK</title>
         <meta name="description" content="Enter your redundancy package, savings, income assumptions and monthly costs to build your private financial runway report. UK statutory calculation built in." />
-        <meta name="robots" content="noindex" />
+        <meta name="robots" content="noindex, nofollow" />
+        <link rel="canonical" href="https://redundancycalculatoruk.com/wizard" />
+        <meta property="og:title" content="Build Your Redundancy Report — RedundancyCalculatorUK" />
+        <meta property="og:description" content="Enter your redundancy package, savings, income assumptions and monthly costs to build your private financial runway report." />
+        <meta property="og:url" content="https://redundancycalculatoruk.com/wizard" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Build Your Redundancy Report — RedundancyCalculatorUK" />
+        <meta name="twitter:description" content="Enter your redundancy package, savings, income assumptions and monthly costs to build your private financial runway report." />
       </Helmet>
     <div className="min-h-screen">
       <DisclaimerBanner />

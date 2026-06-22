@@ -37,6 +37,14 @@ export default function LandingPage() {
         <meta property="og:url" content="https://redundancycalculatoruk.com/" />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": "RedundancyCalculatorUK",
+          "url": "https://redundancycalculatoruk.com",
+          "description": "UK statutory redundancy pay calculator and financial runway modelling tool.",
+          "sameAs": []
+        })}</script>
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
           "@type": "WebApplication",
           "name": "RedundancyCalculatorUK",
           "url": "https://redundancycalculatoruk.com",
@@ -53,9 +61,18 @@ export default function LandingPage() {
           "@context": "https://schema.org",
           "@type": "FAQPage",
           "mainEntity": [
-            { "@type": "Question", "name": "Is this financial advice?", "acceptedAnswer": { "@type": "Answer", "text": "No. RedundancyCalculatorUK is a non-advisory modelling tool. It produces illustrative projections based on assumptions you enter. It does not constitute financial, legal, tax, employment, debt, or benefits advice." } },
-            { "@type": "Question", "name": "Is statutory redundancy pay included?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The calculator uses current UK statutory redundancy rules including age-band multipliers (0.5x, 1x and 1.5x weeks per year of service), the £643 weekly pay cap, and the 20-year service cap." } },
-            { "@type": "Question", "name": "Is my data private?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. All financial calculations run entirely in your browser. No sensitive financial data is transmitted to or stored on servers." } }
+            { "@type": "Question", "name": "Is this financial advice?", "acceptedAnswer": { "@type": "Answer", "text": "No. RedundancyCalculatorUK is a non-advisory modelling tool. It produces illustrative projections based entirely on the assumptions you enter. It does not constitute financial, legal, tax, employment, debt, or benefits advice. All outputs are estimates and may not reflect actual outcomes." } },
+            { "@type": "Question", "name": "Does this predict whether I will find work?", "acceptedAnswer": { "@type": "Answer", "text": "No. The tool uses historical UK labour market percentiles as reference data to model reemployment timelines, but it does not predict individual job search outcomes. Projected timelines are illustrative only and should be treated as planning assumptions, not forecasts." } },
+            { "@type": "Question", "name": "Is my data private?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. All financial calculations run entirely in your browser. No sensitive financial data is transmitted to or stored on our servers. We only store a session token to manage access to paid report features." } },
+            { "@type": "Question", "name": "Is statutory redundancy pay included?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The calculator uses current UK statutory redundancy rules, including age-band multipliers (0.5x, 1x and 1.5x weeks per year of service), the £643 weekly pay cap, and the 20-year service cap. A two-year qualifying service minimum applies. The tool also separates statutory redundancy pay — which is generally tax-free up to £30,000 — from notice pay and holiday pay, which are subject to income tax. Last checked: April 2025." } },
+            { "@type": "Question", "name": "Can I model voluntary redundancy?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The paid report includes a voluntary redundancy comparison scenario. You can enter a VR package amount alongside your statutory entitlement and see how each affects the runway under these assumptions." } },
+            { "@type": "Question", "name": "Can I use this with my partner?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The income recovery step includes an optional partner income field. Enabling this adds partner monthly net income to the household runway model, which is useful for couples or households where one partner's income may continue during a period of disruption." } },
+            { "@type": "Question", "name": "What does the paid report unlock?", "acceptedAnswer": { "@type": "Answer", "text": "The full Private Runway Report (£39, one-off) unlocks: slow and severe income scenarios, mortgage and housing pressure test, household resilience view, expense sensitivity ranking, month-by-month capital path, voluntary redundancy comparison, structural transition scenario, partner discussion summary, and exportable report. Access lasts 6 months." } },
+            { "@type": "Question", "name": "Is this a subscription?", "acceptedAnswer": { "@type": "Answer", "text": "No. Both the Private Runway Report (£39) and the 7-Day Redundancy Reset (£79 launch / £99 standard) are one-off payments. There are no recurring charges." } },
+            { "@type": "Question", "name": "What is the 7-Day Redundancy Reset?", "acceptedAnswer": { "@type": "Answer", "text": "The 7-Day Redundancy Reset is a separate one-off paid product for people who have completed the runway calculator and want help understanding what to do next. You receive a guided private written intake, a first written response within 1 working day, a follow-up check-in, and a final Redundancy Next-Step Plan. Intake is by WhatsApp or secure web-chat style. No calls." } },
+            { "@type": "Question", "name": "Is the 7-Day Redundancy Reset advice?", "acceptedAnswer": { "@type": "Answer", "text": "No. The Reset provides practical written support and planning only. It is not financial advice, legal advice, debt advice, employment law advice, therapy, counselling, crisis support, medical advice or a guarantee of income, employment or outcomes." } },
+            { "@type": "Question", "name": "Is WhatsApp live chat?", "acceptedAnswer": { "@type": "Answer", "text": "No. WhatsApp is offered as a convenient intake and response channel only. It is not a live chat service. The first written response is delivered within 1 working day of intake submission. There is no promise of unlimited messaging or real-time responses." } },
+            { "@type": "Question", "name": "Can I get a refund for the Reset?", "acceptedAnswer": { "@type": "Answer", "text": "If the full Private Runway Report does not add meaningful clarity beyond the free preview, contact support within 7 days. For the 7-Day Redundancy Reset, please refer to the product page for full refund terms." } }
           ]
         })}</script>
       </Helmet>

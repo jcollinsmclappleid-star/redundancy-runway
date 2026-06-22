@@ -315,7 +315,15 @@ export default function ResultsPage() {
       <Helmet>
         <title>Your Private Runway Report — RedundancyCalculatorUK</title>
         <meta name="description" content="Your full private redundancy runway report — capital trajectory, income recovery scenarios, mortgage sensitivity, expense analysis and stress testing." />
-        <meta name="robots" content="noindex" />
+        <meta name="robots" content="noindex, nofollow" />
+        <link rel="canonical" href="https://redundancycalculatoruk.com/results" />
+        <meta property="og:title" content="Your Private Runway Report — RedundancyCalculatorUK" />
+        <meta property="og:description" content="Your full private redundancy runway report — capital trajectory, income recovery scenarios, mortgage sensitivity, expense analysis and stress testing." />
+        <meta property="og:url" content="https://redundancycalculatoruk.com/results" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Your Private Runway Report — RedundancyCalculatorUK" />
+        <meta name="twitter:description" content="Your full private redundancy runway report — capital trajectory, income recovery scenarios, mortgage sensitivity, expense analysis and stress testing." />
       </Helmet>
     <div className="min-h-screen bg-background" data-testid="page-results">
       <DisclaimerBanner />

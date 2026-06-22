@@ -12,8 +12,8 @@ import RedundancyResetPage from "@/pages/redundancy-reset";
 import RedundancyResetIntakePage from "@/pages/redundancy-reset-intake";
 import AdminResetsPage from "@/pages/admin/resets";
 import StatutoryRedundancyPayPage from "@/pages/seo/statutory-redundancy-pay";
-import RedundancyRightsUKPage from "@/pages/seo/redundancy-rights-uk";
-import HowLongRedundancyMoneyLastPage from "@/pages/seo/how-long-does-redundancy-money-last";
+import RedundancyMortgagePage from "@/pages/seo/redundancy-mortgage";
+import VoluntaryRedundancyPage from "@/pages/seo/voluntary-redundancy";
 
 function Router() {
   return (
@@ -26,8 +26,8 @@ function Router() {
       <Route path="/redundancy-reset/intake" component={RedundancyResetIntakePage} />
       <Route path="/admin/resets" component={AdminResetsPage} />
       <Route path="/statutory-redundancy-pay" component={StatutoryRedundancyPayPage} />
-      <Route path="/redundancy-rights-uk" component={RedundancyRightsUKPage} />
-      <Route path="/how-long-does-redundancy-money-last" component={HowLongRedundancyMoneyLastPage} />
+      <Route path="/redundancy-mortgage" component={RedundancyMortgagePage} />
+      <Route path="/voluntary-redundancy" component={VoluntaryRedundancyPage} />
       <Route component={NotFound} />
     </Switch>
   );

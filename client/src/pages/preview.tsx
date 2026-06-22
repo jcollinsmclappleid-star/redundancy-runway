@@ -41,7 +41,15 @@ export default function PreviewPage() {
       <Helmet>
         <title>Your Free Preview — RedundancyCalculatorUK</title>
         <meta name="description" content="Your free redundancy runway preview — baseline estimate, stability classification and capital snapshots. Unlock the full report for detailed scenario analysis." />
-        <meta name="robots" content="noindex" />
+        <meta name="robots" content="noindex, nofollow" />
+        <link rel="canonical" href="https://redundancycalculatoruk.com/preview" />
+        <meta property="og:title" content="Your Free Preview — RedundancyCalculatorUK" />
+        <meta property="og:description" content="Your free redundancy runway preview — baseline estimate, stability classification and capital snapshots." />
+        <meta property="og:url" content="https://redundancycalculatoruk.com/preview" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Your Free Preview — RedundancyCalculatorUK" />
+        <meta name="twitter:description" content="Your free redundancy runway preview — baseline estimate, stability classification and capital snapshots." />
       </Helmet>
     <div className="min-h-screen">
       <DisclaimerBanner />

@@ -54,13 +54,13 @@ export default function RedundancyResetPage() {
         <meta property="og:url" content="https://redundancycalculatoruk.com/redundancy-reset" />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",
-          "@type": "Service",
+          "@type": "Product",
           "name": "7-Day Redundancy Reset",
-          "provider": { "@type": "Organization", "name": "RedundancyCalculatorUK", "url": "https://redundancycalculatoruk.com" },
           "description": "Private written intake and 7-day action plan for people facing redundancy. Not financial, legal or employment advice.",
+          "brand": { "@type": "Brand", "name": "RedundancyCalculatorUK" },
           "offers": [
-            { "@type": "Offer", "price": "79", "priceCurrency": "GBP", "name": "Launch Price" },
-            { "@type": "Offer", "price": "99", "priceCurrency": "GBP", "name": "Standard Price" }
+            { "@type": "Offer", "price": "79", "priceCurrency": "GBP", "availability": "https://schema.org/InStock", "name": "Launch Price — 7-Day Redundancy Reset" },
+            { "@type": "Offer", "price": "99", "priceCurrency": "GBP", "availability": "https://schema.org/InStock", "name": "Standard Price — 7-Day Redundancy Reset" }
           ]
         })}</script>
       </Helmet>

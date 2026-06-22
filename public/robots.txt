@@ -1,4 +1,9 @@
 User-agent: *
 Allow: /
+Disallow: /wizard
+Disallow: /preview
+Disallow: /results
+Disallow: /admin
+Disallow: /redundancy-reset/intake
 
 Sitemap: https://redundancycalculatoruk.com/sitemap.xml
