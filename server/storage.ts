@@ -1,6 +1,6 @@
 import { db } from "./db";
-import { sessions, purchases, calculations } from "@shared/schema";
-import type { Session, InsertSession, Purchase, InsertPurchase, Calculation, InsertCalculation } from "@shared/schema";
+import { sessions, purchases, calculations, resets } from "@shared/schema";
+import type { Session, InsertSession, Purchase, InsertPurchase, Calculation, InsertCalculation, Reset, InsertReset } from "@shared/schema";
 import { eq, desc } from "drizzle-orm";
 
 export interface IStorage {
@@ -11,6 +11,12 @@ export interface IStorage {
   updatePurchaseStatus(sessionToken: string, status: string): Promise<void>;
   createCalculation(calc: InsertCalculation): Promise<Calculation>;
   getCalculationsBySessionToken(token: string): Promise<Calculation[]>;
+  createReset(reset: InsertReset): Promise<Reset>;
+  getResets(): Promise<Reset[]>;
+  getResetByStripeSessionId(stripeSessionId: string): Promise<Reset | undefined>;
+  updateResetStatus(id: string, status: string): Promise<void>;
+  updateResetNotes(id: string, adminNotes: string): Promise<void>;
+  updateResetPaid(stripeSessionId: string, paid: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -50,6 +56,32 @@ export class DatabaseStorage implements IStorage {
 
   async getCalculationsBySessionToken(token: string): Promise<Calculation[]> {
     return db.select().from(calculations).where(eq(calculations.sessionToken, token));
+  }
+
+  async createReset(reset: InsertReset): Promise<Reset> {
+    const [created] = await db.insert(resets).values(reset).returning();
+    return created;
+  }
+
+  async getResets(): Promise<Reset[]> {
+    return db.select().from(resets).orderBy(desc(resets.createdAt));
+  }
+
+  async getResetByStripeSessionId(stripeSessionId: string): Promise<Reset | undefined> {
+    const [reset] = await db.select().from(resets).where(eq(resets.stripeSessionId, stripeSessionId));
+    return reset;
+  }
+
+  async updateResetStatus(id: string, status: string): Promise<void> {
+    await db.update(resets).set({ status, updatedAt: new Date() }).where(eq(resets.id, id));
+  }
+
+  async updateResetNotes(id: string, adminNotes: string): Promise<void> {
+    await db.update(resets).set({ adminNotes, updatedAt: new Date() }).where(eq(resets.id, id));
+  }
+
+  async updateResetPaid(stripeSessionId: string, paid: string): Promise<void> {
+    await db.update(resets).set({ paid, updatedAt: new Date() }).where(eq(resets.stripeSessionId, stripeSessionId));
   }
 }
 

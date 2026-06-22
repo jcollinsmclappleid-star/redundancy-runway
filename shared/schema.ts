@@ -28,9 +28,24 @@ export const calculations = pgTable("calculations", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const resets = pgTable("resets", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  sessionToken: text("session_token"),
+  name: text("name").notNull(),
+  contactMethod: text("contact_method").notNull().default("webchat"),
+  intakeAnswers: jsonb("intake_answers").notNull().default({}),
+  status: text("status").notNull().default("New"),
+  adminNotes: text("admin_notes"),
+  stripeSessionId: text("stripe_session_id"),
+  paid: text("paid").notNull().default("pending"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 export const insertSessionSchema = createInsertSchema(sessions).omit({ id: true, createdAt: true });
 export const insertPurchaseSchema = createInsertSchema(purchases).omit({ id: true, createdAt: true });
 export const insertCalculationSchema = createInsertSchema(calculations).omit({ id: true, createdAt: true });
+export const insertResetSchema = createInsertSchema(resets).omit({ id: true, createdAt: true, updatedAt: true });
 
 export type Session = typeof sessions.$inferSelect;
 export type InsertSession = z.infer<typeof insertSessionSchema>;
@@ -38,6 +53,8 @@ export type Purchase = typeof purchases.$inferSelect;
 export type InsertPurchase = z.infer<typeof insertPurchaseSchema>;
 export type Calculation = typeof calculations.$inferSelect;
 export type InsertCalculation = z.infer<typeof insertCalculationSchema>;
+export type Reset = typeof resets.$inferSelect;
+export type InsertReset = z.infer<typeof insertResetSchema>;
 
 export const contextSchema = z.object({
   employmentStatus: z.enum([
