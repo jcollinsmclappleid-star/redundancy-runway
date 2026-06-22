@@ -1,0 +1,188 @@
+The homepage implementation has not followed the intended structure correctly.
+
+The visual reference/mockup must be used as design inspiration only. Do not use the full mockup image as the page background or as a full-page screenshot behind the hero content.
+
+Current issue:
+On mobile, the hero shows parts of the entire desktop mockup behind the headline, including pricing cards, trust cards, report cards and lower-page sections. This makes the page look like a screenshot pasted behind text rather than a real responsive SaaS homepage.
+
+Please fix the homepage implementation.
+
+Primary instruction:
+Rebuild the homepage as real responsive React/Tailwind components. The mockup image is a reference only, not a production asset.
+
+What to remove:
+
+* Remove any full-page mockup screenshot being used as a background image.
+* Remove any background image that includes visible UI text, pricing cards, trust strips, report cards or lower-page sections.
+* Do not use the generated mockup as an actual website image except possibly as a temporary design reference during implementation.
+
+What to build instead:
+Create a proper responsive homepage using real sections and components:
+
+1. Real header component
+2. Real hero section
+3. Real hero visual component
+4. Real trust strip
+5. Real problem section
+6. Real report pricing section
+7. Real scenario cards
+8. Real 7-Day Redundancy Reset section
+9. Real footer/trust row
+
+Hero visual requirements:
+Build a custom hero visual using CSS/SVG/React components rather than a full mockup image.
+
+The visual should represent:
+
+* a winding illuminated road/runway
+* a private report card at the end of the road
+* small floating scenario cards
+* redundancy pay estimate
+* mortgage/rent pressure
+* slow recovery
+* household impact
+* support if needed
+
+But the visual must not contain the whole page layout.
+
+Desktop hero:
+
+* Left side: headline, subheadline, CTAs and privacy line.
+* Right side: visual runway/report system.
+* Dark navy/teal scenic gradient background.
+* Floating cards should sit only inside the hero visual area.
+
+Mobile hero:
+
+* Do not show the full desktop visual behind the text.
+* Use a simplified mobile hero background:
+    * dark navy/teal gradient
+    * subtle road glow or abstract road line
+    * optional blurred report card behind or below the CTA
+    * maximum 1–2 floating cards
+* The headline must remain highly readable.
+* The hero background should not show pricing cards, trust strip, report sections, footer, or any desktop-page screenshot.
+* If needed, hide complex hero visual on screens below 768px and show a simplified mobile illustration instead.
+
+Suggested mobile structure:
+
+* Header
+* Eyebrow
+* H1
+* Subheadline
+* Primary CTA
+* Secondary CTA
+* Privacy line
+* Simplified mini visual or report card
+* Trust strip below hero as real cards
+
+Use real text and real cards:
+The central report card should be an actual component, not text embedded in an image.
+
+Report card sample:
+Title: “Your Runway Report”
+Baseline runway: “10.4 months”
+Scenario range: “5.1 – 18.7 months”
+
+Checklist:
+
+* Slow recovery
+* Mortgage pressure
+* One-income household
+* Voluntary redundancy
+* Structural transition
+
+Floating card samples:
+
+* “Redundancy pay estimate”
+* “Mortgage pressure”
+* “Slow recovery”
+* “Household impact”
+* “Support if needed”
+
+Make clear these are sample/illustrative values.
+
+Theme:
+Keep the premium modern SaaS direction:
+
+* Deep navy: #061526
+* Ink navy: #0B1F33
+* Midnight teal: #123C46
+* Deep teal: #174C55
+* Soft teal: #DDF2EF
+* Mist blue: #EAF2F4
+* Warm gold: #D9A441
+* Soft gold: #F6C76A
+* Cream: #FFF8EC
+* Off-white: #F7F8F6
+* Ink text: #101827
+* Slate text: #4B5563
+
+Important design rules:
+
+* Keep dark hero, light lower page.
+* Use gold primary CTA.
+* Use cream/white report cards.
+* Use teal support section.
+* Use real layout components, not a screenshot.
+* Keep mobile clean, readable and premium.
+* Do not over-darken the entire page on mobile.
+* Do not place text over busy UI graphics.
+* Avoid random background text behind foreground content.
+
+Homepage section order:
+
+1. Header
+2. Hero
+3. Trust strip
+4. Problem section
+5. Pricing/report section
+6. Scenario cards
+7. 7-Day Redundancy Reset section
+8. Footer trust row
+
+Responsive behaviour:
+
+* Desktop: full visual hero with road/report/scenario cards.
+* Tablet: hero visual can be smaller.
+* Mobile: simplified visual only. No full mockup background.
+* Trust strip stacks cleanly or becomes horizontal scroll.
+* Pricing card and scenario cards stack cleanly.
+* CTA remains above the fold.
+
+Technical implementation:
+
+* Use Tailwind/CSS gradients, SVG paths and real cards.
+* Use lucide-react icons if available.
+* Use framer-motion only if already installed and only for subtle motion.
+* Do not add heavy 3D/canvas libraries.
+* Do not use full-page AI image mockups as backgrounds.
+* Important text must be HTML text, not baked into images.
+* Decorative visuals should be aria-hidden.
+* Respect prefers-reduced-motion.
+
+Fix current statutory copy:
+If any section still says £643/wk cap, replace it with current project constants or safer wording:
+“Age-band rules, service caps and current thresholds.”
+
+Do not hardcode outdated statutory values in homepage copy.
+
+Acceptance criteria:
+
+* On mobile, the hero no longer shows the full desktop mockup behind the headline.
+* The homepage is built from real components.
+* The hero visual is separated from the page content.
+* Pricing cards, trust strip and scenario sections are real sections below the hero.
+* The page looks premium on both desktop and mobile.
+* The CTA is readable and visible.
+* No B2B/HR/employer language appears.
+* No legal, financial, debt, employment, medical or therapy advice language appears.
+* Run build/typecheck and fix any errors.
+
+After completing, list:
+
+1. Files changed
+2. What image/background usage was removed
+3. What real components were created
+4. How the mobile hero was simplified
+5. Build/typecheck result

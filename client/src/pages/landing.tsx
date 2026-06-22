@@ -22,13 +22,14 @@ import {
   Users,
   Repeat,
   TrendingUp,
+  Clock,
+  AlertTriangle,
 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Logo } from "@/components/Logo";
 import { DisclaimerBanner } from "@/components/DisclaimerBanner";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Footer } from "@/components/Footer";
-import heroImg from "@assets/421D2639-FE23-47F6-8060-7F01C4D48113_1782169798101.png";
 
 const NAV_LINKS = [
   { label: "How it works", href: "#how-it-works" },
@@ -40,6 +41,263 @@ const NAV_LINKS = [
 
 function scrollTo(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+}
+
+/* ── HERO VISUAL ────────────────────────────────────────────────────────
+   A self-contained CSS/SVG illustration:
+   - Winding road as an SVG path with gold glow
+   - Central report card
+   - Small floating scenario cards
+   All aria-hidden, decorative only.
+────────────────────────────────────────────────────────────────────── */
+function HeroVisual() {
+  return (
+    <div
+      aria-hidden="true"
+      className="relative w-full h-full select-none"
+      style={{ minHeight: 420 }}
+    >
+      {/* Ambient glow blobs */}
+      <div
+        className="absolute rounded-full pointer-events-none"
+        style={{
+          width: 320,
+          height: 320,
+          top: "10%",
+          right: "5%",
+          background: "radial-gradient(circle, hsl(198 65% 30% / 0.35) 0%, transparent 70%)",
+          filter: "blur(40px)",
+        }}
+      />
+      <div
+        className="absolute rounded-full pointer-events-none"
+        style={{
+          width: 200,
+          height: 200,
+          bottom: "15%",
+          left: "10%",
+          background: "radial-gradient(circle, hsl(38 72% 52% / 0.20) 0%, transparent 70%)",
+          filter: "blur(32px)",
+        }}
+      />
+
+      {/* SVG Road */}
+      <svg
+        viewBox="0 0 400 420"
+        className="absolute inset-0 w-full h-full"
+        preserveAspectRatio="xMidYMid meet"
+        style={{ zIndex: 0 }}
+      >
+        <defs>
+          <linearGradient id="roadGradient" x1="0" y1="1" x2="0" y2="0">
+            <stop offset="0%" stopColor="hsl(38 72% 52%)" stopOpacity="0.05" />
+            <stop offset="50%" stopColor="hsl(38 72% 52%)" stopOpacity="0.35" />
+            <stop offset="100%" stopColor="hsl(38 72% 70%)" stopOpacity="0.7" />
+          </linearGradient>
+          <filter id="roadGlow">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
+        </defs>
+        {/* Winding road path */}
+        <path
+          d="M 60 410 C 80 360, 60 320, 120 280 C 180 240, 220 230, 200 180 C 185 140, 240 110, 260 70"
+          fill="none"
+          stroke="url(#roadGradient)"
+          strokeWidth="3"
+          strokeLinecap="round"
+          filter="url(#roadGlow)"
+          opacity="0.9"
+        />
+        {/* Road centre dashes */}
+        <path
+          d="M 60 410 C 80 360, 60 320, 120 280 C 180 240, 220 230, 200 180 C 185 140, 240 110, 260 70"
+          fill="none"
+          stroke="hsl(38 72% 65% / 0.3)"
+          strokeWidth="1"
+          strokeDasharray="8 10"
+          strokeLinecap="round"
+        />
+        {/* Runway destination dot */}
+        <circle cx="260" cy="68" r="5" fill="hsl(38 72% 58%)" opacity="0.9" />
+        <circle cx="260" cy="68" r="10" fill="hsl(38 72% 58% / 0.25)" />
+      </svg>
+
+      {/* Central Report Card */}
+      <div
+        className="absolute rounded-2xl border shadow-2xl overflow-hidden"
+        style={{
+          top: "14%",
+          right: "8%",
+          width: 188,
+          background: "hsl(215 50% 10% / 0.92)",
+          borderColor: "hsl(215 30% 25%)",
+          backdropFilter: "blur(12px)",
+          zIndex: 10,
+        }}
+      >
+        <div className="px-4 pt-4 pb-1">
+          <p className="text-[9px] font-semibold tracking-widest uppercase mb-2" style={{ color: "hsl(38 72% 60%)" }}>
+            Your Runway Report
+          </p>
+          <div className="flex items-end gap-1 mb-0.5">
+            <span className="font-serif text-3xl font-bold text-white leading-none">10.4</span>
+            <span className="text-xs text-white/50 mb-1">months</span>
+          </div>
+          <p className="text-[10px] text-white/40 mb-3">Baseline runway estimate</p>
+          <div className="rounded-lg px-2 py-1.5 mb-3" style={{ background: "hsl(198 65% 18%)" }}>
+            <p className="text-[9px] text-white/50 mb-0.5">Scenario range</p>
+            <p className="text-xs font-semibold" style={{ color: "hsl(38 72% 65%)" }}>5.1 – 18.7 months</p>
+          </div>
+        </div>
+        <div className="px-4 pb-4">
+          <p className="text-[9px] font-semibold text-white/30 uppercase tracking-wide mb-2">Scenarios modelled</p>
+          {[
+            "Slow recovery",
+            "Mortgage pressure",
+            "One-income household",
+            "Voluntary redundancy",
+            "Structural transition",
+          ].map((item) => (
+            <div key={item} className="flex items-center gap-1.5 mb-1">
+              <Check className="w-2.5 h-2.5 shrink-0" style={{ color: "hsl(38 72% 60%)" }} />
+              <span className="text-[10px] text-white/60">{item}</span>
+            </div>
+          ))}
+          <p className="text-[8px] text-white/25 mt-2 leading-relaxed">
+            Illustrative sample. Not financial advice.
+          </p>
+        </div>
+      </div>
+
+      {/* Floating card: Redundancy pay estimate */}
+      <div
+        className="absolute rounded-xl border shadow-lg px-3 py-2.5"
+        style={{
+          top: "38%",
+          left: "2%",
+          width: 148,
+          background: "hsl(215 45% 12% / 0.90)",
+          borderColor: "hsl(215 30% 22%)",
+          backdropFilter: "blur(8px)",
+          zIndex: 10,
+        }}
+      >
+        <div className="flex items-center gap-2 mb-1">
+          <div className="w-5 h-5 rounded-md flex items-center justify-center shrink-0" style={{ background: "hsl(38 72% 52% / 0.2)" }}>
+            <Calculator className="w-3 h-3" style={{ color: "hsl(38 72% 60%)" }} />
+          </div>
+          <p className="text-[10px] font-semibold text-white/80">Redundancy pay</p>
+        </div>
+        <p className="text-[9px] text-white/40 leading-relaxed">Statutory estimate</p>
+      </div>
+
+      {/* Floating card: Mortgage pressure */}
+      <div
+        className="absolute rounded-xl border shadow-lg px-3 py-2.5"
+        style={{
+          top: "56%",
+          right: "4%",
+          width: 148,
+          background: "hsl(215 45% 12% / 0.90)",
+          borderColor: "hsl(215 30% 22%)",
+          backdropFilter: "blur(8px)",
+          zIndex: 10,
+        }}
+      >
+        <div className="flex items-center gap-2 mb-1">
+          <div className="w-5 h-5 rounded-md flex items-center justify-center shrink-0" style={{ background: "hsl(198 65% 28% / 0.3)" }}>
+            <Home className="w-3 h-3" style={{ color: "hsl(198 65% 60%)" }} />
+          </div>
+          <p className="text-[10px] font-semibold text-white/80">Mortgage pressure</p>
+        </div>
+        <p className="text-[9px] text-white/40 leading-relaxed">Rate rise impact</p>
+      </div>
+
+      {/* Floating card: Household impact */}
+      <div
+        className="absolute rounded-xl border shadow-lg px-3 py-2.5"
+        style={{
+          top: "72%",
+          left: "5%",
+          width: 148,
+          background: "hsl(215 45% 12% / 0.90)",
+          borderColor: "hsl(215 30% 22%)",
+          backdropFilter: "blur(8px)",
+          zIndex: 10,
+        }}
+      >
+        <div className="flex items-center gap-2 mb-1">
+          <div className="w-5 h-5 rounded-md flex items-center justify-center shrink-0" style={{ background: "hsl(175 40% 28% / 0.3)" }}>
+            <Users className="w-3 h-3" style={{ color: "hsl(175 40% 60%)" }} />
+          </div>
+          <p className="text-[10px] font-semibold text-white/80">Household impact</p>
+        </div>
+        <p className="text-[9px] text-white/40 leading-relaxed">One income supporting household</p>
+      </div>
+
+      {/* Floating card: Slow recovery */}
+      <div
+        className="absolute rounded-xl border shadow-lg px-3 py-2.5"
+        style={{
+          top: "8%",
+          left: "10%",
+          width: 140,
+          background: "hsl(215 45% 12% / 0.90)",
+          borderColor: "hsl(215 30% 22%)",
+          backdropFilter: "blur(8px)",
+          zIndex: 10,
+        }}
+      >
+        <div className="flex items-center gap-2 mb-1">
+          <div className="w-5 h-5 rounded-md flex items-center justify-center shrink-0" style={{ background: "hsl(38 72% 52% / 0.15)" }}>
+            <Clock className="w-3 h-3" style={{ color: "hsl(38 72% 60%)" }} />
+          </div>
+          <p className="text-[10px] font-semibold text-white/80">Slow recovery</p>
+        </div>
+        <p className="text-[9px] text-white/40 leading-relaxed">Extended job search</p>
+      </div>
+    </div>
+  );
+}
+
+/* ── MOBILE HERO VISUAL ─────────────────────────────────────────────── */
+function MobileHeroVisual() {
+  return (
+    <div aria-hidden="true" className="relative mx-auto mt-8" style={{ maxWidth: 320, height: 120 }}>
+      {/* Glow */}
+      <div
+        className="absolute inset-x-0 bottom-0 rounded-full"
+        style={{
+          height: 60,
+          background: "radial-gradient(ellipse, hsl(38 72% 52% / 0.25) 0%, transparent 70%)",
+          filter: "blur(16px)",
+        }}
+      />
+      {/* Mini report card */}
+      <div
+        className="absolute left-1/2 -translate-x-1/2 bottom-0 rounded-xl border shadow-xl px-4 py-3"
+        style={{
+          width: 240,
+          background: "hsl(215 50% 10% / 0.94)",
+          borderColor: "hsl(215 30% 25%)",
+          backdropFilter: "blur(12px)",
+        }}
+      >
+        <div className="flex items-center justify-between mb-1.5">
+          <p className="text-[9px] font-semibold tracking-widest uppercase" style={{ color: "hsl(38 72% 60%)" }}>
+            Runway Report
+          </p>
+          <span className="text-[8px] text-white/30">Illustrative</span>
+        </div>
+        <div className="flex items-end gap-2">
+          <span className="font-serif text-2xl font-bold text-white leading-none">10.4</span>
+          <span className="text-xs text-white/50 mb-0.5">months baseline</span>
+        </div>
+        <p className="text-[9px] mt-1.5" style={{ color: "hsl(38 72% 60%)" }}>Range: 5.1 – 18.7 months under scenarios</p>
+      </div>
+    </div>
+  );
 }
 
 export default function LandingPage() {
@@ -75,7 +333,7 @@ export default function LandingPage() {
           "@type": "WebApplication",
           "name": "RedundancyCalculatorUK",
           "url": "https://redundancycalculatoruk.com",
-          "description": "UK statutory redundancy pay calculator and financial runway modelling tool. Model how long your money may last under different income recovery scenarios.",
+          "description": "UK statutory redundancy pay calculator and financial runway modelling tool.",
           "applicationCategory": "FinanceApplication",
           "operatingSystem": "Web",
           "offers": [
@@ -89,17 +347,11 @@ export default function LandingPage() {
           "@type": "FAQPage",
           "mainEntity": [
             { "@type": "Question", "name": "Is this financial advice?", "acceptedAnswer": { "@type": "Answer", "text": "No. RedundancyCalculatorUK is a non-advisory modelling tool. It produces illustrative projections based entirely on the assumptions you enter. It does not constitute financial, legal, tax, employment, debt, or benefits advice. All outputs are estimates and may not reflect actual outcomes." } },
-            { "@type": "Question", "name": "Does this predict whether I will find work?", "acceptedAnswer": { "@type": "Answer", "text": "No. The tool uses historical UK labour market percentiles as reference data to model reemployment timelines, but it does not predict individual job search outcomes. Projected timelines are illustrative only and should be treated as planning assumptions, not forecasts." } },
-            { "@type": "Question", "name": "Is my data private?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. All financial calculations run entirely in your browser. No sensitive financial data is transmitted to or stored on our servers. We only store a session token to manage access to paid report features." } },
-            { "@type": "Question", "name": "Is statutory redundancy pay included?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The calculator uses current UK statutory redundancy rules, including age-band multipliers (0.5x, 1x and 1.5x weeks per year of service), the £643 weekly pay cap, and the 20-year service cap. A two-year qualifying service minimum applies. The tool also separates statutory redundancy pay — which is generally tax-free up to £30,000 — from notice pay and holiday pay, which are subject to income tax. Last checked: April 2025." } },
-            { "@type": "Question", "name": "Can I model voluntary redundancy?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The paid report includes a voluntary redundancy comparison scenario. You can enter a VR package amount alongside your statutory entitlement and see how each affects the runway under these assumptions." } },
-            { "@type": "Question", "name": "Can I use this with my partner?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The income recovery step includes an optional partner income field. Enabling this adds partner monthly net income to the household runway model, which is useful for couples or households where one partner's income may continue during a period of disruption." } },
-            { "@type": "Question", "name": "What does the paid report unlock?", "acceptedAnswer": { "@type": "Answer", "text": "The full Private Runway Report (£39, one-off) unlocks: slow and severe income scenarios, mortgage and housing pressure test, household resilience view, expense sensitivity ranking, month-by-month capital path, voluntary redundancy comparison, structural transition scenario, partner discussion summary, and exportable report. Access lasts 6 months." } },
-            { "@type": "Question", "name": "Is this a subscription?", "acceptedAnswer": { "@type": "Answer", "text": "No. Both the Private Runway Report (£39) and the 7-Day Redundancy Reset (£79 launch / £99 standard) are one-off payments. There are no recurring charges." } },
-            { "@type": "Question", "name": "What is the 7-Day Redundancy Reset?", "acceptedAnswer": { "@type": "Answer", "text": "The 7-Day Redundancy Reset is a separate one-off paid product for people who have completed the runway calculator and want help understanding what to do next. You receive a guided private written intake, a first written response within 1 working day, a follow-up check-in, and a final Redundancy Next-Step Plan. Intake is by WhatsApp or secure web-chat style. No calls." } },
-            { "@type": "Question", "name": "Is the 7-Day Redundancy Reset advice?", "acceptedAnswer": { "@type": "Answer", "text": "No. The Reset provides practical written support and planning only. It is not financial advice, legal advice, debt advice, employment law advice, therapy, counselling, crisis support, medical advice or a guarantee of income, employment or outcomes." } },
-            { "@type": "Question", "name": "Is WhatsApp live chat?", "acceptedAnswer": { "@type": "Answer", "text": "No. WhatsApp is offered as a convenient intake and response channel only. It is not a live chat service. The first written response is delivered within 1 working day of intake submission. There is no promise of unlimited messaging or real-time responses." } },
-            { "@type": "Question", "name": "Can I get a refund for the Reset?", "acceptedAnswer": { "@type": "Answer", "text": "If the full Private Runway Report does not add meaningful clarity beyond the free preview, contact support within 7 days. For the 7-Day Redundancy Reset, please refer to the product page for full refund terms." } }
+            { "@type": "Question", "name": "Is my data private?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. All financial calculations run entirely in your browser. No sensitive financial data is transmitted to or stored on our servers." } },
+            { "@type": "Question", "name": "Is statutory redundancy pay included?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The calculator uses current UK statutory redundancy rules, including age-band multipliers, service caps and the current weekly pay cap. A two-year qualifying service minimum applies." } },
+            { "@type": "Question", "name": "Can I model voluntary redundancy?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The paid report includes a voluntary redundancy comparison scenario." } },
+            { "@type": "Question", "name": "What does the paid report unlock?", "acceptedAnswer": { "@type": "Answer", "text": "The full Private Runway Report (£39, one-off) unlocks: slow and severe income scenarios, mortgage and housing pressure test, household resilience view, expense sensitivity ranking, month-by-month capital path, voluntary redundancy comparison, structural transition scenario, and exportable report. Access lasts 6 months." } },
+            { "@type": "Question", "name": "Is this a subscription?", "acceptedAnswer": { "@type": "Answer", "text": "No. Both the Private Runway Report (£39) and the 7-Day Redundancy Reset are one-off payments. There are no recurring charges." } }
           ]
         })}</script>
       </Helmet>
@@ -107,27 +359,35 @@ export default function LandingPage() {
       <div className="min-h-screen flex flex-col">
         <DisclaimerBanner />
 
-        {/* ── HEADER ───────────────────────────────────────────────── */}
-        <header className="sticky top-0 z-50 backdrop-blur-md border-b"
-          style={{ background: "hsl(215 50% 8% / 0.96)" }}
-          data-testid="header-landing">
+        {/* ── HEADER ──────────────────────────────────────────────────── */}
+        <header
+          className="sticky top-0 z-50 backdrop-blur-md border-b"
+          style={{ background: "hsl(215 50% 8% / 0.97)", borderColor: "hsl(215 30% 16%)" }}
+          data-testid="header-landing"
+        >
           <div className="max-w-6xl mx-auto flex items-center justify-between gap-4 px-6 py-3">
             <Logo light />
 
-            {/* Desktop nav */}
             <nav className="hidden md:flex items-center gap-6" data-testid="nav-desktop">
               {NAV_LINKS.map((link) =>
                 link.external ? (
-                  <Link key={link.label} href={link.href}
-                    className="text-sm text-white/70 hover:text-white transition-colors"
-                    data-testid={`nav-${link.label.toLowerCase().replace(/\s/g, "-")}`}>
+                  <Link
+                    key={link.label}
+                    href={link.href}
+                    className="text-sm font-medium transition-colors"
+                    style={{ color: "hsl(215 15% 60%)" }}
+                    data-testid={`nav-${link.label.toLowerCase().replace(/\s/g, "-")}`}
+                  >
                     {link.label}
                   </Link>
                 ) : (
-                  <button key={link.label}
+                  <button
+                    key={link.label}
                     onClick={() => scrollTo(link.href.replace("#", ""))}
-                    className="text-sm text-white/70 hover:text-white transition-colors"
-                    data-testid={`nav-${link.label.toLowerCase().replace(/\s/g, "-")}`}>
+                    className="text-sm font-medium transition-colors hover:text-white"
+                    style={{ color: "hsl(215 15% 60%)" }}
+                    data-testid={`nav-${link.label.toLowerCase().replace(/\s/g, "-")}`}
+                  >
                     {link.label}
                   </button>
                 )
@@ -140,78 +400,104 @@ export default function LandingPage() {
                 size="sm"
                 className="btn-gold rounded-full px-5 hidden sm:flex"
                 onClick={() => navigate("/wizard")}
-                data-testid="button-header-start">
+                data-testid="button-header-start"
+              >
                 Build my report
                 <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
               </Button>
               <button
-                className="md:hidden text-white/70 hover:text-white p-1"
+                className="md:hidden p-1"
+                style={{ color: "hsl(215 15% 60%)" }}
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                data-testid="button-mobile-menu">
+                data-testid="button-mobile-menu"
+                aria-label="Toggle navigation"
+              >
                 {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
             </div>
           </div>
 
-          {/* Mobile nav dropdown */}
           {mobileMenuOpen && (
-            <div className="md:hidden border-t border-white/10" style={{ background: "hsl(215 50% 8%)" }}
-              data-testid="nav-mobile">
-              <div className="px-6 py-4 flex flex-col gap-3">
-                {NAV_LINKS.map((link) =>
-                  link.external ? (
-                    <Link key={link.label} href={link.href}
-                      className="text-sm text-white/70 hover:text-white py-1"
-                      onClick={() => setMobileMenuOpen(false)}>
-                      {link.label}
-                    </Link>
-                  ) : (
-                    <button key={link.label}
-                      onClick={() => { scrollTo(link.href.replace("#", "")); setMobileMenuOpen(false); }}
-                      className="text-sm text-white/70 hover:text-white py-1 text-left">
-                      {link.label}
-                    </button>
-                  )
-                )}
-                <Button size="sm" className="btn-gold rounded-full mt-2 w-full"
-                  onClick={() => { navigate("/wizard"); setMobileMenuOpen(false); }}
-                  data-testid="button-mobile-cta">
-                  Build my report
-                  <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
-                </Button>
-              </div>
+            <div
+              className="md:hidden border-t px-6 py-4 flex flex-col gap-3"
+              style={{ background: "hsl(215 50% 8%)", borderColor: "hsl(215 30% 16%)" }}
+              data-testid="nav-mobile"
+            >
+              {NAV_LINKS.map((link) =>
+                link.external ? (
+                  <Link
+                    key={link.label}
+                    href={link.href}
+                    className="text-sm py-1"
+                    style={{ color: "hsl(215 15% 60%)" }}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {link.label}
+                  </Link>
+                ) : (
+                  <button
+                    key={link.label}
+                    onClick={() => { scrollTo(link.href.replace("#", "")); setMobileMenuOpen(false); }}
+                    className="text-sm py-1 text-left"
+                    style={{ color: "hsl(215 15% 60%)" }}
+                  >
+                    {link.label}
+                  </button>
+                )
+              )}
+              <Button
+                size="sm"
+                className="btn-gold rounded-full mt-2"
+                onClick={() => { navigate("/wizard"); setMobileMenuOpen(false); }}
+                data-testid="button-mobile-cta"
+              >
+                Build my report
+                <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
+              </Button>
             </div>
           )}
         </header>
 
-        {/* ── HERO ─────────────────────────────────────────────────── */}
-        <section className="relative min-h-[90vh] flex items-center overflow-hidden" data-testid="section-hero">
-          {/* Background image */}
-          <div className="absolute inset-0">
-            <img
-              src={heroImg}
-              alt=""
-              aria-hidden="true"
-              className="w-full h-full object-cover object-center"
-            />
-            <div className="absolute inset-0 hero-overlay" />
-          </div>
+        {/* ── HERO ────────────────────────────────────────────────────── */}
+        <section
+          className="relative overflow-hidden"
+          data-testid="section-hero"
+          style={{
+            background: "linear-gradient(135deg, hsl(215 60% 6%) 0%, hsl(198 65% 10%) 50%, hsl(186 55% 12%) 100%)",
+            minHeight: "calc(100vh - 80px)",
+          }}
+        >
+          {/* Subtle grid texture */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              backgroundImage: `radial-gradient(circle, hsl(198 65% 40% / 0.08) 1px, transparent 1px)`,
+              backgroundSize: "48px 48px",
+            }}
+          />
 
-          {/* Content */}
-          <div className="relative z-10 w-full max-w-6xl mx-auto px-6 py-20 lg:py-28">
-            <div className="max-w-xl">
-              <p className="text-xs font-semibold tracking-widest uppercase text-white/50 mb-5"
-                data-testid="hero-eyebrow">
+          <div className="relative z-10 max-w-6xl mx-auto px-6 py-16 lg:py-24 flex flex-col lg:flex-row items-center gap-12 lg:gap-8">
+            {/* Left: text */}
+            <div className="flex-1 max-w-xl lg:max-w-none">
+              <p
+                className="text-xs font-semibold tracking-widest uppercase mb-5"
+                style={{ color: "hsl(38 72% 55%)" }}
+                data-testid="hero-eyebrow"
+              >
                 PRIVATE · ASSUMPTION-BASED · UK FOCUSED
               </p>
-              <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight text-white mb-6"
-                data-testid="hero-headline">
+              <h1
+                className="font-serif text-4xl sm:text-5xl lg:text-[3.25rem] font-bold leading-[1.12] text-white mb-6"
+                data-testid="hero-headline"
+              >
                 Model how long your money may last if work changes.
               </h1>
-              <p className="text-white/75 text-base sm:text-lg leading-relaxed mb-8 max-w-lg"
-                data-testid="hero-subheadline">
-                Build a private redundancy runway report for redundancy, restructuring, voluntary redundancy,
-                AI-related uncertainty, mortgage pressure or a slower return to work.
+              <p
+                className="text-base sm:text-lg leading-relaxed mb-8 max-w-lg"
+                style={{ color: "hsl(215 15% 65%)" }}
+                data-testid="hero-subheadline"
+              >
+                Build a private redundancy runway report — covering redundancy, restructuring, voluntary packages, mortgage pressure and a slower return to work.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3 mb-5">
@@ -219,51 +505,69 @@ export default function LandingPage() {
                   size="lg"
                   className="btn-gold rounded-full px-8 text-base"
                   onClick={() => navigate("/wizard")}
-                  data-testid="button-hero-primary">
+                  data-testid="button-hero-primary"
+                >
                   Build my private report
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
                 <Button
                   size="lg"
                   variant="outline"
-                  className="rounded-full px-8 text-base border-white/25 text-white hover:bg-white/10 hover:text-white"
+                  className="rounded-full px-8 text-base"
+                  style={{ borderColor: "hsl(215 30% 30%)", color: "hsl(215 15% 70%)" }}
                   onClick={() => scrollTo("scenarios")}
-                  data-testid="button-hero-secondary">
+                  data-testid="button-hero-secondary"
+                >
                   See what's included
                   <ChevronDown className="w-4 h-4 ml-2" />
                 </Button>
               </div>
 
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="w-3.5 h-3.5 text-white/40 shrink-0" />
-                <p className="text-xs text-white/50">
+              <div className="flex items-start gap-2">
+                <ShieldCheck className="w-3.5 h-3.5 mt-0.5 shrink-0" style={{ color: "hsl(215 15% 45%)" }} />
+                <p className="text-xs leading-relaxed" style={{ color: "hsl(215 15% 45%)" }}>
                   Your data stays in your browser. One-off report access. Not financial advice.
                 </p>
               </div>
+
+              {/* Mobile-only simplified visual */}
+              <div className="lg:hidden">
+                <MobileHeroVisual />
+              </div>
+            </div>
+
+            {/* Right: desktop-only full visual */}
+            <div className="hidden lg:block flex-1 relative" style={{ height: 480 }}>
+              <HeroVisual />
             </div>
           </div>
         </section>
 
-        {/* ── TRUST STRIP ──────────────────────────────────────────── */}
-        <section className="py-6 px-6 border-b" style={{ background: "hsl(215 50% 8%)" }}
-          data-testid="section-trust">
-          <div className="max-w-6xl mx-auto">
-            <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
+        {/* ── TRUST STRIP ─────────────────────────────────────────────── */}
+        <section
+          className="py-5 px-6 border-b"
+          style={{ background: "hsl(215 50% 8%)", borderColor: "hsl(215 30% 14%)" }}
+          data-testid="section-trust"
+        >
+          <div className="max-w-6xl mx-auto overflow-x-auto">
+            <div className="flex items-center justify-start md:justify-center gap-6 md:gap-8 min-w-max md:min-w-0 pb-1 md:pb-0">
               {[
-                { icon: Calculator, label: "UK statutory assumptions", sub: "Age-band rules, service caps and current thresholds" },
+                { icon: Calculator, label: "UK statutory assumptions", sub: "Age-band rules, service caps, current thresholds" },
                 { icon: ShieldCheck, label: "Private modelling", sub: "Your data stays in your browser" },
                 { icon: Home, label: "Mortgage & household scenarios", sub: "Test rate rises, rent and one-income pressure" },
                 { icon: FileText, label: "One-off report access", sub: "One report. Yours to keep." },
                 { icon: BarChart2, label: "Non-advisory tool", sub: "Planning model, not financial advice" },
               ].map((item, i) => (
-                <div key={i} className="flex items-center gap-3" data-testid={`trust-signal-${i}`}>
-                  <div className="w-8 h-8 rounded-md flex items-center justify-center shrink-0"
-                    style={{ background: "hsl(38 72% 52% / 0.15)" }}>
-                    <item.icon className="w-4 h-4" style={{ color: "hsl(38 72% 60%)" }} />
+                <div key={i} className="flex items-center gap-3 shrink-0" data-testid={`trust-signal-${i}`}>
+                  <div
+                    className="w-8 h-8 rounded-md flex items-center justify-center shrink-0"
+                    style={{ background: "hsl(38 72% 52% / 0.12)" }}
+                  >
+                    <item.icon className="w-4 h-4" style={{ color: "hsl(38 72% 58%)" }} />
                   </div>
                   <div>
-                    <p className="text-xs font-medium text-white/80">{item.label}</p>
-                    <p className="text-xs text-white/45">{item.sub}</p>
+                    <p className="text-xs font-medium" style={{ color: "hsl(215 15% 78%)" }}>{item.label}</p>
+                    <p className="text-xs" style={{ color: "hsl(215 15% 42%)" }}>{item.sub}</p>
                   </div>
                 </div>
               ))}
@@ -271,7 +575,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ── PROBLEM / RUNWAY SECTION ──────────────────────────────── */}
+        {/* ── PROBLEM SECTION ─────────────────────────────────────────── */}
         <section className="py-20 px-6 bg-background" data-testid="section-problem">
           <div className="max-w-5xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -280,10 +584,10 @@ export default function LandingPage() {
                   Redundancy is not just a payout question. It is a runway question.
                 </h2>
                 <p className="text-muted-foreground leading-relaxed text-base mb-5">
-                  A redundancy package can look manageable on day one. The harder question is how it behaves over time: if a new role takes longer than expected, if mortgage or rent still needs paying, if replacement income is lower, or if the household temporarily relies on one income.
+                  A redundancy package can look manageable on day one. The harder question is how it behaves over time — if a new role takes longer than expected, if mortgage or rent still needs paying, or if the household temporarily relies on one income.
                 </p>
                 <p className="text-muted-foreground leading-relaxed text-base">
-                  RedundancyCalculatorUK helps you model that future privately — under your assumptions, not anyone else's.
+                  RedundancyCalculatorUK helps you model that future privately — under your assumptions, not anyone else's — before speaking to a financial adviser, solicitor, or anyone else.
                 </p>
               </div>
               <div className="rounded-2xl border bg-card shadow-lg p-8">
@@ -291,9 +595,9 @@ export default function LandingPage() {
                 <ul className="space-y-4">
                   {[
                     { icon: TrendingDown, label: "Multiple scenarios", sub: "Slow recovery, mortgage pressure, VR comparison and more." },
-                    { icon: BarChart2, label: "Monthly capital path", sub: "See how your savings behave month-by-month under each assumption." },
+                    { icon: BarChart2, label: "Monthly capital path", sub: "See how your capital behaves month-by-month under each assumption." },
                     { icon: Users, label: "Household resilience", sub: "Model one-income household scenarios and partner income." },
-                    { icon: ArrowRight, label: "Clear next steps", sub: "Understand your position before speaking to anyone else." },
+                    { icon: ArrowRight, label: "Clear picture before any conversation", sub: "Understand your position privately first." },
                   ].map((item, i) => (
                     <li key={i} className="flex items-start gap-4" data-testid={`plan-item-${i}`}>
                       <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
@@ -311,9 +615,13 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ── HOW IT WORKS ─────────────────────────────────────────── */}
-        <section className="py-20 px-6" id="how-it-works" data-testid="section-how-it-works"
-          style={{ background: "hsl(60 11% 96%)" }}>
+        {/* ── HOW IT WORKS ────────────────────────────────────────────── */}
+        <section
+          className="py-20 px-6"
+          id="how-it-works"
+          data-testid="section-how-it-works"
+          style={{ background: "hsl(60 8% 96%)" }}
+        >
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-14">
               <h2 className="font-serif text-3xl sm:text-4xl font-bold mb-3">How it works</h2>
@@ -328,8 +636,10 @@ export default function LandingPage() {
                   { step: "3", title: "Explore the scenarios", desc: "Compare stress cases, mortgage pressure, household resilience, voluntary redundancy alternatives and expense sensitivity — all in one private report.", icon: Layers },
                 ].map((item) => (
                   <div key={item.step} className="flex flex-col items-center text-center" data-testid={`card-step-${item.step}`}>
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm mb-6 relative z-10 shadow-md text-white"
-                      style={{ background: "linear-gradient(135deg, hsl(198 65% 22%), hsl(198 65% 32%))" }}>
+                    <div
+                      className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm mb-6 relative z-10 shadow-md text-white"
+                      style={{ background: "linear-gradient(135deg, hsl(198 65% 20%), hsl(198 65% 32%))" }}
+                    >
                       {item.step}
                     </div>
                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
@@ -344,7 +654,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ── SCENARIOS ────────────────────────────────────────────── */}
+        {/* ── SCENARIOS ───────────────────────────────────────────────── */}
         <section className="py-20 px-6 bg-background" id="scenarios" data-testid="section-scenarios">
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-14">
@@ -357,15 +667,17 @@ export default function LandingPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
               {[
                 { icon: BarChart2, label: "Baseline", desc: "How long the money lasts at your current burn rate." },
-                { icon: TrendingDown, label: "Slow recovery", desc: "If a new role takes longer than expected. How much runway changes under a later return to income." },
-                { icon: Home, label: "Mortgage / rent pressure", desc: "What if housing costs increase? How a rate rise or rent review affects the capital path." },
-                { icon: Users, label: "Household one-income", desc: "If one partner's income is temporarily the only income. How that changes the runway." },
-                { icon: Repeat, label: "Voluntary redundancy", desc: "If a VR package is on the table. How it compares to statutory entitlement under these assumptions." },
-                { icon: TrendingUp, label: "Structural transition", desc: "Models a slower or lower-income recovery path. Does not predict job outcomes — applies a transition assumption to the model." },
+                { icon: TrendingDown, label: "Slow recovery", desc: "If a new role takes longer than expected — how much runway changes under a later return to income." },
+                { icon: Home, label: "Mortgage / rent pressure", desc: "How a rate rise or rent review affects the capital path." },
+                { icon: Users, label: "Household one-income", desc: "If one partner's income is temporarily the only income — how that changes the runway." },
+                { icon: Repeat, label: "Voluntary redundancy", desc: "How a VR package compares to statutory entitlement under these assumptions." },
+                { icon: TrendingUp, label: "Structural transition", desc: "A slower or lower-income recovery path modelled as an assumption — does not predict job outcomes." },
               ].map((scenario, i) => (
-                <div key={i}
+                <div
+                  key={i}
                   className="rounded-xl border bg-card p-5 hover:shadow-md transition-shadow"
-                  data-testid={`scenario-card-${i}`}>
+                  data-testid={`scenario-card-${i}`}
+                >
                   <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center mb-3">
                     <scenario.icon className="w-4 h-4 text-primary" />
                   </div>
@@ -376,9 +688,12 @@ export default function LandingPage() {
             </div>
 
             <div className="text-center">
-              <Button size="lg" className="btn-gold rounded-full px-8"
+              <Button
+                size="lg"
+                className="btn-gold rounded-full px-8"
                 onClick={() => navigate("/wizard")}
-                data-testid="button-scenarios-cta">
+                data-testid="button-scenarios-cta"
+              >
                 Build my private report — Free preview
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
@@ -386,9 +701,13 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ── PRICING ──────────────────────────────────────────────── */}
-        <section className="py-20 px-6" id="pricing" data-testid="section-pricing"
-          style={{ background: "hsl(60 11% 96%)" }}>
+        {/* ── PRICING ─────────────────────────────────────────────────── */}
+        <section
+          className="py-20 px-6"
+          id="pricing"
+          data-testid="section-pricing"
+          style={{ background: "hsl(60 8% 96%)" }}
+        >
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-14">
               <h2 className="font-serif text-3xl sm:text-4xl font-bold mb-3">Simple, one-off pricing</h2>
@@ -398,7 +717,6 @@ export default function LandingPage() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl mx-auto items-start">
-              {/* Free card */}
               <Card className="border shadow-sm" data-testid="card-free-tier">
                 <CardContent className="pt-8 pb-8">
                   <div className="mb-6">
@@ -420,19 +738,22 @@ export default function LandingPage() {
                       </li>
                     ))}
                   </ul>
-                  <Button className="w-full" variant="outline" onClick={() => navigate("/wizard")}
-                    data-testid="button-start-free">
+                  <Button className="w-full" variant="outline" onClick={() => navigate("/wizard")} data-testid="button-start-free">
                     Build my report — Free
                     <ArrowRight className="w-3.5 h-3.5 ml-2" />
                   </Button>
                 </CardContent>
               </Card>
 
-              {/* Paid card */}
               <div className="relative" data-testid="card-paid-tier-wrapper">
                 <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-10">
-                  <span className="text-xs font-semibold px-3 py-1 rounded-full text-white shadow-sm"
-                    style={{ background: "linear-gradient(135deg, hsl(38 72% 52%), hsl(42 80% 60%))", color: "hsl(215 50% 8%)" }}>
+                  <span
+                    className="text-xs font-semibold px-3 py-1 rounded-full shadow-sm"
+                    style={{
+                      background: "linear-gradient(135deg, hsl(38 72% 52%), hsl(42 80% 60%))",
+                      color: "hsl(215 50% 8%)",
+                    }}
+                  >
                     Full Report
                   </span>
                 </div>
@@ -463,14 +784,11 @@ export default function LandingPage() {
                         </li>
                       ))}
                     </ul>
-                    <Button className="w-full btn-gold rounded-lg" onClick={() => navigate("/wizard")}
-                      data-testid="button-start-paid">
+                    <Button className="w-full btn-gold rounded-lg" onClick={() => navigate("/wizard")} data-testid="button-start-paid">
                       Unlock my private report — £39
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </Button>
-                    <p className="text-xs text-muted-foreground text-center mt-3">
-                      No subscription. No recurring charges.
-                    </p>
+                    <p className="text-xs text-muted-foreground text-center mt-3">No subscription. No recurring charges.</p>
                   </CardContent>
                 </Card>
               </div>
@@ -478,30 +796,36 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ── 7-DAY RESET ──────────────────────────────────────────── */}
-        <section className="py-20 px-6" data-testid="section-reset-teaser"
-          style={{ background: "hsl(186 40% 14%)" }}>
+        {/* ── 7-DAY RESET ─────────────────────────────────────────────── */}
+        <section
+          className="py-20 px-6"
+          data-testid="section-reset-teaser"
+          style={{ background: "hsl(186 40% 12%)" }}
+        >
           <div className="max-w-5xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div>
-                <p className="text-xs font-semibold tracking-widest uppercase mb-4"
-                  style={{ color: "hsl(38 72% 60%)" }}>
+                <p className="text-xs font-semibold tracking-widest uppercase mb-4" style={{ color: "hsl(38 72% 58%)" }}>
                   SUPPORTIVE NEXT STEP
                 </p>
                 <div className="flex items-start gap-4 mb-5">
-                  <div className="w-14 h-14 rounded-xl flex items-center justify-center shrink-0 font-serif font-bold text-2xl"
-                    style={{ background: "hsl(38 72% 52% / 0.2)", color: "hsl(38 72% 70%)" }}>
+                  <div
+                    className="w-14 h-14 rounded-xl flex items-center justify-center shrink-0 font-serif font-bold text-2xl"
+                    style={{ background: "hsl(38 72% 52% / 0.18)", color: "hsl(38 72% 68%)" }}
+                  >
                     7
                   </div>
                   <div>
                     <h2 className="font-serif text-2xl sm:text-3xl font-bold text-white leading-snug">
                       7-Day Redundancy Reset
                     </h2>
-                    <p className="text-white/60 text-sm mt-1">A guided 7-day plan to stabilise, plan and take control.</p>
+                    <p className="text-sm mt-1" style={{ color: "hsl(186 20% 55%)" }}>
+                      A guided 7-day plan to stabilise, plan and take control.
+                    </p>
                   </div>
                 </div>
-                <p className="text-white/65 text-sm leading-relaxed mb-6">
-                  Share what's going on via WhatsApp or private web-chat, receive a calm written response within 1 working day, and get a practical 7-day plan. No calls. No judgement. No open-ended subscription.
+                <p className="text-sm leading-relaxed mb-6" style={{ color: "hsl(186 15% 60%)" }}>
+                  Share what's going on via WhatsApp or private web-chat. Receive a calm written response within 1 working day and a practical 7-day plan. No calls. No judgement. No open-ended subscription.
                 </p>
                 <Link href="/redundancy-reset" data-testid="button-reset-cta">
                   <Button className="btn-gold rounded-full px-7">
@@ -509,10 +833,8 @@ export default function LandingPage() {
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </Link>
-                <p className="text-xs mt-3" style={{ color: "hsl(38 72% 60%)" }}>
-                  £79 launch offer · one-off support
-                </p>
-                <p className="text-xs text-white/35 mt-2">
+                <p className="text-xs mt-3" style={{ color: "hsl(38 72% 55%)" }}>£79 launch offer · one-off support</p>
+                <p className="text-xs mt-2" style={{ color: "hsl(186 15% 38%)" }}>
                   Practical written support only. Not financial, legal, debt, employment, medical or mental health advice.
                 </p>
               </div>
@@ -523,10 +845,14 @@ export default function LandingPage() {
                   { label: "Clarity & confidence", body: "Reduce overwhelm and regain control." },
                   { label: "Complements your runway report", body: "Plan today. Model tomorrow." },
                 ].map((item, i) => (
-                  <div key={i} className="rounded-xl p-5" data-testid={`reset-benefit-${i}`}
-                    style={{ background: "hsl(186 40% 18%)", border: "1px solid hsl(186 40% 24%)" }}>
+                  <div
+                    key={i}
+                    className="rounded-xl p-5"
+                    data-testid={`reset-benefit-${i}`}
+                    style={{ background: "hsl(186 40% 16%)", border: "1px solid hsl(186 35% 22%)" }}
+                  >
                     <p className="text-sm font-semibold text-white mb-1.5">{item.label}</p>
-                    <p className="text-xs leading-relaxed" style={{ color: "hsl(186 20% 65%)" }}>{item.body}</p>
+                    <p className="text-xs leading-relaxed" style={{ color: "hsl(186 15% 58%)" }}>{item.body}</p>
                   </div>
                 ))}
               </div>
@@ -534,12 +860,12 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ── UK GUIDES ────────────────────────────────────────────── */}
+        {/* ── UK GUIDES ───────────────────────────────────────────────── */}
         <section className="py-16 px-6 bg-background" data-testid="section-guides">
           <div className="max-w-5xl mx-auto">
             <h2 className="font-serif text-2xl font-bold text-center mb-2">UK Redundancy Guides</h2>
             <p className="text-center text-sm text-muted-foreground mb-8">
-              Contextual information to read alongside your runway report. Not financial advice.
+              Contextual reading alongside your runway report. Not financial advice.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <Link href="/statutory-redundancy-pay" data-testid="guide-card-statutory">
@@ -560,16 +886,19 @@ export default function LandingPage() {
                 <div className="rounded-xl border bg-card p-5 hover:shadow-md transition-shadow h-full cursor-pointer">
                   <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2">Guide</p>
                   <p className="font-semibold text-sm leading-snug mb-2">Voluntary Redundancy Guide</p>
-                  <p className="text-xs text-muted-foreground leading-relaxed">How VR compares to statutory, the runway implications, and negotiation points.</p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">How VR compares to statutory, the runway implications, and key considerations.</p>
                 </div>
               </Link>
             </div>
           </div>
         </section>
 
-        {/* ── FAQ ──────────────────────────────────────────────────── */}
-        <section className="py-20 px-6" data-testid="section-faq"
-          style={{ background: "hsl(60 11% 96%)" }}>
+        {/* ── FAQ ─────────────────────────────────────────────────────── */}
+        <section
+          className="py-20 px-6"
+          data-testid="section-faq"
+          style={{ background: "hsl(60 8% 96%)" }}
+        >
           <div className="max-w-2xl mx-auto">
             <h2 className="font-serif text-3xl font-bold text-center mb-10">Common questions</h2>
             <Accordion type="single" collapsible className="w-full">
@@ -577,15 +906,12 @@ export default function LandingPage() {
                 { q: "Is this financial advice?", a: "No. RedundancyCalculatorUK is a non-advisory modelling tool. It produces illustrative projections based entirely on the assumptions you enter. It does not constitute financial, legal, tax, employment, debt, or benefits advice. All outputs are estimates and may not reflect actual outcomes." },
                 { q: "Does this predict whether I will find work?", a: "No. The tool uses historical UK labour market percentiles as reference data to model reemployment timelines, but it does not predict individual job search outcomes. Projected timelines are illustrative only and should be treated as planning assumptions, not forecasts." },
                 { q: "Is my data private?", a: "Yes. All financial calculations run entirely in your browser. No sensitive financial data is transmitted to or stored on our servers. We only store a session token to manage access to paid report features." },
-                { q: "Is statutory redundancy pay included?", a: "Yes. The calculator uses current UK statutory redundancy rules, including age-band multipliers (0.5x, 1x and 1.5x weeks per year of service), the £643 weekly pay cap, and the 20-year service cap. A two-year qualifying service minimum applies. The tool also separates statutory redundancy pay — which is generally tax-free up to £30,000 — from notice pay and holiday pay, which are subject to income tax. Last checked: April 2025." },
+                { q: "Is statutory redundancy pay included?", a: "Yes. The calculator uses current UK statutory redundancy rules, including age-band multipliers, the current weekly pay cap, and the 20-year service cap. A two-year qualifying service minimum applies. The tool separates statutory redundancy pay from notice pay and holiday pay, which are treated differently for tax. Check GOV.UK for the most current thresholds." },
                 { q: "Can I model voluntary redundancy?", a: "Yes. The paid report includes a voluntary redundancy comparison scenario. You can enter a VR package amount alongside your statutory entitlement and see how each affects the runway under these assumptions." },
-                { q: "Can I use this with my partner?", a: "Yes. The income recovery step includes an optional partner income field. Enabling this adds partner monthly net income to the household runway model, which is useful for couples or households where one partner's income may continue during a period of disruption." },
-                { q: "What does the paid report unlock?", a: "The full Private Runway Report (£39, one-off) unlocks: slow and severe income scenarios, mortgage and housing pressure test, household resilience view, expense sensitivity ranking, month-by-month capital path, voluntary redundancy comparison, structural transition scenario, partner discussion summary, and exportable report. Access lasts 6 months." },
-                { q: "Is this a subscription?", a: "No. Both the Private Runway Report (£39) and the 7-Day Redundancy Reset (£79 launch / £99 standard) are one-off payments. There are no recurring charges." },
-                { q: "What is the 7-Day Redundancy Reset?", a: "The 7-Day Redundancy Reset is a separate one-off paid product for people who have completed the runway calculator and want help understanding what to do next. You receive a guided private written intake, a first written response within 1 working day, a follow-up check-in, and a final Redundancy Next-Step Plan. Intake is by WhatsApp or secure web-chat style. No calls." },
-                { q: "Is the 7-Day Redundancy Reset advice?", a: "No. The Reset provides practical written support and planning only. It is not financial advice, legal advice, debt advice, employment law advice, therapy, counselling, crisis support, medical advice or a guarantee of income, employment or outcomes." },
-                { q: "Is WhatsApp live chat?", a: "No. WhatsApp is offered as a convenient intake and response channel only. It is not a live chat service. The first written response is delivered within 1 working day of intake submission. There is no promise of unlimited messaging or real-time responses." },
-                { q: "Can I get a refund for the Reset?", a: "If the full Private Runway Report does not add meaningful clarity beyond the free preview, contact support within 7 days. For the 7-Day Redundancy Reset, please refer to the product page for full refund terms." },
+                { q: "Can I use this with my partner?", a: "Yes. The income recovery step includes an optional partner income field. Enabling this adds partner monthly net income to the household runway model." },
+                { q: "What does the paid report unlock?", a: "The full Private Runway Report (£39, one-off) unlocks: slow and severe income scenarios, mortgage and housing pressure test, household resilience view, expense sensitivity ranking, month-by-month capital path, voluntary redundancy comparison, structural transition scenario, and exportable report. Access lasts 6 months." },
+                { q: "Is this a subscription?", a: "No. Both the Private Runway Report (£39) and the 7-Day Redundancy Reset are one-off payments. There are no recurring charges." },
+                { q: "What is the 7-Day Redundancy Reset?", a: "A separate one-off product for people who have completed the runway calculator and want help understanding what to do next. You receive a guided private written intake, a first written response within 1 working day, a follow-up check-in, and a final Redundancy Next-Step Plan. Intake by WhatsApp or secure web-chat. No calls." },
               ].map((item, i) => (
                 <AccordionItem key={i} value={`faq-${i}`}>
                   <AccordionTrigger className="text-left text-base" data-testid={`faq-trigger-${i}`}>
@@ -600,40 +926,53 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ── BOTTOM CTA ───────────────────────────────────────────── */}
-        <section className="py-24 px-6" data-testid="section-bottom-cta"
-          style={{ background: "linear-gradient(135deg, hsl(215 50% 8%) 0%, hsl(198 65% 14%) 100%)" }}>
+        {/* ── BOTTOM CTA ──────────────────────────────────────────────── */}
+        <section
+          className="py-24 px-6"
+          data-testid="section-bottom-cta"
+          style={{ background: "linear-gradient(135deg, hsl(215 60% 6%) 0%, hsl(198 65% 12%) 100%)" }}
+        >
           <div className="max-w-2xl mx-auto text-center">
             <h2 className="font-serif text-3xl sm:text-4xl font-bold text-white mb-4">
               Model your runway now.
             </h2>
-            <p className="text-white/60 mb-8 text-sm">
+            <p className="mb-8 text-sm" style={{ color: "hsl(215 15% 52%)" }}>
               Free preview in minutes. Full private report unlocked for £39.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-              <Button size="lg" className="btn-gold rounded-full px-8"
+              <Button
+                size="lg"
+                className="btn-gold rounded-full px-8"
                 onClick={() => navigate("/wizard")}
-                data-testid="button-bottom-cta">
-                Build my private report — Free Preview
+                data-testid="button-bottom-cta"
+              >
+                Build my private report — Free preview
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
-              <Button size="lg" variant="outline"
-                className="rounded-full px-8 border-white/25 text-white hover:bg-white/10 hover:text-white"
+              <Button
+                size="lg"
+                variant="outline"
+                className="rounded-full px-8"
+                style={{ borderColor: "hsl(215 30% 28%)", color: "hsl(215 15% 65%)" }}
                 onClick={() => navigate("/wizard")}
-                data-testid="button-bottom-cta-paid">
-                Unlock my private report — £39
+                data-testid="button-bottom-cta-paid"
+              >
+                Unlock full report — £39
               </Button>
             </div>
           </div>
         </section>
 
-        {/* ── FOOTER TRUST ROW ─────────────────────────────────────── */}
-        <div className="py-5 px-6 border-t" style={{ background: "hsl(215 50% 8%)" }}>
+        {/* ── FOOTER TRUST ROW ────────────────────────────────────────── */}
+        <div
+          className="py-5 px-6 border-t"
+          style={{ background: "hsl(215 50% 8%)", borderColor: "hsl(215 30% 14%)" }}
+        >
           <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
-            {["Private & secure", "UK focused", "Built for real life", "Clear, neutral, supportive"].map((label) => (
+            {["Private & secure", "UK focused", "Built for individuals", "Clear, neutral, supportive"].map((label) => (
               <div key={label} className="flex items-center gap-1.5">
-                <div className="w-1 h-1 rounded-full" style={{ background: "hsl(38 72% 55%)" }} />
-                <span className="text-xs text-white/40">{label}</span>
+                <div className="w-1 h-1 rounded-full" style={{ background: "hsl(38 72% 52%)" }} />
+                <span className="text-xs" style={{ color: "hsl(215 15% 38%)" }}>{label}</span>
               </div>
             ))}
           </div>
