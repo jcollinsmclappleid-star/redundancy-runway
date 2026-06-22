@@ -1,0 +1,601 @@
+You are a senior frontend engineer, SaaS landing page designer, conversion-rate optimisation specialist, Tailwind/shadcn UI expert, and UK consumer fintech UX copywriter.
+
+I am building RedundancyCalculatorUK, a B2C-only UK redundancy calculator and private runway report product.
+
+I want you to redesign and implement the homepage and global theme based on the attached visual reference/mockup.
+
+The new homepage should feel:
+
+* modern SaaS
+* premium fintech
+* reassuring
+* private
+* calm
+* professional
+* mobile-first
+* visually distinctive
+* not corporate HR
+* not cheap calculator
+* not fear-led
+* not generic budgeting app
+
+The core product is:
+
+RedundancyCalculatorUK — Private Redundancy Runway Report
+
+Primary positioning:
+“Model how long your money may last if work changes.”
+
+Supporting copy:
+“Build a private redundancy runway report for redundancy, restructuring, voluntary redundancy, AI-related uncertainty, mortgage pressure or a slower return to work.”
+
+The homepage visual direction should use a strong hero illustration/theme:
+
+A winding illuminated road/runway moving through a calm landscape toward a private report card at the horizon, with floating scenario cards around it.
+
+The visual should communicate:
+
+* redundancy pay estimate
+* runway modelling
+* mortgage/rent pressure
+* slow recovery scenario
+* household impact
+* support if needed
+* private report output
+* direction through uncertainty
+
+Do not use generic bar charts as the main iconography. The visual should feel like “life runway + financial report + scenarios”, not analytics software only.
+
+Important: do not blindly rebuild the whole app. First inspect the current homepage, routes, components and styling. Preserve anything useful, but update the homepage and theme to match this new direction.
+
+GLOBAL THEME REQUIREMENTS
+
+Implement a premium modern SaaS theme using these suggested design tokens.
+
+Primary colours:
+
+* Deep navy: #061526
+* Ink navy: #0B1F33
+* Midnight teal: #123C46
+* Deep teal: #174C55
+* Soft teal: #DDF2EF
+* Mist blue: #EAF2F4
+* Warm gold: #D9A441
+* Soft gold: #F6C76A
+* Cream: #FFF8EC
+* Surface white: #FFFFFF
+* Off-white background: #F7F8F6
+* Slate text: #4B5563
+* Ink text: #101827
+
+Theme direction:
+
+* Dark hero section with deep navy/teal gradient
+* Warm gold CTAs
+* Cream/white report cards
+* Soft teal support sections
+* Light off-white lower-page background
+* Rounded cards, subtle shadows, soft borders
+* Premium but not flashy
+* More Stripe/Linear/modern fintech than government calculator
+
+Typography:
+
+* Keep the existing font if already premium.
+* If current serif heading works well, keep it for hero headings.
+* Pair a strong editorial serif for headings with a clean sans-serif for body.
+* If easy to implement, use:
+    * Headings: Playfair Display, Fraunces, or existing serif
+    * Body/UI: Inter
+* Make headings elegant but highly readable on mobile.
+
+Buttons:
+Primary CTA:
+
+* Gold gradient background
+* Dark navy text
+* Rounded corners
+* Subtle hover lift
+* Arrow icon on right
+
+Secondary CTA:
+
+* Transparent/dark glass
+* Border in muted teal/white
+* White text in hero
+* Chevron or arrow icon
+
+Cards:
+
+* Use glassmorphism in the hero only, lightly.
+* Use solid white cards in lower sections.
+* Keep borders subtle.
+* Avoid heavy shadows on mobile.
+
+HOMEPAGE STRUCTURE TO IMPLEMENT
+
+Build the homepage with these sections in order.
+
+1. Header / Navigation
+
+Desktop nav:
+
+* Left: logo/brand mark
+* Text: RedundancyCalculatorUK
+* Nav links:
+    * How it works
+    * Scenarios
+    * Pricing
+    * Guides
+    * About
+* Right CTA:
+    * Build my report
+
+Mobile:
+
+* Compact logo and brand name
+* CTA visible if space allows
+* Hamburger menu if needed
+* Header should not feel cramped on mobile
+
+Logo guidance:
+Use a temporary simple icon if needed:
+
+* shield outline with “R”
+* navy/gold
+* do not use the old small chart icon
+* final logo will be updated later
+
+2. Hero section
+
+Hero layout:
+
+* Desktop: two columns
+    * Left: headline, subheadline, CTAs, privacy note
+    * Right: illustrated runway/report visual
+* Mobile: stacked
+    * headline first
+    * CTA
+    * hero visual below or simplified
+
+Hero eyebrow:
+“PRIVATE • ASSUMPTION-BASED • UK FOCUSED”
+
+Hero headline:
+“Model how long your money may last if work changes.”
+
+Hero subheadline:
+“Build a private redundancy runway report for redundancy, restructuring, voluntary redundancy, AI-related uncertainty, mortgage pressure or a slower return to work.”
+
+Primary CTA:
+“Build my private report”
+
+Secondary CTA:
+“See what’s included”
+
+Privacy line under buttons:
+“Your data stays in your browser. One-off report access.”
+
+Hero visual:
+Create a custom landing-page visual using CSS/SVG/React components rather than relying on a static image if possible.
+
+Visual concept:
+
+* Dark calm landscape-style gradient background
+* Winding illuminated road/path going toward the horizon
+* Central cream report card floating above the road
+* Small floating scenario cards connected around the path
+* Icons for:
+    * redundancy pay estimate
+    * mortgage pressure
+    * slow recovery
+    * household impact
+    * support if needed
+* Use subtle glow effects around the road and report card
+* Keep it performant and mobile-safe
+
+Central report card copy:
+Title:
+“Your Runway Report”
+
+Inside:
+“Baseline runway”
+“10.4 months”
+“at current burn rate”
+
+Then:
+“Results under scenarios”
+“Range 5.1 – 18.7 months”
+
+Checklist:
+
+* Slow recovery
+* Mortgage pressure
+* One-income household
+* Voluntary redundancy
+* Structural transition
+
+Floating card examples:
+Card 1:
+“Redundancy pay estimate”
+“£28,650”
+“Statutory estimate”
+
+Card 2:
+“Mortgage pressure”
+“At risk if rates rise or rent increases”
+
+Card 3:
+“Slow recovery”
+“What if a new role takes longer?”
+
+Card 4:
+“Household impact”
+“One income supporting the household?”
+
+Card 5:
+“Support if needed”
+“Plan options and next steps”
+
+Important:
+Make these values clearly illustrative/sample values. Do not imply they are the user’s real results before the calculator is completed.
+
+3. Trust strip
+
+Place this below the hero, overlapping slightly if visually appropriate.
+
+Five trust cards:
+
+1. UK statutory assumptions
+    “Age-band rules, service caps and current thresholds.”
+2. Private modelling
+    “Your data stays in your browser.”
+3. Mortgage & household scenarios
+    “Test rate rises, rent and one-income pressure.”
+4. One-off report access
+    “One report. Yours to keep.”
+5. Non-advisory tool
+    “Planning model, not financial advice.”
+
+Important:
+If displaying statutory cap values, use current value from the calculation constants, not hardcoded outdated values. Do not show £643/week if the current statutory cap is £751/week. Use dynamic constants if possible.
+
+4. Problem section
+
+Use a bright premium section with off-white background and a soft lifestyle/report visual.
+
+Layout:
+
+* Left: copy
+* Right: calm illustration/card composition
+
+Headline:
+“Redundancy is not just a payout question. It is a runway question.”
+
+Body:
+“A redundancy package can look manageable on day one. The harder question is how it behaves over time: if a new role takes longer than expected, if mortgage or rent still needs paying, if replacement income is lower, or if the household temporarily relies on one income.”
+
+Second paragraph:
+“RedundancyCalculatorUK helps you model that future privately — under your assumptions, not anyone else’s.”
+
+Right-side visual:
+Create a soft “home/life pressure” visual:
+
+* light room/home abstract illustration, or
+* card titled “What you can plan for”
+* checklist:
+    * Multiple scenarios
+    * Monthly capital path
+    * Household resilience
+    * Clear next steps
+
+Keep it minimal, calm and premium.
+
+5. Pricing/report section
+
+This should combine pricing and scenario feature cards.
+
+Left pricing card:
+Label:
+“FULL REPORT”
+
+Price:
+“£39”
+
+Subcopy:
+“One-off payment · 6 months access”
+
+Feature list:
+
+* Everything in free preview
+* Slow and severe scenarios
+* Mortgage / housing pressure test
+* Household resilience view
+* Expense sensitivity ranking
+* Month-by-month capital path
+* Voluntary redundancy comparison
+* Structural transition scenario
+* Exportable private report
+
+CTA:
+“Unlock my private report — £39”
+
+Footer:
+“No subscription. No recurring charges.”
+
+Right scenario grid:
+Title:
+“Scenarios the report models”
+
+Six cards:
+
+1. Baseline
+    “How long the money lasts at your current burn rate.”
+2. Slow recovery
+    “If a new role takes longer than expected.”
+3. Mortgage / rent pressure
+    “What if housing costs increase?”
+4. Household one-income
+    “If one partner’s income is temporarily the only income.”
+5. Voluntary redundancy
+    “How your VR offer compares to statutory entitlement.”
+6. Structural transition
+    “Models a slower or lower-income recovery path, such as AI impact.”
+
+Important:
+Use careful language. Do not say AI will replace the user. Do not make job-risk predictions.
+
+6. 7-Day Redundancy Reset section
+
+Add a supportive next-step section.
+
+Visual direction:
+
+* Soft teal background
+* Calendar icon with number 7
+* Calm support messaging
+* Three benefit bullets
+* CTA on the right
+
+Label:
+“SUPPORTIVE NEXT STEP”
+
+Headline:
+“7-Day Redundancy Reset”
+
+Body:
+“A guided 7-day plan to stabilise, plan and take control.”
+
+Benefit cards:
+
+1. Daily actions
+    “Short, practical steps for each day.”
+2. Clarity & confidence
+    “Reduce overwhelm and regain control.”
+3. Complements your runway report
+    “Plan today. Model tomorrow.”
+
+CTA:
+“Start your 7-day reset”
+
+Pricing line:
+“£79 launch offer · one-off support”
+
+Boundary line:
+“Practical written support only. Not financial, legal, debt, employment, medical or mental health advice.”
+
+Important:
+Do not imply live chat, unlimited messaging, therapy, financial advice, legal advice or employment advice.
+
+7. Footer trust row
+
+Add a simple row:
+
+* Private & secure
+* UK focused
+* Built for real life
+* Clear, neutral, supportive
+
+Then normal footer links if they exist.
+
+MOBILE REQUIREMENTS
+
+The current mobile version feels decent but too text-heavy and not visually rich enough. Improve mobile carefully.
+
+Mobile hero:
+
+* Keep headline readable and not too large.
+* Avoid forcing massive visual below fold before CTA.
+* CTA should appear above the hero visual.
+* Floating cards should not become unreadable.
+* Use simplified hero visual on mobile:
+    * central report card
+    * road glow
+    * max 2–3 floating cards
+* Trust strip should become stacked cards or horizontal scroll cards.
+* Pricing card should be clear and not cramped.
+* 7-Day Reset section should be compact and CTA visible.
+
+PERFORMANCE REQUIREMENTS
+
+* Avoid heavy animation libraries unless already installed.
+* Prefer CSS gradients, SVG, Tailwind and lightweight animation.
+* If using animation, use subtle Framer Motion if already present. Do not add heavy dependencies without justification.
+* No autoplay video.
+* No large unoptimised background images.
+* Keep Lighthouse performance strong.
+
+VISUAL IMPLEMENTATION OPTIONS
+
+Use one of these approaches depending on current stack:
+
+Preferred:
+
+* React + Tailwind + SVG/CSS illustration
+* shadcn UI cards/buttons where appropriate
+* lucide-react icons
+* CSS gradients and pseudo-elements
+* optional Framer Motion for gentle fade/float animations if already installed
+
+Good plugin/library options if already available or easy to add:
+
+* lucide-react for icons
+* framer-motion for subtle entrance animations
+* react-countup only if useful for sample figures, but avoid gimmicks
+* @react-three/fiber only if already installed; otherwise avoid
+* lottie-react only if using a small optimised animation, otherwise avoid
+
+Avoid:
+
+* heavy 3D hero unless it is already present and performant
+* generic stock finance images
+* cartoon characters
+* aggressive red/orange warning colours
+* AI-generated image assets with unreadable text
+* complicated canvas animations that hurt mobile performance
+
+COMPONENTS TO CREATE OR REFACTOR
+
+Create or update these components if helpful:
+
+HomePage.tsx
+Main homepage composition.
+
+HeroSection.tsx
+Hero copy, CTAs, privacy note, hero visual.
+
+RunwayHeroVisual.tsx
+Custom SVG/CSS visual:
+
+* winding road/runway
+* central report card
+* floating scenario cards
+* glow effects
+* landscape gradient
+
+TrustStrip.tsx
+Five trust cards.
+
+ProblemRunwaySection.tsx
+Problem framing and planning visual.
+
+ReportPricingSection.tsx
+£39 report card + scenario grid.
+
+ScenarioCard.tsx
+Reusable card for scenario models.
+
+SevenDayResetSection.tsx
+Supportive next-step section.
+
+SiteHeader.tsx
+Updated nav and CTA.
+
+ThemeTokens.ts or CSS variables
+Define colour tokens if the project uses CSS variables.
+
+COPY RULES
+
+Keep language non-advisory.
+
+Allowed:
+
+* “under your assumptions”
+* “model”
+* “scenario”
+* “may”
+* “planning model”
+* “private report”
+* “not financial advice”
+* “does not predict outcomes”
+
+Avoid:
+
+* “you should”
+* “must”
+* “best option”
+* “safe”
+* “unsafe”
+* “secure your future”
+* “guaranteed”
+* “protect your finances”
+* “financial advice”
+* “legal advice”
+* “employment advice”
+* “debt advice”
+* “therapy”
+* “counselling”
+* “live chat”
+
+CALCULATION/TRUST WARNING
+
+If the current site shows:
+“£643/wk cap”
+or
+“Statutory Redundancy Pay 2025”
+
+update this.
+
+Use current statutory constants from the project’s calculation engine. If constants are outdated, update them and add a note.
+
+Do not hardcode outdated statutory values into the homepage.
+
+The homepage should say:
+“current thresholds”
+rather than hardcoding a cap unless the value is pulled from the same source/constants used by the calculator.
+
+SEO REQUIREMENTS
+
+Update homepage metadata:
+
+Title:
+“Redundancy Calculator UK | Private Redundancy Runway Report”
+
+Description:
+“Model how long your money may last after redundancy, restructuring, voluntary redundancy or income disruption with a private UK runway report.”
+
+Open Graph:
+Use the new premium homepage messaging.
+
+Ensure:
+
+* one H1 only
+* section headings are structured properly
+* CTA links go to the correct calculator/wizard route
+* pricing CTA goes to checkout/paywall route if implemented
+* Reset CTA goes to /redundancy-reset
+
+ACCESSIBILITY REQUIREMENTS
+
+* Maintain strong colour contrast.
+* Buttons must have accessible labels.
+* Decorative visual elements should be aria-hidden.
+* Important text must be real text, not embedded inside an image.
+* The hero visual should not contain crucial information only as decorative graphics.
+* Respect reduced motion preferences.
+* Ensure mobile tap targets are large enough.
+
+DELIVERABLES
+
+Before implementation:
+
+1. Briefly audit current homepage and theme.
+2. State what you will keep.
+3. State what you will replace.
+
+After implementation:
+
+1. List files changed.
+2. Explain key design/theme changes.
+3. Explain how the new hero visual was built.
+4. Confirm mobile responsiveness.
+5. Confirm CTA routes.
+6. Confirm no B2B/HR/employer positioning was added.
+7. Confirm no advisory language was added.
+8. Run build/typecheck if available.
+9. Fix any introduced errors.
+
+Priority:
+Implement the homepage and theme first. Do not get distracted by backend work unless required for navigation/CTA compatibility.
+
+The final result should look close to the attached mockup: a premium dark SaaS hero with a visual runway/report system, warm gold CTAs, trust strip, pricing/report section, scenario cards and 7-Day Redundancy Reset section.
