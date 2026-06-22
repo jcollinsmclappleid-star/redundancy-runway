@@ -1,4 +1,4 @@
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -134,7 +134,7 @@ export default function LandingPage() {
             A redundancy package can look manageable on day one. The harder question is how it behaves over time: if a new role takes longer than expected, if mortgage or rent still needs paying, if replacement income is lower, or if the household temporarily relies on one income.
           </p>
           <p className="text-muted-foreground leading-relaxed text-base max-w-2xl mx-auto">
-            RedundancyCalculatorUK helps you model that picture privately — under your own assumptions, before speaking to a partner, adviser, solicitor or employer.
+            RedundancyCalculatorUK helps you model that picture privately — under your own assumptions, before speaking to a financial adviser, solicitor, or anyone else.
           </p>
         </div>
       </section>
@@ -337,7 +337,7 @@ export default function LandingPage() {
                   ))}
                 </ul>
                 <Button className="w-full" variant="outline" onClick={() => navigate("/wizard")} data-testid="button-start-free">
-                  Build my private report — free preview
+                  Build my private report — Free Preview
                 </Button>
               </CardContent>
             </Card>
@@ -405,14 +405,12 @@ export default function LandingPage() {
           <p className="text-muted-foreground leading-relaxed mb-6 text-sm">
             Share what's going on, choose WhatsApp or private web-chat style intake, and receive a calm written response plus a practical 7-day plan. No calls. No judgement. No open-ended subscription.
           </p>
-          <Button
-            variant="outline"
-            onClick={() => navigate("/redundancy-reset")}
-            data-testid="button-reset-cta"
-          >
-            Start a 7-Day Redundancy Reset
-            <ArrowRight className="w-4 h-4 ml-2" />
-          </Button>
+          <Link href="/redundancy-reset" data-testid="button-reset-cta">
+            <Button variant="outline" asChild={false}>
+              Start a 7-Day Redundancy Reset
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </Link>
           <p className="text-xs text-muted-foreground mt-4">
             Practical written support only. Not financial, legal, debt, employment, medical or mental health advice.
           </p>
@@ -503,7 +501,7 @@ export default function LandingPage() {
               onClick={() => navigate("/wizard")}
               data-testid="button-bottom-cta"
             >
-              Build my private report — free preview
+              Build my private report — Free Preview
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
             <Button
