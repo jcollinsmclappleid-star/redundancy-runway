@@ -1,0 +1,1180 @@
+You are a senior UK fintech product strategist, B2C conversion-rate optimisation specialist, TypeScript/React product engineer, behavioural UX specialist, technical SEO specialist, and non-advisory financial UX copywriter.
+
+I am building a UK consumer product called RedundancyCalculatorUK.
+
+The current product was previously called RedundancyRunway. The brand/site should now be assessed and enhanced under the name:
+
+RedundancyCalculatorUK
+
+The product is a B2C-only UK redundancy, income-disruption and financial runway modelling tool for individual consumers.
+
+It helps users model, under their own assumptions, how long their money may last after redundancy, restructuring, voluntary redundancy, job loss, AI/automation uncertainty, mortgage pressure or household income disruption.
+
+This is NOT a B2B product.
+
+Do not position the product for:
+
+* HR teams
+* employers
+* outplacement firms
+* employment solicitors
+* white-label partners
+* unions
+* workplace benefits platforms
+* B2B licensing
+* enterprise dashboards
+* employer-sponsored redundancy support
+
+The goal is to assess the current site/codebase against the new B2C plan and recommend what to enhance, what to remove, and what to keep.
+
+Do not blindly rebuild the site. First audit what already exists. Preserve anything that is already strong.
+
+Core product positioning:
+RedundancyCalculatorUK should feel like a private, premium, calm UK financial planning tool for individuals facing employment uncertainty.
+
+It should not feel like:
+
+* a cheap budgeting app
+* a generic statutory redundancy calculator
+* a fear-led redundancy landing page
+* an employer or HR platform
+* a legal advice product
+* a financial advice product
+* a debt advice product
+* a therapy or counselling service
+* a recruitment service
+* a complicated professional dashboard that overwhelms stressed users
+
+The strongest positioning is:
+
+“A private redundancy runway report that helps you model how long your money may last if work changes.”
+
+The site can use the keyword-friendly brand RedundancyCalculatorUK, but the product experience should feel more premium than a basic calculator. The user should feel they are building a Private Redundancy Runway Report, not just entering numbers into a calculator.
+
+Primary B2C customers:
+
+* UK employees worried about redundancy
+* people formally placed at risk
+* people expecting restructuring
+* mortgage holders worried about income loss
+* high earners with complex monthly commitments
+* couples/households wanting to model one-income pressure
+* people considering voluntary redundancy
+* people comparing statutory, enhanced or manual redundancy packages
+* people concerned about AI/automation affecting their sector or future income
+* people who want a calm private view before speaking to a partner, adviser, solicitor or employer
+
+Core rules:
+
+* Keep the product non-advisory.
+* Do not use prescriptive wording such as “you should”, “recommended”, “must”, “best option”, “do this”, “safe”, “unsafe”, or “financially secure”.
+* Use assumption-framed language such as:
+    * “under these assumptions”
+    * “this scenario indicates”
+    * “if this input were changed”
+    * “this model does not predict outcomes”
+    * “this is a planning model, not advice”
+* Avoid fearmongering.
+* Avoid claiming the user’s role is personally at risk from AI.
+* Keep the tone calm, private, premium and reassuring.
+* Maintain an institutional/private-wealth-style aesthetic where it already exists.
+* Reduce cognitive load where the current product feels too dashboard-heavy.
+* Keep calculations client-side where possible.
+* Do not transmit sensitive financial inputs to the server unless explicitly necessary.
+* Preserve the current React/Vite/TypeScript/Tailwind/shadcn structure unless there is a clear technical reason to change it.
+* Optimise for B2C conversion, wizard completion, paid report unlocks, trust, SEO and perceived value.
+* Prioritise high-quality one-off paid products over subscriptions.
+* Do not add B2B, HR, white-label or employer language anywhere.
+
+Before making changes, audit the current project.
+
+PHASE 1 — Current site/codebase audit
+
+Inspect the current codebase and produce a short audit before implementing anything.
+
+Assess:
+
+1. Current routes/pages/components.
+2. Current landing page structure.
+3. Current wizard structure.
+4. Current preview/paywall/results flow.
+5. Current calculation engine.
+6. Current statutory redundancy assumptions.
+7. Current tax/notice/holiday pay handling.
+8. Current Stripe/payment implementation.
+9. Current admin/dashboard functionality, if any.
+10. Current SEO setup: metadata, sitemap, robots, canonical tags, internal links, page titles, slugs.
+11. Current visual identity and whether it feels premium.
+12. Current copy and whether it is clear, calm, private and conversion-focused.
+13. Current areas that are already strong and should be kept.
+14. Current areas that are confusing, outdated, overcomplicated or weak for conversion.
+15. Any B2B, HR, employer or white-label language that needs removing.
+16. Any legal/financial/debt/medical/therapy advice wording that creates compliance risk.
+17. Any unsupported benchmark/source claims that need verifying, softening or removing.
+18. Any existing user/contact/intake forms that can be reused for the new 7-Day Redundancy Reset product.
+
+After the audit, create three lists:
+
+* Keep
+* Enhance
+* Remove or replace
+
+Do not remove strong existing features just because the new plan uses different wording. Keep anything that improves trust, conversion, speed, UX, privacy, SEO or perceived product value.
+
+PHASE 2 — Accuracy and trust audit
+
+Verify all UK redundancy calculation assumptions against current official UK sources before finalising.
+
+Check and update:
+
+* statutory redundancy weekly pay cap
+* maximum statutory redundancy pay
+* 20-year service cap
+* two-year qualifying service rule
+* age-band calculation logic
+* treatment of service years under 22, 22–40, and 41+
+* £30,000 tax-free threshold for qualifying termination payments
+* distinction between statutory redundancy pay and taxable items
+* notice pay treatment
+* holiday pay treatment
+* unpaid wages treatment
+* enhanced redundancy package handling
+* voluntary redundancy package handling
+* manual package override handling
+
+Important:
+
+* Do not present notice pay, holiday pay or unpaid wages as tax-free redundancy pay.
+* Do not imply that the tool calculates exact personal tax liability.
+* Add “last checked” dates for statutory assumptions.
+* Add concise source notes.
+* Add a methodology section explaining that the tool is deterministic, assumption-based and non-advisory.
+* Add a persistent but subtle disclaimer.
+
+Suggested calculator disclaimer:
+“RedundancyCalculatorUK is a non-advisory modelling tool. Outputs are based on the assumptions entered and do not constitute financial, legal, tax or employment advice.”
+
+PHASE 3 — Brand and positioning update
+
+Update brand naming across the site.
+
+Use:
+
+* Brand name: RedundancyCalculatorUK
+* Calculator/report product concept: Private Redundancy Runway Report
+* Main support product concept: 7-Day Redundancy Reset
+* Primary calculator CTA: Build my private report
+* Secondary calculator CTA: See what the report includes
+
+Avoid using only “calculator” language in premium sections. The domain/brand can be keyword-focused, but the product should feel more valuable than a basic calculator.
+
+Recommended positioning:
+“Model how long your money may last if work changes.”
+
+Supporting line:
+“Build a private redundancy runway report for income loss, restructuring, voluntary redundancy, AI-related uncertainty or a slower return to work.”
+
+Privacy line:
+“Your financial inputs are used to build the model. The report is assumption-based and does not provide financial, legal, tax or employment advice.”
+
+PHASE 4 — Landing page conversion enhancement
+
+Assess the current landing page against this structure. Keep any existing design sections that already work, but rewrite or restructure weak sections.
+
+The landing page should include:
+
+1. Hero
+
+Headline:
+“Model how long your money may last if work changes.”
+
+Subheadline:
+“Build a private redundancy runway report for redundancy, restructuring, voluntary redundancy, AI-related uncertainty, mortgage pressure or a slower return to work.”
+
+CTA:
+“Build my private report”
+
+Secondary CTA:
+“See what the report includes”
+
+Trust strip:
+
+* UK statutory redundancy assumptions
+* Private, assumption-based modelling
+* Mortgage and household scenarios
+* One-off report access
+* Non-advisory tool
+
+2. Problem section
+
+Explain that redundancy is not just a payout question. It is a runway question.
+
+Copy direction:
+“A redundancy package can look manageable on day one. The harder question is how it behaves over time: if a new role takes longer, if mortgage or rent still needs paying, if replacement income is lower, or if the household temporarily relies on one income.”
+
+3. Product preview section
+
+Show that the report includes:
+
+* statutory redundancy estimate where applicable
+* starting capital
+* monthly burn
+* baseline runway
+* slow recovery scenario
+* mortgage/rent stress
+* household view
+* expense sensitivity
+* voluntary redundancy comparison
+* package comparison
+* structural transition scenario
+* partner discussion summary
+* exportable report
+
+4. Scenario examples
+
+Include:
+
+* Baseline case
+* Slow recovery case
+* Mortgage/rent pressure case
+* Household one-income case
+* Voluntary redundancy case
+* AI/automation structural transition case
+
+Keep AI carefully worded:
+“This does not predict job outcomes. It simply models a slower or lower-income recovery path under a structural transition scenario.”
+
+5. Pricing section
+
+Recommend one main paid calculator/report package at launch.
+
+Free Preview:
+
+* basic statutory estimate
+* basic runway
+* capital snapshots
+* preview of locked report
+
+Paid package:
+Private Runway Report — £39 one-off
+
+Include:
+
+* baseline, slow and severe scenarios
+* mortgage/rent stress test
+* household resilience view
+* expense sensitivity table
+* month-by-month capital path
+* redundancy package comparison
+* voluntary redundancy comparison
+* structural transition scenario
+* partner discussion summary
+* exportable private report
+* access for 6 months
+
+CTA:
+“Unlock my private report”
+
+Subcopy:
+“One-off payment. No subscription. Access your report for 6 months.”
+
+Do not add subscriptions unless there is a strong reason. This is an event-driven purchase.
+
+6. 7-Day Redundancy Reset homepage section
+
+Add a section below the calculator explanation or below the report pricing section.
+
+Section headline:
+“Need help after seeing your result?”
+
+Copy:
+“Your calculator result can show how long your money may last. The 7-Day Redundancy Reset helps you organise what to do next.
+
+Share what’s going on, choose WhatsApp or private web-chat style intake, and receive a calm written response plus a practical 7-day plan. No calls. No judgement. No open-ended subscription.”
+
+CTA:
+“Start a 7-Day Redundancy Reset”
+
+Secondary copy:
+“Practical written support only. Not financial, legal, debt, employment, medical or mental health advice.”
+
+7. FAQ
+
+Include:
+
+* Is this financial advice?
+* Does this predict whether I will find work?
+* Is my data private?
+* Is statutory redundancy pay included?
+* Can I model voluntary redundancy?
+* Can I use this with my partner?
+* What does the paid report unlock?
+* Is this a subscription?
+* What is the 7-Day Redundancy Reset?
+* Is the 7-Day Redundancy Reset advice?
+* Is WhatsApp live chat?
+* Can I get a refund for the Reset?
+
+PHASE 5 — Wizard improvement
+
+Assess the current wizard. Keep the current flow if it is already clean, but improve labels, helper copy and grouping.
+
+The wizard should feel like:
+“Build your private report”
+
+Not:
+“Fill in a financial form”
+
+Recommended wizard steps:
+
+1. Your situation
+2. Package assumptions
+3. Money available at the start
+4. Income recovery assumptions
+5. Core monthly commitments
+6. Flexible costs and buffer
+7. Preview your report
+
+Add helper copy to each step.
+
+Step 1 — Your situation:
+“This helps frame the report. These answers do not decide the outcome; they only shape the scenario labels and assumptions.”
+
+Include:
+
+* formal redundancy
+* at risk of redundancy
+* restructuring
+* voluntary redundancy
+* contract ending
+* AI or automation concern
+* other income disruption
+
+Step 2 — Package assumptions:
+“Use statutory, enhanced or manual package assumptions. The report separates redundancy-related payments from taxable employment payments where possible.”
+
+Include:
+
+* age
+* full years of service
+* gross weekly/monthly pay
+* statutory package
+* enhanced package
+* manual package
+* notice pay
+* holiday pay
+* unpaid wages
+* voluntary redundancy comparison amount
+
+Step 3 — Money available at the start:
+“Add accessible cash, liquid investments and one-off income that could realistically support the runway.”
+
+Include:
+
+* cash savings
+* accessible investments
+* emergency fund
+* expected redundancy payment
+* other accessible funds
+
+Step 4 — Income recovery assumptions:
+“This does not predict a job outcome. It models how the runway changes under different return-to-income assumptions.”
+
+Include:
+
+* expected months until replacement income
+* expected replacement monthly net income
+* reduced-income scenario
+* partner monthly net income, optional
+* household uses partner income, optional
+
+Step 5 — Core monthly commitments:
+“Use the monthly costs that would still need covering during income disruption.”
+
+Include:
+
+* mortgage/rent
+* utilities
+* council tax
+* debt repayments
+* insurance
+* transport
+* food
+* childcare/dependants
+* other essential commitments
+
+Step 6 — Flexible costs and buffer:
+“These assumptions allow the report to show sensitivity, not instructions.”
+
+Include:
+
+* discretionary spending
+* subscriptions
+* eating out
+* travel
+* lifestyle costs
+* retraining/reskilling monthly cost
+* buffer amount
+
+Add privacy reassurance near sensitive inputs:
+“These figures are used to build your report assumptions. The model does not provide financial, tax, legal or employment advice.”
+
+PHASE 6 — Free preview and paywall
+
+Assess the current preview/paywall flow. Improve it so the free preview gives useful baseline value but creates a clear reason to unlock the full report.
+
+Free preview should show:
+
+* estimated statutory redundancy pay where applicable
+* starting capital
+* baseline monthly burn
+* basic runway estimate
+* capital after 3, 6 and 12 months
+* one simple baseline scenario
+* preview of locked report sections
+
+Lock the highest-value outputs:
+
+* slow recovery scenario
+* severe case
+* mortgage/rent stress test
+* household resilience view
+* expense sensitivity table
+* month-by-month capital depletion
+* package comparison
+* voluntary redundancy comparison
+* structural transition scenario
+* partner discussion summary
+* export/download option
+* assumptions and source appendix
+
+Paywall headline:
+“Your free preview shows the baseline. The full report shows the stress cases.”
+
+Paywall supporting copy:
+“Under the assumptions entered, your preview shows the first layer of the model. The full Private Runway Report unlocks the scenarios that usually matter most when income is uncertain.”
+
+CTA:
+“Unlock my private report”
+
+Payment reassurance:
+“One-off payment. No subscription. Access your report for 6 months.”
+
+Refund/guarantee wording:
+“If the full report does not add meaningful clarity beyond the free preview, contact support within 7 days.”
+
+PHASE 7 — Calculator results page and 7-Day Redundancy Reset CTA
+
+Assess the current results/dashboard. Keep existing charts or tables that work, but add a simpler report-first experience.
+
+The paid report should lead with:
+
+1. Executive summary
+2. Starting capital
+3. Monthly burn
+4. Baseline runway
+5. Slow-case runway
+6. Severe-case runway
+7. Statutory redundancy estimate
+8. Notice pay / holiday pay assumptions
+9. Mortgage/rent pressure
+10. Household view
+11. Expense sensitivity
+12. Income replacement assumptions
+13. Capital recovery view
+14. Package comparison
+15. Voluntary redundancy comparison
+16. Structural transition scenario
+17. Partner discussion summary
+18. Assumptions and source notes
+19. Export/download option
+
+Rename overly technical tabs if needed:
+
+* “Capital Trajectory” → “Capital path”
+* “Income Recovery Scenarios” → “Income recovery”
+* “Capital Threshold Events” → “Pressure points”
+* “Expense Sensitivity Ranking” → “Expense sensitivity”
+* “Stress Testing” → “Stress cases”
+* “Mortgage Sensitivity” → “Housing pressure”
+* “Supplementary” → “Assumptions & sources”
+
+The first screen after payment should not be a complex dashboard. It should be a clean executive summary with clear cards.
+
+Add contextual 7-Day Redundancy Reset CTAs to the results page.
+
+Standard CTA below runway result:
+“If your result has left you unsure what to do next, start a 7-Day Redundancy Reset.”
+
+CTA button:
+“Start 7-Day Redundancy Reset”
+
+Higher-risk result band CTA:
+If runway is short, user indicates high concern, or the model shows high housing pressure, show a stronger but calm CTA:
+“Your next step matters. Get a private written plan for the next 7 days.”
+
+CTA button:
+“Get my 7-day written reset”
+
+Do not make this alarmist. Do not say the user is in danger, failing, unsafe or financially insecure.
+
+PHASE 8 — Add new one-off paid product: 7-Day Redundancy Reset
+
+Add a new one-off paid product to the RedundancyCalculatorUK implementation plan called:
+
+7-Day Redundancy Reset
+
+Objective:
+Add a practical, bounded, one-off support product for users who have completed the redundancy calculator and want help understanding what to do next. This should increase conversion by turning calculator anxiety into a clear next-step paid offer.
+
+Core positioning:
+“Made redundant or worried your job may be at risk? Get a private 7-day written reset by WhatsApp or secure web chat — designed to help you organise your thoughts, understand your immediate priorities and take a clearer next step.”
+
+This must be positioned as practical written support, not financial advice, legal advice, debt advice, therapy, counselling, recruitment advice or guaranteed employment/income support.
+
+Main product:
+7-Day Redundancy Reset — £99 standard price
+
+Launch offer:
+£79 for first 20 customers
+
+The product is a one-off payment only. Do not make this subscription-first.
+
+What the user receives:
+
+* Guided private intake after checkout
+* Choice of WhatsApp or secure web-chat style intake
+* First written response within 1 working day
+* One follow-up check-in within the 7-day journey
+* Final “Redundancy Next-Step Plan”
+* 7-day action plan
+* 30-day direction
+* Signposting where professional financial, legal, debt, mental health or employment advice may be needed
+
+Strict scope:
+
+* No live chat promise
+* No unlimited messaging
+* No calls
+* No legal advice
+* No financial advice
+* No debt advice
+* No medical advice
+* No mental health advice
+* No therapy or counselling
+* No recruitment advice
+* No guarantee of job outcomes
+* No guarantee of income outcomes
+* No guarantee of redundancy rights
+* WhatsApp is for convenience only and is not emergency support
+
+Core product-page disclaimer:
+“The 7-Day Redundancy Reset provides practical written support and planning. It is not financial advice, legal advice, debt advice, employment law advice, therapy, counselling, crisis support, medical advice or a guarantee of income, employment or outcomes.”
+
+Where to place the offer:
+
+1. Calculator results page:
+    Add a contextual CTA below the user’s runway result:
+    “If your result has left you unsure what to do next, start a 7-Day Redundancy Reset.”
+2. Higher-risk result bands:
+    If runway is short or user indicates high concern, show a stronger but calm CTA:
+    “Your next step matters. Get a private written plan for the next 7 days.”
+3. Email capture follow-up:
+    After calculator completion, include the offer in the email summary:
+    “Want help turning this into a practical next-step plan?”
+4. Homepage section:
+    Add a section below the calculator explanation:
+    “Need help after seeing your result?”
+5. Dedicated product page:
+    Create:
+    /redundancy-reset
+
+Also consider redirect/alias:
+/7-day-redundancy-reset
+
+Product page structure:
+
+* Hero
+* Who it is for
+* How the 7-day journey works
+* What you receive
+* WhatsApp or secure web-chat option
+* What this is not
+* Price
+* Refund wording
+* FAQs
+* Start CTA
+
+Product page hero:
+
+Headline:
+“Get a clearer next step after redundancy.”
+
+Subheadline:
+“Made redundant or worried your job may be at risk? Get a private 7-day written reset by WhatsApp or secure web-chat style intake — designed to help you organise your thoughts, understand your immediate priorities and take a clearer next step.”
+
+CTA:
+“Start my 7-Day Redundancy Reset”
+
+Secondary line:
+“Practical written support only. No calls. No live chat promise. No financial, legal, debt, employment, medical or mental health advice.”
+
+Recommended homepage/product copy:
+“Your calculator result can show how long your money may last. The 7-Day Redundancy Reset helps you decide what to do next.
+
+Share what’s going on, choose WhatsApp or private web chat, and receive a calm written response plus a practical 7-day plan. No calls. No judgement. No open-ended subscription.”
+
+Journey:
+
+* Day 0 — User completes calculator or lands on product page.
+* Day 0 — User chooses “Start Redundancy Reset”.
+* Day 0 — User pays via Stripe.
+* Day 0 — User completes guided intake.
+* Day 1 — Admin reviews intake and sends Reply 1.
+* Day 3/4 — User receives follow-up check-in.
+* Day 7 — User receives final Redundancy Next-Step Plan.
+
+Guided intake questions:
+
+1. What best describes your situation?
+    * I have been made redundant
+    * I am at risk of redundancy
+    * I am worried my role may be affected
+    * My income feels uncertain
+    * I need to plan my next move
+    * I am not sure yet
+2. What feels most urgent right now?
+    * Money/runway
+    * Job search
+    * Confidence
+    * Decision-making
+    * CV/LinkedIn
+    * Side income
+    * Family pressure
+    * Mortgage/rent pressure
+    * Something else
+3. What did your calculator result make you think or feel?
+4. What outcome would make the next 7 days feel more manageable?
+5. What have you already done?
+6. What are you avoiding or putting off?
+7. Do you prefer the response to be:
+    * Calm and reassuring
+    * Direct and practical
+    * Structured and step-by-step
+8. Preferred channel:
+    * WhatsApp
+    * Secure web chat / email-style portal
+
+Final Redundancy Next-Step Plan structure:
+
+1. Situation summary
+2. Main pressure point
+3. What matters most this week
+4. What not to rush
+5. Your 7-day action plan
+6. Your 30-day direction
+7. Job-search / income / confidence next steps
+8. Useful scripts or templates if relevant
+9. Professional signposting if needed
+10. Optional next support route
+
+Tone requirements for the plan:
+
+* Calm
+* Practical
+* Boundaried
+* Non-advisory
+* No legal, financial, debt, medical or therapy advice
+* No guaranteed outcomes
+* No judgement
+* No panic language
+
+PHASE 9 — 7-Day Redundancy Reset admin queue
+
+Create a simple admin queue for paid resets.
+
+Admin statuses:
+
+* New
+* Paid
+* Intake submitted
+* In review
+* Reply 1 sent
+* Follow-up sent
+* Final plan sent
+* Closed
+* Needs signposting
+
+Admin fields:
+
+* customer name
+* email
+* phone/WhatsApp
+* product purchased
+* payment status
+* calculator result summary if available
+* intake answers
+* preferred tone
+* urgency level
+* response due date
+* internal notes
+* reply 1 draft
+* follow-up draft
+* final plan draft
+* final plan sent timestamp
+* created timestamp
+* updated timestamp
+
+Admin response templates:
+
+Reply 1 structure:
+
+* What I’m hearing
+* What seems most important
+* What not to panic about yet
+* Your first 24-hour action
+* One clarification question
+
+Follow-up structure:
+
+* What has become clearer
+* What still needs focus
+* What to do before the final plan
+
+Final plan:
+Use the Redundancy Next-Step Plan structure:
+
+1. Situation summary
+2. Main pressure point
+3. What matters most this week
+4. What not to rush
+5. Your 7-day action plan
+6. Your 30-day direction
+7. Job-search / income / confidence next steps
+8. Useful scripts or templates if relevant
+9. Professional signposting if needed
+10. Optional next support route
+
+Admin safety controls:
+
+* Allow admin to mark “Needs signposting”.
+* Allow admin to add internal notes.
+* Allow admin to avoid giving advice where the user needs professional support.
+* Allow admin to use template sections without promising live or unlimited support.
+
+PHASE 10 — 7-Day Redundancy Reset payment
+
+Use Stripe Checkout.
+
+Create one product:
+7-Day Redundancy Reset — £99
+
+Add launch coupon/offer:
+£79 for first 20 customers
+
+Payment rules:
+
+* One-off payment only
+* No subscription
+* No recurring billing
+* No live chat promise
+* No unlimited messaging promise
+
+Refund wording:
+“If you pay and decide not to continue before submitting your intake, you can request a full refund within 24 hours. Once your intake has been reviewed and your first written response has been prepared, the reset is non-refundable.”
+
+Before checkout, require confirmation that the user understands:
+
+* This is practical written support only.
+* This is not financial advice.
+* This is not legal advice.
+* This is not debt advice.
+* This is not employment law advice.
+* This is not therapy, counselling, medical advice or crisis support.
+* This does not guarantee employment, income, redundancy rights or financial outcomes.
+* WhatsApp is for convenience only and is not emergency support.
+
+PHASE 11 — 7-Day Redundancy Reset WhatsApp MVP
+
+Do not build full WhatsApp automation initially.
+
+MVP approach:
+
+* Add a WhatsApp button with prefilled message:
+    “Hi, I’d like to start my 7-Day Redundancy Reset.”
+
+After payment, show:
+“You can continue through WhatsApp or complete your intake privately on the website.”
+
+WhatsApp requirements:
+
+* Make clear that WhatsApp is not live chat.
+* Make clear that WhatsApp is not emergency support.
+* Make clear that the first written response is within 1 working day.
+* Do not imply unlimited back-and-forth messaging.
+* Allow the user to choose secure web-chat style intake instead.
+
+PHASE 12 — 7-Day Redundancy Reset web-chat MVP
+
+Build a fake-chat guided intake, not live chat.
+
+Requirements:
+
+* One question per step
+* Buttons for multiple-choice answers
+* Text areas for open answers
+* Progress indicator
+* Save structured answers
+* Confirmation screen after submission
+* Mobile-first layout
+* Conversational but not therapy-like
+* Calm, premium, private design
+
+Suggested page route:
+/redundancy-reset/intake
+
+Suggested confirmation copy:
+“Your intake has been received. Your first written response will be prepared within 1 working day. If anything you shared needs professional financial, legal, debt, employment, medical or crisis support, the response may focus on signposting rather than general planning.”
+
+PHASE 13 — Safety and boundaries
+
+Add clear disclaimer before payment and on the product page:
+“The 7-Day Redundancy Reset provides practical written support and planning. It is not financial advice, legal advice, debt advice, employment law advice, therapy, counselling, crisis support, medical advice or a guarantee of income, employment or outcomes.”
+
+If user indicates immediate danger, self-harm, severe crisis, or urgent debt/legal/employment issue:
+
+* show signposting message
+* do not continue as normal support
+* recommend appropriate professional or emergency help
+* allow admin to mark as “Needs signposting”
+
+Do not provide hotline numbers unless they are current and location-appropriate. If implementing signposting content, use official/current sources and make it jurisdiction-appropriate for UK users.
+
+Suggested signposting copy:
+“Some situations need specialist or urgent support. Based on what you have shared, this may be outside the scope of the 7-Day Redundancy Reset. The next response may focus on appropriate signposting rather than general planning.”
+
+Crisis boundary:
+“This service is not emergency support. If there is immediate danger or a risk of harm, contact emergency services or an appropriate crisis service.”
+
+Debt boundary:
+“This service cannot provide debt advice. If debt has become urgent or unmanageable, the response may signpost to a regulated debt advice provider.”
+
+Legal/employment boundary:
+“This service cannot provide legal or employment law advice. If deadlines, legal rights, settlement agreements, dismissal, discrimination or formal disputes are involved, the response may signpost to appropriate professional support.”
+
+Financial boundary:
+“This service cannot provide financial advice. It can help organise priorities and questions, but it cannot recommend financial products, investments, pensions, debt solutions or tax actions.”
+
+PHASE 14 — 7-Day Redundancy Reset design requirements
+
+Design requirements:
+
+* Calm
+* Premium
+* Private
+* Mobile-first
+* Not alarmist
+* Not therapy-like
+* Not corporate HR/outplacement
+* Not legal-advice-like
+* Not financial-advice-like
+* Strong CTA hierarchy
+* Soft cards and reassuring copy
+* Use existing RedundancyCalculatorUK brand style
+* The paid reset should feel like a natural next step after using the calculator
+
+Avoid:
+
+* “coach”
+* “counselling”
+* “therapy”
+* “legal review”
+* “financial review”
+* “debt help”
+* “career guarantee”
+* “job placement”
+* “unlimited chat”
+* “live WhatsApp support”
+
+Allowed terms:
+
+* “written reset”
+* “private written support”
+* “practical planning”
+* “organise your next step”
+* “7-day plan”
+* “30-day direction”
+* “signposting where professional advice may be needed”
+* “secure web-chat style intake”
+* “WhatsApp convenience option”
+
+PHASE 15 — AI/automation context
+
+Add AI/automation carefully as a consumer acquisition and scenario feature, not a prediction tool.
+
+Allowed language:
+
+* “AI or automation concern”
+* “structural transition scenario”
+* “slower recovery scenario”
+* “lower replacement income scenario”
+* “sector uncertainty context”
+* “this does not predict job outcomes”
+
+Avoid:
+
+* “AI will replace your job”
+* “your role is at risk”
+* “AI redundancy score”
+* “job risk rating”
+* “safe career”
+* “unsafe career”
+
+If sector-level context exists, label it clearly as contextual and not personal.
+
+PHASE 16 — SEO plan for RedundancyCalculatorUK
+
+Assess current SEO. Keep any SEO pages that are useful. Improve or add pages only where they target high-intent B2C UK search terms.
+
+Recommended calculator/report pages:
+
+1. /
+    Meta title: “Redundancy Calculator UK | Private Redundancy Runway Report”
+    Meta description: “Model how long your money may last after redundancy, restructuring, voluntary redundancy or income disruption with a private UK runway report.”
+2. /redundancy-calculator-uk
+    Meta title: “Redundancy Calculator UK”
+    Meta description: “Estimate redundancy pay assumptions and model how long your money may last under different income recovery scenarios.”
+3. /redundancy-pay-calculator-uk-2026
+    Meta title: “Redundancy Pay Calculator UK 2026”
+    Meta description: “Estimate statutory redundancy pay using current UK assumptions and model how the payment may affect your financial runway.”
+4. /redundancy-runway-calculator
+    Meta title: “Redundancy Runway Calculator UK”
+    Meta description: “Model your savings, redundancy payment, mortgage or rent, and household costs after income disruption.”
+5. /voluntary-redundancy-calculator
+    Meta title: “Voluntary Redundancy Calculator UK”
+    Meta description: “Compare voluntary redundancy package assumptions and model your runway under different income recovery scenarios.”
+6. /mortgage-redundancy-calculator
+    Meta title: “Mortgage Redundancy Calculator UK”
+    Meta description: “See how mortgage payments may affect your financial runway during redundancy or income disruption.”
+7. /income-loss-calculator-uk
+    Meta title: “Income Loss Calculator UK”
+    Meta description: “Model how long savings and redundancy payments may last after job loss, reduced income or work disruption.”
+8. /emergency-fund-runway-calculator
+    Meta title: “Emergency Fund Runway Calculator UK”
+    Meta description: “Estimate how long your emergency fund may last under income loss, essential expenses and household commitments.”
+9. /one-income-household-calculator
+    Meta title: “One-Income Household Calculator UK”
+    Meta description: “Model how household finances may change if one income stops temporarily.”
+10. /ai-job-risk-financial-planning
+    Meta title: “AI Job Uncertainty Financial Planning Tool UK”
+    Meta description: “Model financial runway scenarios for AI, automation or structural job uncertainty without predicting job outcomes.”
+
+Recommended 7-Day Redundancy Reset SEO pages:
+
+1. /redundancy-reset
+    Meta title: “7-Day Redundancy Reset | Private Written Support After Redundancy”
+    Meta description: “Get a private 7-day written reset to organise your next step after redundancy, job uncertainty or income disruption. Practical support only, not advice.”
+2. /7-day-redundancy-reset
+    Meta title: “7-Day Redundancy Reset”
+    Meta description: “A practical written reset for people made redundant, at risk of redundancy or unsure what to do next.”
+3. /made-redundant-what-next
+    Meta title: “Made Redundant: What Next?”
+    Meta description: “A calm guide to organising your first steps after redundancy, including runway, priorities, documents and support options.”
+4. /at-risk-of-redundancy-what-to-do
+    Meta title: “At Risk of Redundancy: What to Do Next”
+    Meta description: “Understand what to organise if your role is at risk and how to model your financial runway under different assumptions.”
+5. /first-week-after-redundancy
+    Meta title: “First Week After Redundancy: Practical Next Steps”
+    Meta description: “A calm, practical guide to the first week after redundancy, including money, documents, job search and household planning.”
+6. /redundancy-action-plan
+    Meta title: “Redundancy Action Plan UK”
+    Meta description: “Create a practical next-step plan after redundancy or job uncertainty, with clear priorities and signposting where professional advice may be needed.”
+7. /worried-about-losing-your-job
+    Meta title: “Worried About Losing Your Job?”
+    Meta description: “Model your financial runway and organise your next steps if you are worried about redundancy, restructuring or income disruption.”
+8. /how-long-will-my-money-last-after-redundancy
+    Meta title: “How Long Will My Money Last After Redundancy?”
+    Meta description: “Model how long your money may last after redundancy using savings, redundancy pay, mortgage or rent and household costs.”
+
+Internal linking:
+
+* Every SEO page links to the wizard.
+* Every SEO page links to the statutory redundancy assumptions page.
+* Every relevant SEO page links to /redundancy-reset.
+* Mortgage, household and voluntary redundancy pages link to the full report feature section.
+* “What next” and “first week” pages link to the 7-Day Redundancy Reset.
+* AI pages link to the structural transition scenario.
+* Avoid thin pages. Each page needs useful explanatory content, not duplicated doorway copy.
+
+CTA for guidance pages:
+“Start a 7-Day Redundancy Reset.”
+
+Supporting CTA:
+“Build your private redundancy runway report first.”
+
+Schema:
+Add appropriate structured data where suitable:
+
+* WebApplication schema
+* FAQPage schema for FAQ sections
+* BreadcrumbList schema
+* Organization schema
+* SoftwareApplication schema if appropriate
+* Product schema for the 7-Day Redundancy Reset, if implemented carefully and accurately
+
+Technical SEO:
+
+* Ensure sitemap includes all public pages.
+* Ensure no private/report/payment/admin pages are indexed.
+* Add canonical tags.
+* Add unique titles and meta descriptions.
+* Ensure robots.txt does not block public SEO pages.
+* Add Open Graph and Twitter metadata.
+* Ensure fast loading and mobile-first layout.
+
+PHASE 17 — Pricing and monetisation
+
+Recommend B2C pricing only.
+
+Calculator/report launch pricing:
+
+* Free Preview: £0
+* Private Runway Report: £39 one-off
+* Later test: £49 one-off after traffic and trust improve
+
+7-Day Redundancy Reset pricing:
+
+* Standard price: £99 one-off
+* Launch price: £79 for first 20 customers
+
+Do not add a subscription at launch.
+
+Do not add £79/£99 calculator report tiers unless there is a genuinely bigger report, multiple saved scenarios, human review, or added value that does not create advice risk.
+
+Product names:
+
+* Private Runway Report
+* 7-Day Redundancy Reset
+
+Checkout copy for report:
+“Unlock my private report”
+
+Checkout copy for Reset:
+“Start my 7-Day Redundancy Reset”
+
+Report checkout subcopy:
+“One-off payment. No subscription. Access your report for 6 months.”
+
+Reset checkout subcopy:
+“One-off payment. Practical written support only. First written response within 1 working day after intake submission.”
+
+PHASE 18 — What to keep
+
+When auditing the current site, actively identify things to preserve.
+
+Keep anything that:
+
+* already feels premium
+* supports the private wealth/institutional aesthetic
+* increases trust
+* reduces anxiety
+* makes the model clearer
+* improves completion rate
+* improves SEO
+* improves site speed
+* keeps calculations client-side
+* makes the product feel worth paying for
+* helps users understand uncertainty without giving advice
+* can be reused for the 7-Day Redundancy Reset intake/admin flow
+
+Do not remove good existing dashboards or charts automatically. If they are useful but too complex, move them behind a simpler “Report Summary” screen.
+
+Do not replace the entire site if refinement is better.
+
+PHASE 19 — Implementation
+
+After auditing, implement the highest-impact improvements.
+
+Priority order:
+
+1. Fix statutory redundancy constants and calculation logic.
+2. Separate redundancy pay from taxable notice/holiday/unpaid wages.
+3. Update brand to RedundancyCalculatorUK.
+4. Rewrite landing page positioning and CTA.
+5. Improve wizard labels/helper copy.
+6. Improve free preview and paywall.
+7. Add/upgrade paid report summary.
+8. Add contextual 7-Day Redundancy Reset CTA on calculator results.
+9. Add 7-Day Redundancy Reset product page.
+10. Add Stripe Checkout product for 7-Day Redundancy Reset.
+11. Add launch price/coupon logic for first 20 customers.
+12. Add guided intake flow.
+13. Add WhatsApp MVP continuation option.
+14. Add admin queue for Reset customers.
+15. Add admin templates and statuses.
+16. Add safety/boundary disclaimers.
+17. Add household and voluntary redundancy features if not present.
+18. Add careful AI/automation scenario language.
+19. Improve SEO metadata, sitemap, canonical tags and public SEO pages.
+20. Add source/methodology/disclaimer sections.
+21. Run build/typecheck and fix errors.
+
+PHASE 20 — Acceptance criteria
+
+Calculator/report acceptance criteria:
+
+* User can start the calculator from the homepage.
+* User can complete the wizard.
+* User can see a useful free preview.
+* User can unlock the Private Runway Report via Stripe.
+* Paid report shows baseline, slow and severe scenarios.
+* Paid report shows mortgage/rent and household views.
+* Paid report includes assumptions and disclaimers.
+* Statutory assumptions are current and sourced.
+* No B2B, HR or employer positioning exists.
+* No financial/legal/tax/employment advice wording exists.
+
+7-Day Redundancy Reset acceptance criteria:
+
+* User can complete calculator and see contextual Reset CTA.
+* User can visit dedicated Reset product page.
+* User can pay via Stripe.
+* User can complete guided intake.
+* User can choose WhatsApp or web-chat style intake.
+* Admin can view paid reset queue.
+* Admin can draft and mark responses as sent.
+* User receives confirmation and next-step messaging.
+* Boundaries/disclaimers appear before checkout.
+* No subscription is required.
+* No live chat promise is made.
+* No unlimited messaging promise is made.
+* No calls are promised.
+* No financial/legal/debt/medical/therapy advice language is used.
+* Admin can mark a case as “Needs signposting”.
+* Admin can view calculator result summary if available.
+* The Reset feels like a natural next step after using the calculator.
+
+Deliverables required:
+
+1. Current site audit.
+2. “Keep / Enhance / Remove” list.
+3. Accuracy and trust issues found.
+4. Conversion weaknesses found.
+5. SEO weaknesses found.
+6. Recommended enhancements ranked by impact.
+7. Changes implemented.
+8. Files changed.
+9. Any calculations updated.
+10. Any copy updated.
+11. Any SEO pages/routes added.
+12. Stripe products or checkout changes added.
+13. 7-Day Redundancy Reset product page added.
+14. 7-Day Redundancy Reset intake flow added.
+15. 7-Day Redundancy Reset admin queue added.
+16. Safety/disclaimer boundaries added.
+17. Build/typecheck result.
+18. Remaining risks or manual follow-ups.
+
+Do not ask clarifying questions unless blocked. Make sensible assumptions and proceed.
+
+Be careful: this is a UK consumer-facing financial modelling and practical support product. It must be clear, credible, non-advisory, current and tightly bounded.
