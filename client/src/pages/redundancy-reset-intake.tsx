@@ -20,6 +20,10 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 
+// Placeholder WhatsApp contact number — owner should update before going live
+const WHATSAPP_CONTACT_NUMBER = "+447700900000";
+const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_CONTACT_NUMBER.replace(/[^0-9]/g, "")}`;
+
 const STEPS = [
   {
     id: "contact",
@@ -63,13 +67,11 @@ const STEPS = [
   },
 ];
 
-interface IntakeData {
+interface IntakeState {
   name: string;
   contactMethod: "whatsapp" | "webchat";
   whatsappNumber: string;
   answers: Record<string, string>;
-  stripeSessionId: string;
-  sessionToken: string;
 }
 
 function getUrlParams() {
@@ -84,42 +86,49 @@ export default function RedundancyResetIntakePage() {
   const [, navigate] = useLocation();
   const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
-  const [data, setData] = useState<IntakeData>({
+  const [submittedContactMethod, setSubmittedContactMethod] = useState<"whatsapp" | "webchat">("webchat");
+  const [data, setData] = useState<IntakeState>({
     name: "",
     contactMethod: "webchat",
     whatsappNumber: "",
     answers: {},
-    stripeSessionId: "",
-    sessionToken: "",
   });
 
   const submitMutation = useMutation({
-    mutationFn: async (payload: IntakeData) => {
-      const { stripeSessionId, sessionToken, name, contactMethod, answers } = payload;
+    mutationFn: async (state: IntakeState) => {
+      const { stripeSessionId } = getUrlParams();
+      if (!stripeSessionId) {
+        throw new Error("No checkout session found. Please complete payment via the product page.");
+      }
+
+      const intakeAnswers: Record<string, string> = {
+        ...state.answers,
+      };
+      if (state.contactMethod === "whatsapp" && state.whatsappNumber) {
+        intakeAnswers.whatsappNumber = state.whatsappNumber;
+      }
+
+      // paid and status are NOT sent from the client — server determines them server-side
       const response = await apiRequest("POST", "/api/resets", {
-        name,
-        contactMethod,
-        intakeAnswers: {
-          ...answers,
-          whatsappNumber: contactMethod === "whatsapp" ? payload.whatsappNumber : undefined,
-        },
-        sessionToken: sessionToken || undefined,
-        stripeSessionId: stripeSessionId || undefined,
-        status: "New",
-        paid: stripeSessionId ? "paid" : "pending",
+        stripeSessionId,
+        name: state.name,
+        contactMethod: state.contactMethod,
+        intakeAnswers,
       });
+
       if (!response.ok) {
         const err = await response.json();
         throw new Error(err.message ?? "Submission failed");
       }
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
+      setSubmittedContactMethod(variables.contactMethod);
       setSubmitted(true);
     },
   });
 
-  const urlParams = getUrlParams();
+  const { stripeSessionId } = getUrlParams();
   const currentStep = STEPS[step];
   const isContactStep = step === 0;
   const isLastStep = step === STEPS.length - 1;
@@ -135,7 +144,7 @@ export default function RedundancyResetIntakePage() {
 
   const handleNext = () => {
     if (isLastStep) {
-      submitMutation.mutate({ ...data, ...urlParams });
+      submitMutation.mutate(data);
     } else {
       setStep((s) => s + 1);
     }
@@ -147,6 +156,33 @@ export default function RedundancyResetIntakePage() {
       answers: { ...prev.answers, [currentStep.id]: value },
     }));
   };
+
+  // No valid checkout session in URL — show an access message
+  if (!stripeSessionId) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <DisclaimerBanner />
+        <header className="border-b px-6 py-3">
+          <div className="max-w-2xl mx-auto">
+            <Logo showTagline />
+          </div>
+        </header>
+        <main className="flex-1 flex items-center justify-center px-6 py-16">
+          <div className="max-w-md w-full text-center" data-testid="section-no-session">
+            <AlertTriangle className="w-10 h-10 text-amber-500 mx-auto mb-4" />
+            <h1 className="font-serif text-xl font-bold mb-3">No checkout session found</h1>
+            <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+              This page is only accessible after completing payment for the 7-Day Redundancy Reset.
+            </p>
+            <Button onClick={() => navigate("/redundancy-reset")} data-testid="button-back-product">
+              Go to product page
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   if (submitted) {
     return (
@@ -163,11 +199,37 @@ export default function RedundancyResetIntakePage() {
               <CheckCircle2 className="w-7 h-7 text-primary" />
             </div>
             <h1 className="font-serif text-2xl font-bold mb-3">Your intake has been received.</h1>
-            <p className="text-muted-foreground text-sm mb-8 leading-relaxed">
+            <p className="text-muted-foreground text-sm mb-6 leading-relaxed">
               Thank you for sharing your situation. We have received your intake and will be in touch shortly.
             </p>
 
-            <Card className="mb-6" data-testid="card-what-happens-next">
+            {/* WhatsApp number shown for WhatsApp users */}
+            {submittedContactMethod === "whatsapp" && (
+              <Card className="mb-5 border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-900/10" data-testid="card-whatsapp-contact">
+                <CardContent className="pt-4 pb-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <MessageSquare className="w-4 h-4 text-green-700 dark:text-green-400" />
+                    <p className="text-sm font-medium">Your written response will arrive via WhatsApp</p>
+                  </div>
+                  <p className="text-xs text-muted-foreground mb-3 leading-relaxed">
+                    Messages will come from the number below. Save it so you don't miss your response.
+                    This is not live chat — responses arrive within working days, not minutes.
+                  </p>
+                  <a
+                    href={WHATSAPP_LINK}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white text-sm font-medium px-4 py-2 rounded-md transition-colors"
+                    data-testid="link-whatsapp-contact"
+                  >
+                    <MessageSquare className="w-4 h-4" />
+                    {WHATSAPP_CONTACT_NUMBER}
+                  </a>
+                </CardContent>
+              </Card>
+            )}
+
+            <Card className="mb-5" data-testid="card-what-happens-next">
               <CardContent className="pt-5 pb-5 text-left">
                 <p className="text-sm font-medium mb-4">What happens next</p>
                 <div className="space-y-4">
@@ -212,17 +274,17 @@ export default function RedundancyResetIntakePage() {
               <div className="flex gap-2 items-start">
                 <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  Reminder: The 7-Day Redundancy Reset provides practical written support and planning only. It is not financial, legal, debt, employment, medical or mental health advice. First written response within 1 working day. This is not live chat.
+                  Reminder: The 7-Day Redundancy Reset provides practical written support and planning only.
+                  It is not financial, legal, debt, employment, medical or mental health advice.
+                  First written response within 1 working day. This is not live chat.
                 </p>
               </div>
             </div>
 
-            {!urlParams.sessionToken && (
-              <Button variant="outline" onClick={() => navigate("/wizard")} data-testid="button-build-runway-report">
-                Build your runway report first
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
-            )}
+            <Button variant="outline" onClick={() => navigate("/wizard")} data-testid="button-build-runway-report">
+              Build your runway report
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
           </div>
         </main>
       </div>
@@ -251,7 +313,6 @@ export default function RedundancyResetIntakePage() {
         </div>
       </header>
 
-      {/* Progress bar */}
       <div className="h-1 bg-muted">
         <div
           className="h-1 bg-primary transition-all duration-300"

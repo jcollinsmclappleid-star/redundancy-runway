@@ -11,9 +11,10 @@ export interface IStorage {
   updatePurchaseStatus(sessionToken: string, status: string): Promise<void>;
   createCalculation(calc: InsertCalculation): Promise<Calculation>;
   getCalculationsBySessionToken(token: string): Promise<Calculation[]>;
-  createReset(reset: InsertReset): Promise<Reset>;
-  getResets(): Promise<Reset[]>;
+  createPendingReset(stripeSessionId: string, sessionToken?: string): Promise<Reset>;
   getResetByStripeSessionId(stripeSessionId: string): Promise<Reset | undefined>;
+  updateResetIntake(stripeSessionId: string, data: { name: string; contactMethod: string; intakeAnswers: Record<string, unknown> }): Promise<void>;
+  getResets(): Promise<Reset[]>;
   updateResetStatus(id: string, status: string): Promise<void>;
   updateResetNotes(id: string, adminNotes: string): Promise<void>;
   updateResetPaid(stripeSessionId: string, paid: string): Promise<void>;
@@ -58,18 +59,47 @@ export class DatabaseStorage implements IStorage {
     return db.select().from(calculations).where(eq(calculations.sessionToken, token));
   }
 
-  async createReset(reset: InsertReset): Promise<Reset> {
-    const [created] = await db.insert(resets).values(reset).returning();
+  async createPendingReset(stripeSessionId: string, sessionToken?: string): Promise<Reset> {
+    const [created] = await db
+      .insert(resets)
+      .values({
+        stripeSessionId,
+        sessionToken: sessionToken ?? null,
+        name: "[Pending checkout]",
+        contactMethod: "webchat",
+        intakeAnswers: {},
+        status: "New",
+        paid: "pending",
+      })
+      .returning();
     return created;
+  }
+
+  async getResetByStripeSessionId(stripeSessionId: string): Promise<Reset | undefined> {
+    const [reset] = await db
+      .select()
+      .from(resets)
+      .where(eq(resets.stripeSessionId, stripeSessionId));
+    return reset;
+  }
+
+  async updateResetIntake(
+    stripeSessionId: string,
+    data: { name: string; contactMethod: string; intakeAnswers: Record<string, unknown> }
+  ): Promise<void> {
+    await db
+      .update(resets)
+      .set({
+        name: data.name,
+        contactMethod: data.contactMethod,
+        intakeAnswers: data.intakeAnswers,
+        updatedAt: new Date(),
+      })
+      .where(eq(resets.stripeSessionId, stripeSessionId));
   }
 
   async getResets(): Promise<Reset[]> {
     return db.select().from(resets).orderBy(desc(resets.createdAt));
-  }
-
-  async getResetByStripeSessionId(stripeSessionId: string): Promise<Reset | undefined> {
-    const [reset] = await db.select().from(resets).where(eq(resets.stripeSessionId, stripeSessionId));
-    return reset;
   }
 
   async updateResetStatus(id: string, status: string): Promise<void> {
