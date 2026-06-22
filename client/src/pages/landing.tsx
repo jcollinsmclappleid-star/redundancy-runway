@@ -32,9 +32,16 @@ export default function LandingPage() {
         <title>RedundancyCalculatorUK | UK Statutory Redundancy Pay & Runway Calculator</title>
         <meta name="description" content="Calculate your UK statutory redundancy pay and model how long your money may last. Free redundancy runway report with mortgage sensitivity, income scenarios and expense analysis. Not financial advice." />
         <link rel="canonical" href="https://redundancycalculatoruk.com/" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="RedundancyCalculatorUK" />
         <meta property="og:title" content="RedundancyCalculatorUK | UK Statutory Redundancy Pay & Runway Calculator" />
         <meta property="og:description" content="Calculate your UK statutory redundancy pay and model how long your money may last. Free redundancy runway report with mortgage sensitivity, income scenarios and expense analysis." />
         <meta property="og:url" content="https://redundancycalculatoruk.com/" />
+        <meta property="og:image" content="https://redundancycalculatoruk.com/og-image.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="RedundancyCalculatorUK | UK Statutory Redundancy Pay & Runway Calculator" />
+        <meta name="twitter:description" content="Calculate your UK statutory redundancy pay and model how long your money may last. Free redundancy runway report with mortgage sensitivity, income scenarios and expense analysis." />
+        <meta name="twitter:image" content="https://redundancycalculatoruk.com/og-image.png" />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Organization",
@@ -532,6 +539,37 @@ export default function LandingPage() {
               </AccordionItem>
             ))}
           </Accordion>
+        </div>
+      </section>
+
+      {/* UK Redundancy Guides */}
+      <section className="py-16 px-6 bg-muted/20" data-testid="section-guides">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="font-serif text-2xl font-bold text-center mb-2">UK Redundancy Guides</h2>
+          <p className="text-center text-sm text-muted-foreground mb-8">Contextual information to read alongside your runway report. Not financial advice.</p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <Link href="/statutory-redundancy-pay" data-testid="guide-card-statutory">
+              <div className="rounded-lg border bg-background p-5 hover:shadow-md transition-shadow h-full">
+                <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2">Guide</p>
+                <p className="font-medium text-sm leading-snug mb-2">Statutory Redundancy Pay 2025</p>
+                <p className="text-xs text-muted-foreground leading-relaxed">Age-band multipliers, the £643 weekly cap, tax treatment and service limits.</p>
+              </div>
+            </Link>
+            <Link href="/redundancy-mortgage" data-testid="guide-card-mortgage">
+              <div className="rounded-lg border bg-background p-5 hover:shadow-md transition-shadow h-full">
+                <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2">Guide</p>
+                <p className="font-medium text-sm leading-snug mb-2">Redundancy &amp; Your Mortgage</p>
+                <p className="text-xs text-muted-foreground leading-relaxed">Payment holidays, rate sensitivity and what to model before contacting your lender.</p>
+              </div>
+            </Link>
+            <Link href="/voluntary-redundancy" data-testid="guide-card-vr">
+              <div className="rounded-lg border bg-background p-5 hover:shadow-md transition-shadow h-full">
+                <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2">Guide</p>
+                <p className="font-medium text-sm leading-snug mb-2">Voluntary Redundancy Guide</p>
+                <p className="text-xs text-muted-foreground leading-relaxed">How VR compares to statutory, the runway implications, and negotiation points.</p>
+              </div>
+            </Link>
+          </div>
         </div>
       </section>
 

@@ -299,13 +299,16 @@ export default function RedundancyResetIntakePage() {
         <meta name="description" content="Complete your 7-Day Redundancy Reset intake — share your situation privately and receive a written response within 1 working day." />
         <meta name="robots" content="noindex, nofollow" />
         <link rel="canonical" href="https://redundancycalculatoruk.com/redundancy-reset/intake" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="RedundancyCalculatorUK" />
         <meta property="og:title" content="7-Day Redundancy Reset — Intake | RedundancyCalculatorUK" />
         <meta property="og:description" content="Complete your 7-Day Redundancy Reset intake — share your situation privately and receive a written response within 1 working day." />
         <meta property="og:url" content="https://redundancycalculatoruk.com/redundancy-reset/intake" />
-        <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary" />
+        <meta property="og:image" content="https://redundancycalculatoruk.com/og-image.png" />
+        <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="7-Day Redundancy Reset — Intake | RedundancyCalculatorUK" />
         <meta name="twitter:description" content="Complete your 7-Day Redundancy Reset intake — share your situation privately and receive a written response within 1 working day." />
+        <meta name="twitter:image" content="https://redundancycalculatoruk.com/og-image.png" />
       </Helmet>
     <div className="min-h-screen flex flex-col">
       <DisclaimerBanner />

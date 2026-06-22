@@ -16,9 +16,12 @@ export default function VoluntaryRedundancyPage() {
         <meta name="description" content="How voluntary redundancy compares to statutory entitlement, what the financial runway implications are, and how to model the decision before accepting. Not financial advice." />
         <link rel="canonical" href="https://redundancycalculatoruk.com/voluntary-redundancy" />
         <meta property="og:type" content="article" />
+        <meta property="og:site_name" content="RedundancyCalculatorUK" />
         <meta property="og:title" content="Should I Take Voluntary Redundancy? A UK Financial Planning Guide" />
         <meta property="og:description" content="How voluntary redundancy compares to statutory entitlement, what the financial runway implications are, and how to model the decision before accepting." />
         <meta property="og:url" content="https://redundancycalculatoruk.com/voluntary-redundancy" />
+        <meta property="og:image" content="https://redundancycalculatoruk.com/og-image.png" />
+        <meta name="twitter:image" content="https://redundancycalculatoruk.com/og-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Should I Take Voluntary Redundancy? A UK Financial Planning Guide" />
         <meta name="twitter:description" content="How voluntary redundancy compares to statutory entitlement, what the financial runway implications are, and how to model the decision before accepting." />
@@ -209,14 +212,28 @@ export default function VoluntaryRedundancyPage() {
               </Card>
 
               <div className="border-t pt-6" data-testid="section-related-links">
-                <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-3">Also on RedundancyCalculatorUK</p>
+                <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-3">Related guides</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                  <Link href="/statutory-redundancy-pay" data-testid="link-guide-statutory">
+                    <div className="rounded-lg border p-4 hover:shadow-sm transition-shadow">
+                      <p className="text-sm font-medium mb-1">Statutory Redundancy Pay 2025</p>
+                      <p className="text-xs text-muted-foreground">Age-band multipliers, the £643 weekly cap, tax treatment and service limits.</p>
+                    </div>
+                  </Link>
+                  <Link href="/redundancy-mortgage" data-testid="link-guide-mortgage">
+                    <div className="rounded-lg border p-4 hover:shadow-sm transition-shadow">
+                      <p className="text-sm font-medium mb-1">Redundancy &amp; Your Mortgage</p>
+                      <p className="text-xs text-muted-foreground">Payment holidays, rate sensitivity and what to model before contacting your lender.</p>
+                    </div>
+                  </Link>
+                </div>
                 <div className="flex flex-wrap gap-3 text-sm">
                   <Link href="/redundancy-reset" className="text-primary hover:underline underline-offset-4" data-testid="link-reset">
                     7-Day Redundancy Reset — written support after redundancy
                   </Link>
                   <span className="text-muted-foreground/30">·</span>
                   <Link href="/" className="text-primary hover:underline underline-offset-4" data-testid="link-home">
-                    Back to RedundancyCalculatorUK home
+                    RedundancyCalculatorUK home
                   </Link>
                 </div>
               </div>
