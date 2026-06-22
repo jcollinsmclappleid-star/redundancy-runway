@@ -207,6 +207,19 @@ export default function RedundancyMortgagePage() {
                 </CardContent>
               </Card>
 
+              <div className="border-t pt-6" data-testid="section-related-links">
+                <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-3">Also on RedundancyCalculatorUK</p>
+                <div className="flex flex-wrap gap-3 text-sm">
+                  <Link href="/redundancy-reset" className="text-primary hover:underline underline-offset-4" data-testid="link-reset">
+                    7-Day Redundancy Reset — written support after redundancy
+                  </Link>
+                  <span className="text-muted-foreground/30">·</span>
+                  <Link href="/" className="text-primary hover:underline underline-offset-4" data-testid="link-home">
+                    Back to RedundancyCalculatorUK home
+                  </Link>
+                </div>
+              </div>
+
             </div>
           </section>
         </main>

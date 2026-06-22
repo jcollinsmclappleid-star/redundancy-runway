@@ -49,9 +49,14 @@ export default function RedundancyResetPage() {
         <title>7-Day Redundancy Reset — Private Written Support | RedundancyCalculatorUK</title>
         <meta name="description" content="A private written intake and 7-day action plan for people facing redundancy. Share your situation by WhatsApp or web. Receive a calm written response within 1 working day. Not financial advice." />
         <link rel="canonical" href="https://redundancycalculatoruk.com/redundancy-reset" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="RedundancyCalculatorUK" />
         <meta property="og:title" content="7-Day Redundancy Reset — Private Written Support" />
         <meta property="og:description" content="A private written intake and 7-day action plan for people facing redundancy. Share your situation by WhatsApp or web. Receive a calm written response within 1 working day." />
         <meta property="og:url" content="https://redundancycalculatoruk.com/redundancy-reset" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="7-Day Redundancy Reset — Private Written Support" />
+        <meta name="twitter:description" content="A private written intake and 7-day action plan for people facing redundancy. Receive a calm written response within 1 working day." />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Product",
