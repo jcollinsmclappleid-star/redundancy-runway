@@ -40,7 +40,15 @@ export type Calculation = typeof calculations.$inferSelect;
 export type InsertCalculation = z.infer<typeof insertCalculationSchema>;
 
 export const contextSchema = z.object({
-  employmentStatus: z.enum(["redundant", "at_risk", "other_disruption"]).default("redundant"),
+  employmentStatus: z.enum([
+    "redundant",
+    "at_risk",
+    "restructuring",
+    "voluntary_redundancy",
+    "contract_ending",
+    "ai_automation_concern",
+    "other_disruption",
+  ]).default("redundant"),
   housingType: z.enum(["mortgage", "renting", "owned_outright", "other"]).default("mortgage"),
   householdStructure: z.enum(["single", "couple", "family"]).default("single"),
   hasDependents: z.boolean().default(false),
@@ -70,15 +78,21 @@ export const runwayInputSchema = z.object({
   cashSavings: z.number().min(0),
   liquidInvestments: z.number().min(0),
   otherOneOffIncome: z.number().min(0).default(0),
+  unpaidWages: z.number().min(0).default(0),
+
+  voluntaryRedundancyAmount: z.number().min(0).default(0),
 
   currentMonthlyNetIncome: z.number().min(0),
   replacementMonthlyIncome: z.number().min(0).default(0),
   monthsUntilNewJob: z.number().int().min(0).max(60).default(0),
   benefitSupportEstimate: z.number().min(0).default(0),
+  partnerMonthlyNetIncome: z.number().min(0).default(0),
+  includePartnerIncome: z.boolean().default(false),
 
   mortgageOrRent: z.number().min(0),
   utilities: z.number().min(0),
   food: z.number().min(0),
+  councilTax: z.number().min(0).default(0),
   insurance: z.number().min(0).default(0),
   transport: z.number().min(0).default(0),
   debtRepayments: z.number().min(0).default(0),
@@ -89,6 +103,7 @@ export const runwayInputSchema = z.object({
   leisure: z.number().min(0).default(0),
   travel: z.number().min(0).default(0),
   discretionaryOther: z.number().min(0).default(0),
+  retrainingMonthlyCost: z.number().min(0).default(0),
 
   includeNonEssential: z.boolean().default(true),
 
@@ -140,6 +155,15 @@ export interface RedundancyEstimate {
   holidayPay: number;
   totalEstimated: number;
   taxFreeThreshold: number;
+  qualifyingServiceMet: boolean;
+}
+
+export interface VoluntaryRedundancyComparison {
+  statutoryRunway: number;
+  vrRunway: number;
+  delta: number;
+  statutoryPackageTotal: number;
+  vrPackageTotal: number;
 }
 
 export interface RunwayResult {

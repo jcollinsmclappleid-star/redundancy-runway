@@ -12,6 +12,7 @@ import type {
   RedundancyPackageInputs,
   ProjectionRange,
   ProjectionRangeScenario,
+  VoluntaryRedundancyComparison,
 } from "@shared/schema";
 import { getSectorData } from "@/lib/sectorData";
 import { getAgeBandData, weeksToMonths } from "@/lib/ukBenchmarks";
@@ -19,12 +20,14 @@ import { getAgeBandData, weeksToMonths } from "@/lib/ukBenchmarks";
 const MAX_PROJECTION_MONTHS = 60;
 const UK_STATUTORY_WEEKLY_PAY_CAP = 643;
 const UK_TAX_FREE_THRESHOLD = 30000;
+const UK_STATUTORY_MIN_SERVICE_YEARS = 2;
 
 function computeEssentialExpenses(inputs: RunwayInputs): number {
   return (
     inputs.mortgageOrRent +
     inputs.utilities +
     inputs.food +
+    inputs.councilTax +
     inputs.insurance +
     inputs.transport +
     inputs.debtRepayments +
@@ -38,7 +41,8 @@ function computeNonEssentialExpenses(inputs: RunwayInputs): number {
     inputs.subscriptions +
     inputs.leisure +
     inputs.travel +
-    inputs.discretionaryOther
+    inputs.discretionaryOther +
+    inputs.retrainingMonthlyCost
   );
 }
 
@@ -56,7 +60,8 @@ function computeStartingCapital(inputs: RunwayInputs): number {
     inputs.cashSavings +
     inputs.liquidInvestments +
     getRedundancyTotal(inputs) +
-    inputs.otherOneOffIncome
+    inputs.otherOneOffIncome +
+    (inputs.unpaidWages ?? 0)
   );
 }
 
@@ -65,6 +70,21 @@ function round2(n: number): number {
 }
 
 export function computeRedundancyEstimate(pkg: RedundancyPackageInputs): RedundancyEstimate {
+  const qualifyingServiceMet = pkg.yearsOfService >= UK_STATUTORY_MIN_SERVICE_YEARS;
+
+  if (!qualifyingServiceMet) {
+    const noticePay = round2(pkg.noticeWeeks * pkg.weeklyGrossPay);
+    const holidayPay = round2(pkg.holidayWeeks * pkg.weeklyGrossPay);
+    return {
+      statutoryRedundancy: 0,
+      noticePay,
+      holidayPay,
+      totalEstimated: round2(noticePay + holidayPay),
+      taxFreeThreshold: UK_TAX_FREE_THRESHOLD,
+      qualifyingServiceMet: false,
+    };
+  }
+
   const cappedWeeklyPay = Math.min(pkg.weeklyGrossPay, UK_STATUTORY_WEEKLY_PAY_CAP);
   const cappedYears = Math.min(pkg.yearsOfService, 20);
 
@@ -95,6 +115,7 @@ export function computeRedundancyEstimate(pkg: RedundancyPackageInputs): Redunda
     holidayPay,
     totalEstimated: round2(totalEstimated),
     taxFreeThreshold: UK_TAX_FREE_THRESHOLD,
+    qualifyingServiceMet: true,
   };
 }
 
@@ -184,7 +205,8 @@ export function computeRunway(inputs: RunwayInputs): RunwayResult {
     monthsUntilDepletion = MAX_PROJECTION_MONTHS;
   }
 
-  const gapIncome = inputs.replacementMonthlyIncome + inputs.benefitSupportEstimate;
+  const gapIncome = inputs.replacementMonthlyIncome + inputs.benefitSupportEstimate +
+    (inputs.includePartnerIncome ? (inputs.partnerMonthlyNetIncome ?? 0) : 0);
   const monthlyBurn = totalExpenses - gapIncome;
 
   const stabilityExplanation = computeStabilityExplanation(inputs, monthsUntilDepletion, essentialExpenses, totalExpenses, startingCapital);
@@ -213,12 +235,13 @@ export function computeRunway(inputs: RunwayInputs): RunwayResult {
 }
 
 function computeMonthlyIncome(inputs: RunwayInputs, month: number): number {
+  const partnerIncome = inputs.includePartnerIncome ? (inputs.partnerMonthlyNetIncome ?? 0) : 0;
   if (inputs.monthsUntilNewJob > 0 && month <= inputs.monthsUntilNewJob) {
-    return inputs.replacementMonthlyIncome + inputs.benefitSupportEstimate;
+    return inputs.replacementMonthlyIncome + inputs.benefitSupportEstimate + partnerIncome;
   } else if (inputs.monthsUntilNewJob > 0 && month > inputs.monthsUntilNewJob) {
-    return inputs.currentMonthlyNetIncome;
+    return inputs.currentMonthlyNetIncome + partnerIncome;
   }
-  return inputs.replacementMonthlyIncome + inputs.benefitSupportEstimate;
+  return inputs.replacementMonthlyIncome + inputs.benefitSupportEstimate + partnerIncome;
 }
 
 function computeCapitalRecovery(
@@ -261,7 +284,8 @@ function computeStabilityExplanation(
 ): StabilityExplanation {
   const housingPercent = essentialExpenses > 0 ? round2((inputs.mortgageOrRent / essentialExpenses) * 100) : 0;
   const debtPercent = totalExpenses > 0 ? round2((inputs.debtRepayments / totalExpenses) * 100) : 0;
-  const gapIncome = inputs.replacementMonthlyIncome + inputs.benefitSupportEstimate;
+  const partnerIncome = inputs.includePartnerIncome ? (inputs.partnerMonthlyNetIncome ?? 0) : 0;
+  const gapIncome = inputs.replacementMonthlyIncome + inputs.benefitSupportEstimate + partnerIncome;
   const gapIncomePercent = inputs.currentMonthlyNetIncome > 0 ? round2((gapIncome / inputs.currentMonthlyNetIncome) * 100) : 0;
   const capitalCoverMonths = totalExpenses > 0 ? round2(startingCapital / totalExpenses) : 0;
   const nonEssential = computeNonEssentialExpenses(inputs);
@@ -337,6 +361,15 @@ export function computeScenarios(inputs: RunwayInputs): ScenarioComparison[] {
     monthsUntilNewJob: jobGapMonths,
   };
 
+  const structuralGapMonths = Math.max(jobGapMonths, 12);
+  const structuralInputs: RunwayInputs = {
+    ...inputs,
+    replacementMonthlyIncome: inputs.currentMonthlyNetIncome * 0.3,
+    benefitSupportEstimate: 0,
+    monthsUntilNewJob: structuralGapMonths,
+    currentMonthlyNetIncome: inputs.currentMonthlyNetIncome * 0.8,
+  };
+
   return [
     {
       name: "Zero Income",
@@ -353,7 +386,48 @@ export function computeScenarios(inputs: RunwayInputs): ScenarioComparison[] {
       description: `Previous income resumes after ${jobGapMonths} months of gap income only`,
       result: computeRunway(newJobInputs),
     },
+    {
+      name: "Structural Transition",
+      description: "This does not predict job outcomes. It simply models a slower or lower-income recovery path under a structural transition scenario.",
+      result: computeRunway(structuralInputs),
+    },
   ];
+}
+
+export function computeVoluntaryRedundancyComparison(inputs: RunwayInputs): VoluntaryRedundancyComparison {
+  const statutoryEstimate = computeRedundancyEstimate(inputs.redundancyPackage);
+  const statutoryTotal = statutoryEstimate.totalEstimated;
+
+  const vrPackageTotal = inputs.voluntaryRedundancyAmount ?? 0;
+
+  const statutoryInputs: RunwayInputs = {
+    ...inputs,
+    redundancyPackage: {
+      ...inputs.redundancyPackage,
+      useManualOverride: true,
+      manualOverrideAmount: statutoryTotal,
+    },
+  };
+
+  const vrInputs: RunwayInputs = {
+    ...inputs,
+    redundancyPackage: {
+      ...inputs.redundancyPackage,
+      useManualOverride: true,
+      manualOverrideAmount: vrPackageTotal,
+    },
+  };
+
+  const statutoryResult = computeRunway(statutoryInputs);
+  const vrResult = computeRunway(vrInputs);
+
+  return {
+    statutoryRunway: statutoryResult.monthsUntilDepletion,
+    vrRunway: vrResult.monthsUntilDepletion,
+    delta: round2(vrResult.monthsUntilDepletion - statutoryResult.monthsUntilDepletion),
+    statutoryPackageTotal: round2(statutoryTotal),
+    vrPackageTotal: round2(vrPackageTotal),
+  };
 }
 
 export function computeEssentialOnlyComparison(inputs: RunwayInputs): { fullRunway: number; essentialOnlyRunway: number; extraMonths: number; monthlySaving: number } {
@@ -377,6 +451,7 @@ export function computeSpendingImpact(inputs: RunwayInputs): SpendingImpact[] {
     { key: "leisure", label: "If leisure spending were 50% lower", effort: "Medium", reductionPercent: 0.5 },
     { key: "travel", label: "If travel spending were removed", effort: "Low", reductionPercent: 1.0 },
     { key: "discretionaryOther", label: "If other discretionary were removed", effort: "Medium", reductionPercent: 1.0 },
+    { key: "retrainingMonthlyCost", label: "If retraining costs were paused", effort: "Medium", reductionPercent: 1.0 },
     { key: "food", label: "If food spending were 25% lower", effort: "Medium", reductionPercent: 0.25 },
     { key: "transport", label: "If transport spending were 30% lower", effort: "Medium", reductionPercent: 0.3 },
     { key: "insurance", label: "If insurance costs were 15% lower", effort: "High", reductionPercent: 0.15 },
