@@ -6,6 +6,18 @@ uri = "file://public/og-image.png"
 type = "image"
 title = "generated_image"
 
+[[generated]]
+id = "XKd7n-Y-Mie0jPncD3ByE"
+uri = "file://attached_assets/generated_images/hero-road-landscape.png"
+type = "image"
+title = "hero road landscape night"
+
+[[generated]]
+id = "T7srs5Py84pgdMENVhQJ6"
+uri = "file://attached_assets/generated_images/lifestyle-living-room.png"
+type = "image"
+title = "lifestyle minimal living room"
+
 [[outputs]]
 id = "E101z20A4upDkutP0nitb"
 uri = "file://PROJECT_RUNDOWN.md"
