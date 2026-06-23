@@ -1,0 +1,266 @@
+The mobile homepage hero is still not implemented correctly. Please fix the mobile layout and hero composition.
+
+Current mobile issues to fix:
+
+1. The main headline is missing or pushed off-screen.
+2. The hero starts too low, with CTAs appearing before the headline.
+3. The report card and floating scenario cards are crowding the layout.
+4. The road/light composition is not balanced well on mobile.
+5. The trust strip begins too early and gets clipped.
+6. The whole hero feels like stacked elements fighting for space, rather than one clean mobile-first composition.
+7. The visual does not preserve the premium “light at the end of the road” effect cleanly.
+8. The hero section height and spacing are not controlled properly.
+9. The mobile version should be simpler than desktop, not a compressed copy of desktop.
+
+Primary instruction:
+Refactor the hero as a true mobile-first responsive section.
+
+Do not just shrink the desktop hero.
+Create a dedicated mobile hero layout.
+
+MOBILE HERO TARGET STRUCTURE
+
+Order on mobile must be:
+
+1. Header
+2. Eyebrow pill
+3. H1 headline
+4. Supporting paragraph
+5. Primary CTA
+6. Secondary CTA
+7. Privacy/support line
+8. Simplified hero visual
+9. Trust strip below hero
+
+This order is mandatory.
+
+HERO COPY TO KEEP
+
+Eyebrow:
+“PRIVATE • ASSUMPTION-BASED • UK FOCUSED”
+
+Headline:
+“Model how long your money may last if work changes.”
+
+Supporting text:
+“Build a private redundancy runway report for redundancy, restructuring, voluntary redundancy, AI-related uncertainty, mortgage pressure or a slower return to work.”
+
+Primary CTA:
+“Build my private report”
+
+Secondary CTA:
+“See what’s included”
+
+Privacy line:
+“Your data stays in your browser. One-off report access. Not financial advice.”
+
+MOBILE HERO LAYOUT REQUIREMENTS
+
+1. Headline must be visible above the fold
+
+* The H1 should appear before the visual.
+* Do not let the visual push the headline below the fold.
+* Do not let CTAs appear before the headline.
+* Ensure the user first sees brand → headline → CTA.
+
+2. Simplify the visual on mobile
+    The mobile hero visual should contain only:
+
+* the scenic dark background
+* the glowing road with clear light at the end
+* one central report card
+* maximum 2–3 floating cards
+
+Do NOT show all floating cards from desktop.
+Do NOT show every scenario chip on mobile.
+Do NOT make the report card too large.
+
+3. Preserve the light at the end of the road
+    This is important.
+    The road should lead visually upward into the light/horizon.
+    The report card must not block the light.
+    The report card should sit lower than the horizon line so the destination light remains visible.
+    The road should remain the central storytelling device.
+4. Mobile report card placement
+    Place the report card in the lower-middle portion of the hero visual, not in the centre of the whole hero section.
+    It should feel like an overlay within the visual, not a giant card dominating the section.
+
+Recommended mobile report card content:
+Title: “Your Runway Report”
+Baseline runway: “10.4 months”
+Subtext: “at current burn rate”
+Range: “Range 5.1 – 18.7 months”
+
+Show at most 3 checklist items on mobile:
+
+* Slow recovery
+* Mortgage pressure
+* One-income household
+
+Hide extra checklist items on mobile.
+
+5. Mobile floating cards
+    Show only 2 or at most 3 floating cards:
+
+* “Redundancy pay estimate”
+* “Slow recovery”
+* “Household impact”
+
+Optional:
+
+* “Mortgage pressure”
+
+Do not show “Support if needed” if the layout becomes crowded.
+
+Each floating card should be compact:
+
+* short title
+* one short line
+* no long wrapped text
+* small font
+* subtle border/glow
+
+6. Hero spacing
+    Add proper top and bottom spacing.
+    The hero should breathe.
+    Do not cram CTAs, text, visual and trust strip together.
+
+Recommended mobile spacing:
+
+* top padding after header: generous
+* 16–20px between eyebrow and H1
+* 16px between H1 and paragraph
+* 20px between paragraph and CTA stack
+* 14–16px between CTA buttons
+* 14–18px between CTA stack and privacy line
+* 24–32px between privacy line and visual
+* 28–36px between visual and trust strip
+
+7. CTA stack on mobile
+    Buttons should be stacked vertically.
+    Primary CTA first.
+    Secondary CTA second.
+    Both full width or near-full width.
+    Do not allow crowding.
+8. Trust strip must be a separate section
+    Do not let the trust strip visually merge into the hero illustration.
+    It should sit below the hero on a separate layer.
+
+On mobile:
+
+* use horizontal scroll cards or 2-column stacked cards
+* do not show them clipped
+* do not place them over the road visual
+
+TRUST STRIP COPY
+
+Use these 5 trust points:
+
+1. UK statutory assumptions
+    “Age-band rules, service caps and current thresholds.”
+2. Private modelling
+    “Your data stays in your browser.”
+3. Mortgage & household scenarios
+    “Test rate rises, rent and one-income pressure.”
+4. One-off report access
+    “One report. Yours to keep.”
+5. Non-advisory tool
+    “Planning model, not financial advice.”
+
+VISUAL STYLE RULES
+
+Keep:
+
+* deep navy / midnight teal background
+* gold CTA
+* glowing road
+* cream or white report card
+* subtle glass cards
+* premium calm SaaS aesthetic
+
+Avoid:
+
+* oversized report card
+* too many overlapping boxes
+* cut-off trust strip
+* busy composition
+* clutter
+* text hidden behind overlays
+* the hero feeling like a collage
+
+RESPONSIVE IMPLEMENTATION REQUIREMENTS
+
+Use separate mobile and desktop logic if needed.
+
+Recommended approach:
+
+* desktop hero layout for md: and above
+* dedicated simplified mobile hero for below md
+
+If necessary:
+
+* hide some floating cards on small screens
+* reduce card text
+* reduce report card size
+* move report card lower
+* keep the light/horizon visible
+
+Suggested implementation ideas:
+
+* use absolute positioning inside a fixed-ratio hero visual container
+* use aspect-[4/5] or similar for mobile visual container
+* use overflow-hidden
+* use a background gradient plus scenic image/illustration layer
+* use a separate road glow layer
+* position report card with bottom anchoring
+* anchor floating cards left/right with simplified widths
+
+Do not use the full desktop composition on mobile.
+
+TECHNICAL FIXES TO MAKE
+
+Please specifically fix:
+
+1. Hero DOM order so text content comes before the visual.
+2. Mobile CSS so the H1 is not pushed off-screen.
+3. Visual container sizing on mobile.
+4. Report card size and position on mobile.
+5. Floating card count and overlap.
+6. Trust strip placement and clipping.
+7. Section padding/margins.
+8. Ensure no absolute-positioned elements are covering the H1 or CTAs.
+9. Ensure the road/light visual remains visible and attractive.
+
+IF NEEDED, CREATE THESE COMPONENTS
+
+* HeroSectionDesktop.tsx
+* HeroSectionMobile.tsx
+* MobileRunwayVisual.tsx
+* DesktopRunwayVisual.tsx
+* TrustStrip.tsx
+
+Or keep one component with responsive branches if cleaner.
+
+ACCEPTANCE CRITERIA
+
+The fix is successful only if:
+
+1. On mobile, the headline is fully visible before the hero visual.
+2. The CTA buttons appear below the text, not before it.
+3. The road leads clearly to a visible light/horizon.
+4. The report card does not block the light.
+5. The mobile visual is simplified and not crowded.
+6. Only 2–3 floating cards show on mobile.
+7. The trust strip is fully visible below the hero.
+8. The section looks premium, calm and balanced.
+9. The mobile hero looks intentionally designed, not like a compressed desktop layout.
+10. Build/typecheck passes.
+
+After fixing, provide:
+
+1. Files changed
+2. What was wrong in the previous mobile hero
+3. What was changed in layout order
+4. How the mobile visual was simplified
+5. How the light-at-the-end-of-the-road composition was preserved
+6. Build/typecheck result
