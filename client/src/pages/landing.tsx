@@ -160,40 +160,53 @@ export default function LandingPage() {
         </header>
 
         {/* ── HERO ────────────────────────────────────────────────────── */}
-        <section className="relative overflow-hidden" data-testid="section-hero"
-          style={{ background: "hsl(215 60% 6%)" }}>
+        <section data-testid="section-hero" style={{ background: "hsl(215 60% 6%)" }}>
 
-          {/* ── HERO UPPER: text + CTAs — always above image ── */}
+          {/* ── TEXT BLOCK — solid dark navy, text always above any visual ── */}
           <div className="relative z-10 max-w-6xl mx-auto px-5 pt-12 pb-8 lg:pt-20 lg:pb-0
                           lg:flex lg:items-center lg:min-h-[600px] lg:gap-10">
-            {/* Left text column */}
+
+            {/* Left: text content */}
             <div className="lg:flex-1 lg:max-w-xl">
-              <p className="text-xs font-semibold tracking-widest uppercase mb-4"
-                style={{ color: "hsl(38 72% 55%)" }} data-testid="hero-eyebrow">
-                PRIVATE · ASSUMPTION-BASED · UK FOCUSED
-              </p>
-              <h1 className="font-serif text-4xl sm:text-5xl lg:text-[3.25rem] font-bold leading-[1.1] text-white mb-5"
+
+              {/* Eyebrow — teal pill badge */}
+              <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 mb-5 border"
+                style={{ borderColor: "hsl(192 60% 38%)", background: "hsl(192 60% 18% / 0.25)" }}
+                data-testid="hero-eyebrow">
+                <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: "hsl(192 60% 56%)" }} />
+                <span className="text-[10px] font-semibold tracking-widest uppercase"
+                  style={{ color: "hsl(192 60% 62%)" }}>
+                  PRIVATE · ASSUMPTION-BASED · UK FOCUSED
+                </span>
+              </div>
+
+              <h1 className="font-serif text-4xl sm:text-5xl lg:text-[3.25rem] font-bold leading-[1.1] text-white mb-4"
                 data-testid="hero-headline">
                 Model how long your money may last if work changes.
               </h1>
-              <p className="text-base leading-relaxed mb-7 lg:max-w-lg"
+
+              <p className="text-base leading-relaxed mb-6 lg:max-w-lg"
                 style={{ color: "hsl(215 15% 65%)" }} data-testid="hero-subheadline">
                 Build a private redundancy runway report for redundancy, restructuring, voluntary redundancy,
                 AI-related uncertainty, mortgage pressure or a slower return to work.
               </p>
-              <div className="flex flex-col sm:flex-row gap-3 mb-5">
-                <Button size="lg" className="btn-gold rounded-full px-7 text-base"
+
+              {/* CTAs — full-width stacked on mobile, side-by-side on sm+ */}
+              <div className="flex flex-col sm:flex-row gap-3 mb-4">
+                <Button size="lg" className="btn-gold rounded-full px-7 text-base w-full sm:w-auto"
                   onClick={() => navigate("/wizard")} data-testid="button-hero-primary">
                   Build my private report <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
                 <Button size="lg" variant="outline"
-                  className="rounded-full px-7 text-base hover:text-white hover:bg-white/10"
+                  className="rounded-full px-7 text-base w-full sm:w-auto hover:text-white hover:bg-white/10"
                   style={{ borderColor: "hsl(215 30% 30%)", color: "hsl(215 15% 65%)" }}
                   onClick={() => scrollTo("scenarios")} data-testid="button-hero-secondary">
                   See what's included <ChevronDown className="w-4 h-4 ml-2" />
                 </Button>
               </div>
-              <div className="flex items-start gap-2">
+
+              {/* Privacy line */}
+              <div className="flex items-start gap-2 mb-0">
                 <ShieldCheck className="w-3.5 h-3.5 mt-0.5 shrink-0" style={{ color: "hsl(215 15% 42%)" }} />
                 <p className="text-xs leading-relaxed" style={{ color: "hsl(215 15% 42%)" }}>
                   Your data stays in your browser. One-off report access. Not financial advice.
@@ -201,7 +214,7 @@ export default function LandingPage() {
               </div>
             </div>
 
-            {/* Right: desktop-only SVG visual (kept from prior build) */}
+            {/* Right: desktop-only SVG visual */}
             <div className="hidden lg:block lg:flex-1 relative" style={{ height: 500 }}>
               {/* Ambient glows */}
               <div className="absolute rounded-full pointer-events-none" style={{
@@ -231,7 +244,7 @@ export default function LandingPage() {
                 <circle cx="265" cy="28" r="5" fill="hsl(38 72% 58%)" opacity="0.9" />
                 <circle cx="265" cy="28" r="11" fill="hsl(38 72% 58% / 0.22)" />
               </svg>
-              {/* Report card */}
+              {/* Desktop report card */}
               <div className="absolute rounded-2xl border shadow-2xl overflow-hidden"
                 style={{ top: "6%", right: "4%", width: 192,
                   background: "hsl(215 50% 10% / 0.94)", borderColor: "hsl(215 30% 24%)",
@@ -258,7 +271,7 @@ export default function LandingPage() {
                   <p className="text-[8px] text-white/25 mt-2">Illustrative sample. Not financial advice.</p>
                 </div>
               </div>
-              {/* Floating cards */}
+              {/* Desktop floating cards */}
               {[
                 { icon: Clock, label: "Slow recovery", sub: "What if a new role takes longer?", pos: { top: "30%", left: "0%" }, tint: "hsl(38 72% 52% / 0.15)", ic: "hsl(38 72% 58%)" },
                 { icon: Home, label: "Mortgage pressure", sub: "At risk if rates rise", pos: { top: "55%", right: "0%" }, tint: "hsl(198 65% 28% / 0.25)", ic: "hsl(198 65% 58%)" },
@@ -280,87 +293,73 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* ── HERO LOWER: scenic image with overlaid floating cards (all screens) ── */}
-          <div className="relative w-full lg:hidden" style={{ height: 340 }}>
+          {/* ── MOBILE SCENIC VISUAL — below text block, hidden on lg ── */}
+          <div className="relative overflow-hidden lg:hidden mt-6" style={{ height: 360 }}
+            data-testid="hero-mobile-visual">
             {/* Scenic landscape image */}
             <img src={heroLandscape} alt="" aria-hidden="true"
               className="absolute inset-0 w-full h-full object-cover object-center" />
-            {/* Dark fade at top so it blends with text above */}
-            <div className="absolute inset-0"
-              style={{ background: "linear-gradient(to bottom, hsl(215 60% 6%) 0%, hsl(215 60% 6% / 0.3) 30%, transparent 60%, hsl(215 60% 6% / 0.2) 100%)" }} />
 
-            {/* Central report card — mobile */}
-            <div className="absolute top-4 left-1/2 -translate-x-1/2 rounded-2xl border shadow-2xl overflow-hidden"
-              style={{ width: 192,
-                background: "hsl(215 50% 10% / 0.96)", borderColor: "hsl(215 30% 24%)",
+            {/* Gradient overlay: opaque navy at top → transparent middle → slight tint bottom */}
+            <div className="absolute inset-0" style={{
+              background: "linear-gradient(to bottom, hsl(215 60% 6%) 0%, hsl(215 60% 6% / 0.25) 28%, transparent 52%, hsl(215 60% 8% / 0.32) 100%)"
+            }} />
+
+            {/* Report card — compact, bottom-centre */}
+            <div className="absolute bottom-20 left-1/2 -translate-x-1/2 rounded-2xl border shadow-2xl overflow-hidden"
+              style={{ width: 188, background: "hsl(215 50% 10% / 0.97)", borderColor: "hsl(215 30% 26%)",
                 backdropFilter: "blur(16px)", zIndex: 10 }}>
-              <div className="px-4 pt-4 pb-1">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: "hsl(38 72% 52%)" }}>
-                    <Check className="w-3 h-3 text-white" />
-                  </div>
-                  <p className="text-[10px] font-semibold text-white/80">Your Runway Report</p>
-                </div>
-                <p className="text-[9px] text-white/40 mb-0.5">Baseline runway</p>
-                <div className="flex items-end gap-1 mb-0.5">
-                  <span className="font-serif text-2xl font-bold text-white leading-none">10.4 months</span>
+              <div className="px-4 pt-3 pb-1">
+                <p className="text-[9px] font-semibold tracking-widest uppercase mb-1.5" style={{ color: "hsl(38 72% 60%)" }}>Your Runway Report</p>
+                <div className="flex items-end gap-1 mb-0">
+                  <span className="font-serif text-3xl font-bold text-white leading-none">10.4</span>
+                  <span className="text-xs text-white/50 mb-1">months</span>
                 </div>
                 <p className="text-[9px] text-white/35 mb-2">at current burn rate</p>
-                <div className="rounded-lg px-2 py-1.5 mb-2" style={{ background: "hsl(198 65% 16%)" }}>
-                  <p className="text-[9px] text-white/50 mb-0.5">Results under scenarios</p>
+                <div className="rounded-lg px-2 py-1.5 mb-2.5" style={{ background: "hsl(198 65% 16%)" }}>
+                  <p className="text-[9px] text-white/50 mb-0.5">Under scenarios</p>
                   <p className="text-[10px] font-semibold" style={{ color: "hsl(38 72% 65%)" }}>Range 5.1 – 18.7 months</p>
                 </div>
               </div>
               <div className="px-4 pb-3">
-                {["Slow recovery","Mortgage pressure","One-income household","Voluntary redundancy","Structural transition"].map((s) => (
-                  <div key={s} className="flex items-center gap-1.5 mb-0.5">
+                {["Slow recovery", "Mortgage pressure", "One-income household"].map((s) => (
+                  <div key={s} className="flex items-center gap-1.5 mb-1">
                     <Check className="w-2.5 h-2.5 shrink-0" style={{ color: "hsl(38 72% 60%)" }} />
-                    <span className="text-[9px] text-white/55">{s}</span>
+                    <span className="text-[10px] text-white/60">{s}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Floating cards — left column */}
-            <div className="absolute left-2 bottom-4 flex flex-col gap-2" style={{ zIndex: 10 }}>
-              <div className="rounded-xl border px-3 py-2"
-                style={{ width: 138, background: "hsl(215 45% 10% / 0.93)", borderColor: "hsl(215 30% 22%)", backdropFilter: "blur(10px)" }}>
-                <div className="flex items-center gap-1.5 mb-0.5">
-                  <Calculator className="w-3 h-3" style={{ color: "hsl(38 72% 58%)" }} />
-                  <p className="text-[9px] font-semibold text-white/80">Redundancy pay estimate</p>
+            {/* Floating card — bottom left: Redundancy pay */}
+            <div className="absolute bottom-3 left-3 rounded-xl border px-3 py-2.5"
+              style={{ width: 142, background: "hsl(215 45% 10% / 0.95)", borderColor: "hsl(215 30% 24%)",
+                backdropFilter: "blur(12px)", zIndex: 10 }}>
+              <div className="flex items-center gap-1.5 mb-1">
+                <div className="w-5 h-5 rounded-md flex items-center justify-center shrink-0"
+                  style={{ background: "hsl(38 72% 52% / 0.18)" }}>
+                  <Calculator className="w-3 h-3" style={{ color: "hsl(38 72% 60%)" }} />
                 </div>
-                <p className="text-[9px] text-white/40">Statutory estimate</p>
+                <p className="text-[9px] font-semibold text-white/85 leading-tight">Redundancy pay estimate</p>
               </div>
-              <div className="rounded-xl border px-3 py-2"
-                style={{ width: 138, background: "hsl(215 45% 10% / 0.93)", borderColor: "hsl(215 30% 22%)", backdropFilter: "blur(10px)" }}>
-                <div className="flex items-center gap-1.5 mb-0.5">
-                  <Home className="w-3 h-3" style={{ color: "hsl(198 65% 58%)" }} />
-                  <p className="text-[9px] font-semibold text-white/80">Mortgage pressure</p>
-                </div>
-                <p className="text-[9px] text-white/40">At risk if rates rise</p>
-              </div>
+              <p className="text-[9px] text-white/40 leading-relaxed">Statutory estimate</p>
             </div>
 
-            {/* Floating cards — right column */}
-            <div className="absolute right-2 bottom-4 flex flex-col gap-2" style={{ zIndex: 10 }}>
-              <div className="rounded-xl border px-3 py-2"
-                style={{ width: 138, background: "hsl(215 45% 10% / 0.93)", borderColor: "hsl(215 30% 22%)", backdropFilter: "blur(10px)" }}>
-                <div className="flex items-center gap-1.5 mb-0.5">
-                  <Clock className="w-3 h-3" style={{ color: "hsl(38 72% 58%)" }} />
-                  <p className="text-[9px] font-semibold text-white/80">Slow recovery</p>
+            {/* Floating card — bottom right: Slow recovery */}
+            <div className="absolute bottom-3 right-3 rounded-xl border px-3 py-2.5"
+              style={{ width: 142, background: "hsl(215 45% 10% / 0.95)", borderColor: "hsl(215 30% 24%)",
+                backdropFilter: "blur(12px)", zIndex: 10 }}>
+              <div className="flex items-center gap-1.5 mb-1">
+                <div className="w-5 h-5 rounded-md flex items-center justify-center shrink-0"
+                  style={{ background: "hsl(38 72% 52% / 0.18)" }}>
+                  <Clock className="w-3 h-3" style={{ color: "hsl(38 72% 60%)" }} />
                 </div>
-                <p className="text-[9px] text-white/40">What if a new role takes longer?</p>
+                <p className="text-[9px] font-semibold text-white/85 leading-tight">Slow recovery</p>
               </div>
-              <div className="rounded-xl border px-3 py-2"
-                style={{ width: 138, background: "hsl(215 45% 10% / 0.93)", borderColor: "hsl(215 30% 22%)", backdropFilter: "blur(10px)" }}>
-                <div className="flex items-center gap-1.5 mb-0.5">
-                  <Users className="w-3 h-3" style={{ color: "hsl(175 40% 58%)" }} />
-                  <p className="text-[9px] font-semibold text-white/80">Household impact</p>
-                </div>
-                <p className="text-[9px] text-white/40">One income supporting the household?</p>
-              </div>
+              <p className="text-[9px] text-white/40 leading-relaxed">What if a new role takes longer?</p>
             </div>
           </div>
+
         </section>
 
         {/* ── TRUST STRIP ─────────────────────────────────────────────── */}
