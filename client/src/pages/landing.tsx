@@ -163,11 +163,11 @@ export default function LandingPage() {
         <section data-testid="section-hero" style={{ background: "hsl(215 60% 6%)" }}>
 
           {/* ── TEXT BLOCK — solid dark navy, text always above any visual ── */}
-          <div className="relative z-10 max-w-6xl mx-auto px-5 pt-12 pb-8 lg:pt-20 lg:pb-0
-                          lg:flex lg:items-center lg:min-h-[600px] lg:gap-10">
+          <div className="relative z-10 max-w-6xl mx-auto px-5 pt-12 pb-8 md:pt-20 md:pb-0
+                          md:flex md:items-center md:min-h-[600px] md:gap-10">
 
             {/* Left: text content */}
-            <div className="lg:flex-1 lg:max-w-xl">
+            <div className="md:flex-1 md:max-w-xl">
 
               {/* Eyebrow — teal pill badge */}
               <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 mb-5 border"
@@ -215,7 +215,7 @@ export default function LandingPage() {
             </div>
 
             {/* Right: desktop-only SVG visual */}
-            <div className="hidden lg:block lg:flex-1 relative" style={{ height: 500 }}>
+            <div className="hidden md:block md:flex-1 relative" style={{ height: 500 }}>
               {/* Ambient glows */}
               <div className="absolute rounded-full pointer-events-none" style={{
                 width: 300, height: 300, top: "5%", right: "0%",
@@ -293,8 +293,8 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* ── MOBILE SCENIC VISUAL — below text block, hidden on lg ── */}
-          <div className="relative overflow-hidden lg:hidden mt-6" style={{ height: 360 }}
+          {/* ── MOBILE SCENIC VISUAL — below text block, hidden on md+ ── */}
+          <div className="relative overflow-hidden md:hidden mt-6 mb-8 aspect-[4/5]"
             data-testid="hero-mobile-visual">
             {/* Scenic landscape image */}
             <img src={heroLandscape} alt="" aria-hidden="true"
@@ -306,7 +306,7 @@ export default function LandingPage() {
             }} />
 
             {/* Report card — compact, bottom-centre */}
-            <div className="absolute bottom-20 left-1/2 -translate-x-1/2 rounded-2xl border shadow-2xl overflow-hidden"
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 rounded-2xl border shadow-2xl overflow-hidden"
               style={{ width: 188, background: "hsl(215 50% 10% / 0.97)", borderColor: "hsl(215 30% 26%)",
                 backdropFilter: "blur(16px)", zIndex: 10 }}>
               <div className="px-4 pt-3 pb-1">
