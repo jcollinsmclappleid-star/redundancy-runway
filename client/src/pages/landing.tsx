@@ -22,6 +22,7 @@ import {
   TrendingUp,
   Clock,
   Heart,
+  BadgePoundSterling,
 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Logo } from "@/components/Logo";
@@ -384,9 +385,9 @@ export default function LandingPage() {
             {/* Bottom icon pips — road milestone markers */}
             <div className="flex items-center justify-evenly mt-5">
               {[
-                { icon: Home,       label: "Mortgage" },
-                { icon: Calculator, label: "Capital" },
-                { icon: Users,      label: "Household" },
+                { icon: Home,                label: "Mortgage" },
+                { icon: BadgePoundSterling,  label: "Capital" },
+                { icon: Users,               label: "Household" },
               ].map((pip) => (
                 <div key={pip.label} className="flex flex-col items-center gap-1">
                   <div className="w-7 h-7 rounded-full flex items-center justify-center"
