@@ -1,0 +1,201 @@
+Please replace the current second homepage image/visual with an innovative interactive dashboard preview.
+
+The current image is too lifestyle-focused. It is calm, but it does not strongly communicate redundancy calculation, financial modelling, scenarios, runway analysis or paid report value.
+
+New direction:
+Create a premium interactive dashboard preview section that feels like a modern fintech / consultancy-grade insight dashboard.
+
+Do not copy any specific firm’s branding. The visual style should feel:
+
+* strategic
+* analytical
+* premium
+* calm
+* modern SaaS
+* private wealth / consulting-grade
+* not spreadsheet-like
+* not corporate HR
+* not generic budgeting app
+
+Section purpose:
+The hero road/light gives emotional reassurance. This second visual should prove the product is a serious modelling tool.
+
+Section headline:
+“Redundancy is not just a payout question. It is a runway question.”
+
+Body:
+“A redundancy package can look manageable on day one. The harder question is how it behaves over time: if a new role takes longer than expected, if mortgage or rent still needs paying, if replacement income is lower, or if the household temporarily relies on one income.”
+
+Second paragraph:
+“RedundancyCalculatorUK helps you model that picture privately — under your own assumptions, so you can approach the next conversation with clearer questions.”
+
+Dashboard name:
+“Private Runway Command Centre”
+
+Build a dashboard mockup using real React/Tailwind components, not a static image with text baked in.
+
+Dashboard layout:
+Use a laptop/browser frame or elevated card on the right side of the section.
+
+Dashboard components to include:
+
+1. Top metric cards:
+    * Baseline runway: “10.4 months”
+    * Scenario range: “5.1 – 18.7 months”
+    * Starting capital: “£42,850”
+    * Housing pressure: “38%”
+2. Scenario tabs:
+    * Baseline
+    * Slow recovery
+    * Severe case
+    * One-income
+3. Main chart:
+    * Month-by-month capital path
+    * Use a smooth line chart or area chart
+    * Highlight the “survival horizon”
+    * Add a small annotation: “Income resumes under this scenario”
+4. Redundancy package bridge:
+    Show a simple horizontal flow:
+    * Statutory estimate
+    * Enhanced/manual package
+    * Accessible savings
+    * Starting runway capital
+5. Household pressure panel:
+    Cards for:
+    * Mortgage/rent pressure
+    * Partner income
+    * Essential costs
+    * Childcare/dependants if present
+6. Sensitivity panel:
+    Title: “What changes the runway most”
+    Ranking:
+    * Months to replacement income
+    * Housing cost
+    * Essential monthly costs
+    * Replacement income level
+7. Next-step panel:
+    Title: “Need a plan after the numbers?”
+    Copy: “Start a 7-Day Redundancy Reset”
+    CTA: “View next-step support”
+
+Interactions:
+Make the preview lightly interactive:
+
+* Scenario tabs should update the displayed runway number and chart data.
+* Add a small slider for “months to replacement income”.
+* Add a toggle for “include partner income”.
+* Add a toggle for “enhanced package”.
+* Use smooth but subtle transitions.
+* Keep this lightweight; do not add heavy charting libraries unless already installed.
+
+If a chart library already exists, use it. If not, use simple SVG or lightweight CSS/SVG charting.
+
+Mobile behaviour:
+On mobile, do not show the full complex dashboard all at once.
+
+Mobile dashboard preview should become:
+
+1. One headline card:
+    * “Private Runway Command Centre”
+    * “Baseline runway: 10.4 months”
+    * “Scenario range: 5.1 – 18.7 months”
+2. Horizontal scenario chip carousel:
+    * Baseline
+    * Slow recovery
+    * Severe case
+    * One-income
+3. Compact capital path chart.
+4. Two insight cards:
+    * “Housing pressure”
+    * “What changes runway most”
+5. CTA:
+    * “Build my private report”
+
+Avoid clutter on mobile. The mobile dashboard must feel designed, not like a compressed desktop dashboard.
+
+Design tokens:
+Use the existing theme:
+
+* Deep navy: #061526
+* Ink navy: #0B1F33
+* Midnight teal: #123C46
+* Deep teal: #174C55
+* Soft teal: #DDF2EF
+* Mist blue: #EAF2F4
+* Warm gold: #D9A441
+* Soft gold: #F6C76A
+* Cream: #FFF8EC
+* Off-white: #F7F8F6
+* Ink text: #101827
+* Slate text: #4B5563
+
+Visual style:
+
+* dark dashboard shell
+* cream/white cards
+* gold highlights
+* teal status chips
+* crisp borders
+* subtle shadows
+* calm animations
+* high contrast
+* no red warning styling
+* no panic language
+
+Copy rules:
+Keep all language non-advisory.
+
+Allowed:
+
+* “under your assumptions”
+* “scenario”
+* “model”
+* “may”
+* “planning model”
+* “not financial advice”
+
+Avoid:
+
+* “you should”
+* “recommended”
+* “best option”
+* “safe”
+* “unsafe”
+* “guaranteed”
+* “protect your finances”
+* “financial advice”
+* “legal advice”
+* “employment advice”
+
+Implementation:
+Create or update components as needed:
+
+* RunwayCommandCentrePreview.tsx
+* ScenarioTabs.tsx
+* CapitalPathMiniChart.tsx
+* PackageBridge.tsx
+* SensitivityRanking.tsx
+* HouseholdPressurePanel.tsx
+
+Use real HTML text, icons and chart elements. Do not use an AI-generated image with embedded text.
+
+Acceptance criteria:
+
+* The second homepage visual no longer looks like a generic lifestyle image.
+* It clearly communicates redundancy runway modelling.
+* It feels premium and interactive.
+* It proves the value of the paid report.
+* It works cleanly on desktop and mobile.
+* It does not overwhelm mobile users.
+* It does not use advisory language.
+* It keeps the site B2C-only.
+* It links naturally to the calculator and paid report.
+* Build/typecheck passes.
+
+After implementation, report:
+
+1. Files changed
+2. Components created
+3. Interactions added
+4. Mobile behaviour
+5. Build/typecheck result
