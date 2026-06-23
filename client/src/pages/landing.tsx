@@ -21,14 +21,15 @@ import {
   Repeat,
   TrendingUp,
   Clock,
+  Heart,
 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Logo } from "@/components/Logo";
 import { DisclaimerBanner } from "@/components/DisclaimerBanner";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Footer } from "@/components/Footer";
+import { RunwayCommandCentrePreview } from "@/components/RunwayCommandCentrePreview";
 import heroLandscape from "@assets/generated_images/hero-road-landscape.png";
-import lifestyleRoom from "@assets/generated_images/lifestyle-living-room.png";
 
 const NAV_LINKS = [
   { label: "How it works", href: "#how-it-works" },
@@ -160,7 +161,20 @@ export default function LandingPage() {
         </header>
 
         {/* ── HERO ────────────────────────────────────────────────────── */}
-        <section data-testid="section-hero" style={{ background: "hsl(215 60% 6%)" }}>
+        <section data-testid="section-hero" className="relative overflow-hidden" style={{ background: "hsl(215 60% 6%)" }}>
+
+          {/* Full-bleed scenic background — mobile only */}
+          <img
+            src={heroLandscape} alt="" aria-hidden="true"
+            className="absolute inset-0 w-full h-full object-cover object-[center_55%] md:hidden pointer-events-none"
+          />
+          {/* Gradient overlay: very dark at top (text zone) → transparent (road zone) → slight tint at bottom */}
+          <div
+            className="absolute inset-0 md:hidden pointer-events-none"
+            style={{
+              background: "linear-gradient(to bottom, hsl(215 60% 6% / 0.97) 0%, hsl(215 60% 6% / 0.97) 44%, hsl(215 60% 6% / 0.14) 64%, hsl(215 60% 8% / 0.28) 100%)"
+            }}
+          />
 
           {/* ── TEXT BLOCK — solid dark navy, text always above any visual ── */}
           <div className="relative z-10 max-w-6xl mx-auto px-5 pt-12 pb-8 md:pt-20 md:pb-0
@@ -293,71 +307,97 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* ── MOBILE SCENIC VISUAL — below text block, hidden on md+ ── */}
-          <div className="relative overflow-hidden md:hidden mt-6 mb-8 aspect-[4/5]"
-            data-testid="hero-mobile-visual">
-            {/* Scenic landscape image */}
-            <img src={heroLandscape} alt="" aria-hidden="true"
-              className="absolute inset-0 w-full h-full object-cover object-center" />
+          {/* ── MOBILE CARD ZONE — reference mockup layout, hidden on md+ ── */}
+          <div className="relative z-10 md:hidden px-3 pt-3 pb-8" data-testid="hero-mobile-visual">
 
-            {/* Gradient overlay: opaque navy at top → transparent middle → slight tint bottom */}
-            <div className="absolute inset-0" style={{
-              background: "linear-gradient(to bottom, hsl(215 60% 6%) 0%, hsl(215 60% 6% / 0.25) 28%, transparent 52%, hsl(215 60% 8% / 0.32) 100%)"
-            }} />
+            {/* Three-column card arrangement */}
+            <div className="flex gap-[5px] items-start">
 
-            {/* Report card — compact, bottom-centre */}
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 rounded-2xl border shadow-2xl overflow-hidden"
-              style={{ width: 188, background: "hsl(215 50% 10% / 0.97)", borderColor: "hsl(215 30% 26%)",
-                backdropFilter: "blur(16px)", zIndex: 10 }}>
-              <div className="px-4 pt-3 pb-1">
-                <p className="text-[9px] font-semibold tracking-widest uppercase mb-1.5" style={{ color: "hsl(38 72% 60%)" }}>Your Runway Report</p>
-                <div className="flex items-end gap-1 mb-0">
-                  <span className="font-serif text-3xl font-bold text-white leading-none">10.4</span>
-                  <span className="text-xs text-white/50 mb-1">months</span>
-                </div>
-                <p className="text-[9px] text-white/35 mb-2">at current burn rate</p>
-                <div className="rounded-lg px-2 py-1.5 mb-2.5" style={{ background: "hsl(198 65% 16%)" }}>
-                  <p className="text-[9px] text-white/50 mb-0.5">Under scenarios</p>
-                  <p className="text-[10px] font-semibold" style={{ color: "hsl(38 72% 65%)" }}>Range 5.1 – 18.7 months</p>
+              {/* LEFT: Redundancy pay estimate card */}
+              <div className="shrink-0 rounded-xl border overflow-hidden"
+                style={{ width: 108, background: "hsl(215 50% 10% / 0.97)", borderColor: "hsl(215 30% 24%)", backdropFilter: "blur(14px)" }}>
+                <div className="p-2.5">
+                  <div className="flex items-center gap-1 mb-1.5">
+                    <div className="w-4 h-4 rounded-md flex items-center justify-center shrink-0"
+                      style={{ background: "hsl(38 72% 52% / 0.2)" }}>
+                      <Calculator className="w-2.5 h-2.5" style={{ color: "hsl(38 72% 60%)" }} />
+                    </div>
+                    <p className="text-[8px] font-semibold leading-tight" style={{ color: "hsl(215 15% 70%)" }}>
+                      Redundancy pay estimate
+                    </p>
+                  </div>
+                  <p className="font-serif text-[22px] font-bold text-white leading-none mb-0.5">£28,650</p>
+                  <p className="text-[8px]" style={{ color: "hsl(215 15% 40%)" }}>Statutory estimate</p>
                 </div>
               </div>
-              <div className="px-4 pb-3">
-                {["Slow recovery", "Mortgage pressure", "One-income household"].map((s) => (
-                  <div key={s} className="flex items-center gap-1.5 mb-1">
-                    <Check className="w-2.5 h-2.5 shrink-0" style={{ color: "hsl(38 72% 60%)" }} />
-                    <span className="text-[10px] text-white/60">{s}</span>
+
+              {/* CENTRE: Full runway report card */}
+              <div className="flex-1 min-w-0 rounded-xl border overflow-hidden"
+                style={{ background: "hsl(215 50% 10% / 0.97)", borderColor: "hsl(215 30% 26%)", backdropFilter: "blur(14px)" }}>
+                <div className="p-2.5">
+                  <p className="text-[8px] font-semibold tracking-widest uppercase mb-1"
+                    style={{ color: "hsl(38 72% 60%)" }}>Your Runway Report</p>
+                  <div className="flex items-end gap-1 mb-0">
+                    <span className="font-serif text-[22px] font-bold text-white leading-none">10.4</span>
+                    <span className="text-[9px] text-white/50 mb-0.5">months</span>
+                  </div>
+                  <p className="text-[8px] text-white/35 mb-1.5">at current burn rate</p>
+                  <div className="rounded-md px-2 py-1 mb-1.5" style={{ background: "hsl(198 65% 16%)" }}>
+                    <p className="text-[7px] text-white/45 mb-0.5">Results under scenarios</p>
+                    <p className="text-[9px] font-semibold" style={{ color: "hsl(38 72% 65%)" }}>Range 5.1 – 18.7 mo</p>
+                  </div>
+                  {["Slow recovery", "Mortgage pressure", "One-income household", "Voluntary redundancy", "Structural transition"].map((item) => (
+                    <div key={item} className="flex items-center gap-1 mb-0.5">
+                      <Check className="w-2 h-2 shrink-0" style={{ color: "hsl(38 72% 60%)" }} />
+                      <span className="text-[7.5px] leading-tight" style={{ color: "hsl(215 15% 58%)" }}>{item}</span>
+                    </div>
+                  ))}
+                  <p className="text-[7px] mt-1.5" style={{ color: "hsl(215 15% 24%)" }}>
+                    Illustrative. Not financial advice.
+                  </p>
+                </div>
+              </div>
+
+              {/* RIGHT: 3 stacked floating cards */}
+              <div className="shrink-0 flex flex-col gap-[5px]" style={{ width: 97 }}>
+                {[
+                  { icon: TrendingDown, label: "Slow recovery", sub: "What if a new role takes longer?", ic: "hsl(38 72% 58%)", tint: "hsl(38 72% 52% / 0.18)" },
+                  { icon: Users,        label: "Household impact", sub: "One income supporting the household?", ic: "hsl(175 40% 58%)", tint: "hsl(175 40% 28% / 0.25)" },
+                  { icon: Heart,        label: "Support if needed", sub: "Plan options and next steps", ic: "hsl(198 65% 58%)", tint: "hsl(198 65% 28% / 0.22)" },
+                ].map((card) => (
+                  <div key={card.label} className="rounded-xl border px-2 py-2"
+                    style={{ background: "hsl(215 45% 10% / 0.95)", borderColor: "hsl(215 30% 22%)", backdropFilter: "blur(10px)" }}>
+                    <div className="flex items-center gap-1 mb-0.5">
+                      <div className="w-4 h-4 rounded-md flex items-center justify-center shrink-0"
+                        style={{ background: card.tint }}>
+                        <card.icon className="w-2.5 h-2.5" style={{ color: card.ic }} />
+                      </div>
+                      <p className="text-[8px] font-semibold text-white/80 leading-tight">{card.label}</p>
+                    </div>
+                    <p className="text-[7px] leading-relaxed" style={{ color: "hsl(215 15% 40%)" }}>{card.sub}</p>
                   </div>
                 ))}
               </div>
+
             </div>
 
-            {/* Floating card — bottom left: Redundancy pay */}
-            <div className="absolute bottom-3 left-3 rounded-xl border px-3 py-2.5"
-              style={{ width: 142, background: "hsl(215 45% 10% / 0.95)", borderColor: "hsl(215 30% 24%)",
-                backdropFilter: "blur(12px)", zIndex: 10 }}>
-              <div className="flex items-center gap-1.5 mb-1">
-                <div className="w-5 h-5 rounded-md flex items-center justify-center shrink-0"
-                  style={{ background: "hsl(38 72% 52% / 0.18)" }}>
-                  <Calculator className="w-3 h-3" style={{ color: "hsl(38 72% 60%)" }} />
+            {/* Bottom icon pips — road milestone markers */}
+            <div className="flex items-center justify-evenly mt-5">
+              {[
+                { icon: Home,       label: "Mortgage" },
+                { icon: Calculator, label: "Capital" },
+                { icon: Users,      label: "Household" },
+              ].map((pip) => (
+                <div key={pip.label} className="flex flex-col items-center gap-1">
+                  <div className="w-7 h-7 rounded-full flex items-center justify-center"
+                    style={{ background: "hsl(215 40% 13%)", border: "1px solid hsl(215 30% 20%)" }}>
+                    <pip.icon className="w-3.5 h-3.5" style={{ color: "hsl(38 72% 56%)" }} />
+                  </div>
+                  <p className="text-[8px]" style={{ color: "hsl(215 15% 38%)" }}>{pip.label}</p>
                 </div>
-                <p className="text-[9px] font-semibold text-white/85 leading-tight">Redundancy pay estimate</p>
-              </div>
-              <p className="text-[9px] text-white/40 leading-relaxed">Statutory estimate</p>
+              ))}
             </div>
 
-            {/* Floating card — bottom right: Slow recovery */}
-            <div className="absolute bottom-3 right-3 rounded-xl border px-3 py-2.5"
-              style={{ width: 142, background: "hsl(215 45% 10% / 0.95)", borderColor: "hsl(215 30% 24%)",
-                backdropFilter: "blur(12px)", zIndex: 10 }}>
-              <div className="flex items-center gap-1.5 mb-1">
-                <div className="w-5 h-5 rounded-md flex items-center justify-center shrink-0"
-                  style={{ background: "hsl(38 72% 52% / 0.18)" }}>
-                  <Clock className="w-3 h-3" style={{ color: "hsl(38 72% 60%)" }} />
-                </div>
-                <p className="text-[9px] font-semibold text-white/85 leading-tight">Slow recovery</p>
-              </div>
-              <p className="text-[9px] text-white/40 leading-relaxed">What if a new role takes longer?</p>
-            </div>
           </div>
 
         </section>
@@ -405,10 +445,7 @@ export default function LandingPage() {
                   RedundancyCalculatorUK helps you model that picture privately — under your own assumptions, before speaking to a financial adviser, solicitor, or anyone else.
                 </p>
               </div>
-              <div className="rounded-2xl overflow-hidden shadow-lg" style={{ aspectRatio: "4/3" }}>
-                <img src={lifestyleRoom} alt="Calm modern living space"
-                  className="w-full h-full object-cover" />
-              </div>
+              <RunwayCommandCentrePreview />
             </div>
           </div>
         </section>
