@@ -8,8 +8,10 @@ if [[ ! -f .env ]]; then
   exit 1
 fi
 
-if ! command -v vercel >/dev/null 2>&1; then
-  echo "Install Vercel CLI: npm i -g vercel"
+VERCEL_CMD="${VERCEL_CMD:-npx vercel}"
+
+if ! $VERCEL_CMD whoami >/dev/null 2>&1; then
+  echo "Vercel CLI not authenticated. Run: npx vercel login"
   exit 1
 fi
 
@@ -35,8 +37,8 @@ for key in "${ENV_KEYS[@]}"; do
     echo "  skip ${key} (empty in .env)"
     continue
   fi
-  printf '%s' "$value" | vercel env add "$key" preview --force 2>/dev/null || \
-    printf '%s' "$value" | vercel env add "$key" preview
+  printf '%s' "$value" | $VERCEL_CMD env add "$key" preview --force --scope jcollinsmclappleid-stars-projects 2>/dev/null || \
+    printf '%s' "$value" | $VERCEL_CMD env add "$key" preview --scope jcollinsmclappleid-stars-projects
   echo "  set ${key} (preview)"
 done
 
