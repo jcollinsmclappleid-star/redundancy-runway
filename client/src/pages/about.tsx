@@ -12,17 +12,17 @@ export default function AboutPage() {
       <Helmet>
         <title>About RedundancyCalculatorUK | Private UK Redundancy Runway Modelling</title>
         <meta name="description" content="RedundancyCalculatorUK is a private, non-advisory modelling tool for UK redundancy scenarios. Built for individuals who want to understand their financial runway before making decisions." />
-        <link rel="canonical" href="https://redundancycalculatoruk.com/about" />
+        <link rel="canonical" href="https://redundancycalculatoruk.co.uk/about" />
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="RedundancyCalculatorUK" />
         <meta property="og:title" content="About RedundancyCalculatorUK" />
         <meta property="og:description" content="A private, non-advisory UK redundancy runway modelling tool. Built for individuals, not institutions." />
-        <meta property="og:url" content="https://redundancycalculatoruk.com/about" />
-        <meta property="og:image" content="https://redundancycalculatoruk.com/og-image.png" />
+        <meta property="og:url" content="https://redundancycalculatoruk.co.uk/about" />
+        <meta property="og:image" content="https://redundancycalculatoruk.co.uk/og-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="About RedundancyCalculatorUK" />
         <meta name="twitter:description" content="A private, non-advisory UK redundancy runway modelling tool. Built for individuals, not institutions." />
-        <meta name="twitter:image" content="https://redundancycalculatoruk.com/og-image.png" />
+        <meta name="twitter:image" content="https://redundancycalculatoruk.co.uk/og-image.png" />
       </Helmet>
 
       <div className="min-h-screen flex flex-col">

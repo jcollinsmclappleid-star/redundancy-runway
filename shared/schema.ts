@@ -14,11 +14,23 @@ export const purchases = pgTable("purchases", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   sessionToken: text("session_token").notNull(),
   stripeSessionId: text("stripe_session_id"),
+  stripePaymentIntentId: text("stripe_payment_intent_id"),
+  email: text("email"),
   amount: integer("amount").notNull(),
   currency: text("currency").notNull().default("gbp"),
   status: text("status").notNull().default("pending"),
+  purchasedAt: timestamp("purchased_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   expiresAt: timestamp("expires_at").notNull(),
+});
+
+export const magicLinks = pgTable("magic_links", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  email: text("email").notNull(),
+  token: varchar("token", { length: 128 }).notNull().unique(),
+  expiresAt: timestamp("expires_at").notNull(),
+  usedAt: timestamp("used_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 export const calculations = pgTable("calculations", {
@@ -31,16 +43,41 @@ export const calculations = pgTable("calculations", {
 export const resets = pgTable("resets", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   sessionToken: text("session_token"),
+  portalToken: text("portal_token").unique(),
+  email: text("email"),
   name: text("name").notNull(),
   contactMethod: text("contact_method").notNull().default("webchat"),
   intakeAnswers: jsonb("intake_answers").notNull().default({}),
-  status: text("status").notNull().default("New"),
+  status: text("status").notNull().default("Intake needed"),
+  riskFlags: jsonb("risk_flags").notNull().default({}),
+  reply1: jsonb("reply1").notNull().default({}),
+  followUp: jsonb("follow_up").notNull().default({}),
+  finalPlan: jsonb("final_plan").notNull().default({}),
+  boundaryChecklist: jsonb("boundary_checklist").notNull().default({}),
   adminNotes: text("admin_notes"),
   stripeSessionId: text("stripe_session_id"),
   paid: text("paid").notNull().default("pending"),
+  submittedAt: timestamp("submitted_at"),
+  reply1ReadyAt: timestamp("reply1_ready_at"),
+  followUpReadyAt: timestamp("follow_up_ready_at"),
+  finalPlanReadyAt: timestamp("final_plan_ready_at"),
+  closedAt: timestamp("closed_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
+
+export const RESET_STATUS_OPTIONS = [
+  "Intake needed",
+  "Intake submitted",
+  "First response in preparation",
+  "Reply 1 ready",
+  "Follow-up check-in ready",
+  "Final plan ready",
+  "Closed",
+  "Signposting needed",
+] as const;
+
+export type ResetStatus = typeof RESET_STATUS_OPTIONS[number];
 
 export const insertSessionSchema = createInsertSchema(sessions).omit({ id: true, createdAt: true });
 export const insertPurchaseSchema = createInsertSchema(purchases).omit({ id: true, createdAt: true });
@@ -51,6 +88,7 @@ export type Session = typeof sessions.$inferSelect;
 export type InsertSession = z.infer<typeof insertSessionSchema>;
 export type Purchase = typeof purchases.$inferSelect;
 export type InsertPurchase = z.infer<typeof insertPurchaseSchema>;
+export type MagicLink = typeof magicLinks.$inferSelect;
 export type Calculation = typeof calculations.$inferSelect;
 export type InsertCalculation = z.infer<typeof insertCalculationSchema>;
 export type Reset = typeof resets.$inferSelect;

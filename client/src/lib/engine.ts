@@ -18,9 +18,16 @@ import { getSectorData } from "@/lib/sectorData";
 import { getAgeBandData, weeksToMonths } from "@/lib/ukBenchmarks";
 
 const MAX_PROJECTION_MONTHS = 60;
-const UK_STATUTORY_WEEKLY_PAY_CAP = 643;
-const UK_TAX_FREE_THRESHOLD = 30000;
-const UK_STATUTORY_MIN_SERVICE_YEARS = 2;
+export const UK_STATUTORY_REDUNDANCY = {
+  weeklyPayCap: 751,
+  taxFreeThreshold: 30000,
+  minServiceYears: 2,
+  maxServiceYears: 20,
+  effectiveFrom: "6 April 2026",
+  lastChecked: "25 June 2026",
+  lastCheckedIso: "2026-06-25",
+  sourceUrl: "https://www.gov.uk/redundancy-your-rights/redundancy-pay",
+} as const;
 
 function computeEssentialExpenses(inputs: RunwayInputs): number {
   return (
@@ -70,7 +77,7 @@ function round2(n: number): number {
 }
 
 export function computeRedundancyEstimate(pkg: RedundancyPackageInputs): RedundancyEstimate {
-  const qualifyingServiceMet = pkg.yearsOfService >= UK_STATUTORY_MIN_SERVICE_YEARS;
+  const qualifyingServiceMet = pkg.yearsOfService >= UK_STATUTORY_REDUNDANCY.minServiceYears;
 
   if (!qualifyingServiceMet) {
     const noticePay = round2(pkg.noticeWeeks * pkg.weeklyGrossPay);
@@ -84,13 +91,13 @@ export function computeRedundancyEstimate(pkg: RedundancyPackageInputs): Redunda
       noticePay,
       holidayPay,
       totalEstimated: round2(totalEstimated),
-      taxFreeThreshold: UK_TAX_FREE_THRESHOLD,
+      taxFreeThreshold: UK_STATUTORY_REDUNDANCY.taxFreeThreshold,
       qualifyingServiceMet: false,
     };
   }
 
-  const cappedWeeklyPay = Math.min(pkg.weeklyGrossPay, UK_STATUTORY_WEEKLY_PAY_CAP);
-  const cappedYears = Math.min(pkg.yearsOfService, 20);
+  const cappedWeeklyPay = Math.min(pkg.weeklyGrossPay, UK_STATUTORY_REDUNDANCY.weeklyPayCap);
+  const cappedYears = Math.min(pkg.yearsOfService, UK_STATUTORY_REDUNDANCY.maxServiceYears);
 
   let statutoryWeeks = 0;
   for (let year = 0; year < cappedYears; year++) {
@@ -118,7 +125,7 @@ export function computeRedundancyEstimate(pkg: RedundancyPackageInputs): Redunda
     noticePay,
     holidayPay,
     totalEstimated: round2(totalEstimated),
-    taxFreeThreshold: UK_TAX_FREE_THRESHOLD,
+    taxFreeThreshold: UK_STATUTORY_REDUNDANCY.taxFreeThreshold,
     qualifyingServiceMet: true,
   };
 }

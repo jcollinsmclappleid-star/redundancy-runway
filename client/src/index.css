@@ -10,57 +10,59 @@
   --elevate-1: rgba(0,0,0, .03);
   --elevate-2: rgba(0,0,0, .08);
 
-  /* Core surfaces */
-  --background: 60 11% 97%;
-  --foreground: 215 38% 10%;
-  --border: 210 14% 88%;
+  /* Core surfaces — analytical white workspace */
+  --background: 0 0% 100%;
+  --foreground: 220 40% 13%;
+  --border: 220 15% 90%;
   --card: 0 0% 100%;
-  --card-foreground: 215 38% 10%;
-  --card-border: 210 14% 90%;
+  --card-foreground: 220 40% 13%;
+  --card-border: 220 15% 92%;
+  --surface: 220 30% 98%;
 
   /* Sidebar */
-  --sidebar: 210 14% 94%;
-  --sidebar-foreground: 215 22% 16%;
-  --sidebar-border: 210 12% 87%;
-  --sidebar-primary: 198 65% 22%;
-  --sidebar-primary-foreground: 210 15% 97%;
-  --sidebar-accent: 210 12% 87%;
-  --sidebar-accent-foreground: 215 22% 16%;
-  --sidebar-ring: 198 65% 22%;
+  --sidebar: 220 15% 96%;
+  --sidebar-foreground: 220 40% 13%;
+  --sidebar-border: 220 15% 90%;
+  --sidebar-primary: 220 52% 22%;
+  --sidebar-primary-foreground: 220 20% 97%;
+  --sidebar-accent: 220 15% 94%;
+  --sidebar-accent-foreground: 220 40% 13%;
+  --sidebar-ring: 220 52% 22%;
 
   /* Popovers */
   --popover: 0 0% 100%;
-  --popover-foreground: 215 22% 16%;
-  --popover-border: 210 12% 85%;
+  --popover-foreground: 220 40% 13%;
+  --popover-border: 220 15% 90%;
 
-  /* Brand primary = deep teal (nav, buttons, accents) */
-  --primary: 198 65% 22%;
-  --primary-foreground: 60 11% 97%;
+  /* Brand primary = deep navy (authority) */
+  --primary: 220 52% 22%;
+  --primary-foreground: 220 20% 97%;
 
-  /* Gold accent — used for CTAs on dark backgrounds */
-  --gold: 38 67% 55%;
-  --gold-foreground: 215 50% 8%;
+  /* Gold accent */
+  --gold: 38 72% 47%;
+  --gold-light: 42 80% 60%;
+  --gold-foreground: 220 40% 13%;
 
-  /* Secondary / muted */
-  --secondary: 210 12% 90%;
-  --secondary-foreground: 215 22% 18%;
-  --muted: 210 10% 92%;
-  --muted-foreground: 215 10% 42%;
-  --accent: 60 8% 93%;
-  --accent-foreground: 215 22% 18%;
+  /* Secondary / muted — cool grey */
+  --secondary: 220 15% 96%;
+  --secondary-foreground: 220 40% 13%;
+  --muted: 220 15% 96%;
+  --muted-foreground: 220 10% 46%;
+  --accent: 220 15% 94%;
+  --accent-foreground: 220 40% 13%;
 
   /* Semantic */
-  --destructive: 0 65% 30%;
-  --destructive-foreground: 0 15% 97%;
-  --input: 210 12% 80%;
-  --ring: 198 65% 26%;
+  --destructive: 0 65% 50%;
+  --destructive-foreground: 0 0% 98%;
+  --input: 220 15% 90%;
+  --ring: 220 50% 25%;
 
-  /* Charts */
-  --chart-1: 198 65% 26%;
-  --chart-2: 175 40% 35%;
-  --chart-3: 38 67% 55%;
-  --chart-4: 158 30% 42%;
-  --chart-5: 228 30% 45%;
+  /* Charts — scenario palette */
+  --chart-1: 220 70% 50%;
+  --chart-2: 160 60% 40%;
+  --chart-3: 270 60% 55%;
+  --chart-4: 38 90% 50%;
+  --chart-5: 220 52% 22%;
 
   /* Typography */
   --font-sans: Inter, system-ui, -apple-system, sans-serif;
@@ -98,48 +100,56 @@
 }
 
 .dark {
-  --button-outline: rgba(255,255,255, .10);
-  --badge-outline: rgba(255,255,255, .05);
+  --button-outline: rgba(255,255,255, .12);
+  --badge-outline: rgba(255,255,255, .08);
   --opaque-button-border-intensity: 9;
-  --elevate-1: rgba(255,255,255, .04);
-  --elevate-2: rgba(255,255,255, .09);
+  --elevate-1: rgba(255,255,255, .05);
+  --elevate-2: rgba(255,255,255, .10);
 
-  --background: 215 35% 7%;
-  --foreground: 210 12% 92%;
-  --border: 215 18% 18%;
-  --card: 215 30% 10%;
-  --card-foreground: 210 12% 92%;
-  --card-border: 215 18% 14%;
-  --sidebar: 215 28% 11%;
-  --sidebar-foreground: 210 12% 87%;
-  --sidebar-border: 215 18% 16%;
-  --sidebar-primary: 198 55% 48%;
-  --sidebar-primary-foreground: 210 12% 97%;
-  --sidebar-accent: 215 18% 16%;
-  --sidebar-accent-foreground: 210 12% 87%;
-  --sidebar-ring: 198 55% 48%;
-  --popover: 215 30% 12%;
-  --popover-foreground: 210 12% 87%;
-  --popover-border: 215 18% 18%;
-  --primary: 198 55% 44%;
-  --primary-foreground: 210 12% 97%;
-  --gold: 38 70% 58%;
-  --gold-foreground: 215 50% 8%;
-  --secondary: 215 16% 18%;
-  --secondary-foreground: 210 12% 84%;
-  --muted: 215 16% 16%;
-  --muted-foreground: 210 8% 62%;
-  --accent: 215 16% 16%;
-  --accent-foreground: 210 12% 84%;
-  --destructive: 0 60% 26%;
-  --destructive-foreground: 0 12% 97%;
-  --input: 215 18% 26%;
-  --ring: 198 55% 48%;
-  --chart-1: 198 55% 55%;
-  --chart-2: 175 40% 52%;
-  --chart-3: 38 70% 60%;
-  --chart-4: 158 30% 58%;
-  --chart-5: 228 30% 60%;
+  --background: 220 32% 8%;
+  --foreground: 215 20% 96%;
+  --border: 220 18% 22%;
+  --card: 220 28% 11%;
+  --card-foreground: 215 18% 95%;
+  --card-border: 220 18% 18%;
+  --surface: 220 26% 12%;
+  --gold-light: 42 75% 62%;
+
+  --sidebar: 220 26% 11%;
+  --sidebar-foreground: 215 18% 92%;
+  --sidebar-border: 220 18% 20%;
+  --sidebar-primary: 220 55% 62%;
+  --sidebar-primary-foreground: 220 40% 8%;
+  --sidebar-accent: 220 18% 18%;
+  --sidebar-accent-foreground: 215 18% 92%;
+  --sidebar-ring: 220 55% 62%;
+
+  --popover: 220 28% 12%;
+  --popover-foreground: 215 18% 94%;
+  --popover-border: 220 18% 22%;
+
+  --primary: 220 55% 68%;
+  --primary-foreground: 220 40% 8%;
+
+  --gold: 42 75% 62%;
+  --gold-foreground: 220 40% 8%;
+
+  --secondary: 220 16% 18%;
+  --secondary-foreground: 215 15% 90%;
+  --muted: 220 16% 16%;
+  --muted-foreground: 215 14% 78%;
+  --accent: 220 16% 18%;
+  --accent-foreground: 215 15% 90%;
+
+  --destructive: 0 65% 55%;
+  --destructive-foreground: 0 0% 98%;
+  --input: 220 18% 24%;
+  --ring: 220 55% 62%;
+  --chart-1: 220 70% 62%;
+  --chart-2: 160 55% 55%;
+  --chart-3: 270 55% 65%;
+  --chart-4: 42 85% 58%;
+  --chart-5: 220 50% 70%;
   --shadow-2xs: 0px 1px 2px 0px hsl(215 40% 3% / 0.30);
   --shadow-xs: 0px 1px 3px 0px hsl(215 40% 3% / 0.35);
   --shadow-sm: 0px 1px 3px 0px hsl(215 40% 3% / 0.30), 0px 1px 2px -1px hsl(215 40% 3% / 0.40);
@@ -176,10 +186,22 @@
 
   h1, h2, h3, h4 {
     font-family: var(--font-serif);
+    @apply tracking-tight;
+  }
+
+  .font-display {
+    font-family: var(--font-serif);
   }
 }
 
 @layer utilities {
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .premium-card {
+    @apply rounded-xl border bg-card shadow-sm border-t-4;
+  }
   input[type="search"]::-webkit-search-cancel-button {
     @apply hidden;
   }
@@ -265,13 +287,13 @@
     transform: translateY(0);
   }
 
-  /* Hero image overlay */
+  /* Hero image overlay — brand navy palette */
   .hero-overlay {
     background: linear-gradient(
       105deg,
-      hsl(215 60% 6% / 0.92) 0%,
-      hsl(198 65% 12% / 0.82) 45%,
-      hsl(198 65% 12% / 0.30) 100%
+      rgba(15, 27, 45, 0.92) 0%,
+      rgba(26, 51, 87, 0.82) 45%,
+      rgba(36, 61, 102, 0.28) 100%
     );
   }
 
@@ -279,10 +301,34 @@
     .hero-overlay {
       background: linear-gradient(
         180deg,
-        hsl(215 60% 6% / 0.92) 0%,
-        hsl(215 60% 6% / 0.80) 60%,
-        hsl(215 60% 6% / 0.60) 100%
+        rgba(15, 27, 45, 0.94) 0%,
+        rgba(26, 51, 87, 0.72) 55%,
+        rgba(36, 61, 102, 0.35) 100%
       );
+    }
+  }
+
+  @media print {
+    header,
+    [data-testid="disclaimer-banner"],
+    [data-testid="brief-action-bar"],
+    [data-testid="tabs-list"],
+    .print\\:hidden {
+      display: none !important;
+    }
+    [data-testid="page-results"] {
+      background: white !important;
+    }
+    .print-friendly-brief,
+    #private-runway-brief-report {
+      background: white !important;
+    }
+    .recharts-wrapper,
+    .recharts-surface {
+      background: white !important;
+    }
+    [data-state="closed"] > [data-radix-accordion-content] {
+      display: block !important;
     }
   }
 }

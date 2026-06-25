@@ -30,6 +30,45 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (!id.includes("node_modules")) {
+            return undefined;
+          }
+
+          if (/[\\/]node_modules[\\/](react|react-dom|scheduler)[\\/]/.test(id)) {
+            return "vendor-react";
+          }
+
+          if (/[\\/]node_modules[\\/](@radix-ui)[\\/]/.test(id)) {
+            return "vendor-radix";
+          }
+
+          if (/[\\/]node_modules[\\/](recharts|d3-|decimal\\.js-light|victory-vendor|react-smooth|lodash)[\\/]/.test(id)) {
+            return "vendor-charts";
+          }
+
+          if (/[\\/]node_modules[\\/](framer-motion|motion-dom|motion-utils)[\\/]/.test(id)) {
+            return "vendor-motion";
+          }
+
+          if (/[\\/]node_modules[\\/](@tanstack)[\\/]/.test(id)) {
+            return "vendor-query";
+          }
+
+          if (/[\\/]node_modules[\\/](lucide-react|react-icons)[\\/]/.test(id)) {
+            return "vendor-icons";
+          }
+
+          if (/[\\/]node_modules[\\/](wouter|react-helmet-async|tailwind-merge|clsx|class-variance-authority)[\\/]/.test(id)) {
+            return "vendor-app-utils";
+          }
+
+          return "vendor-misc";
+        },
+      },
+    },
   },
   server: {
     fs: {

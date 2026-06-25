@@ -1,19 +1,33 @@
 import express, { type Express } from "express";
 import fs from "fs";
 import path from "path";
+import { applyRouteSeoToHtml } from "./seo";
+
+function resolveDistPublic(): string {
+  const candidates = [
+    path.resolve(__dirname, "public"),
+    path.resolve(__dirname, "..", "dist", "public"),
+    path.resolve(process.cwd(), "dist", "public"),
+  ];
+  for (const candidate of candidates) {
+    if (fs.existsSync(candidate)) {
+      return candidate;
+    }
+  }
+  throw new Error(
+    `Could not find the build directory (dist/public). Tried: ${candidates.join(", ")}`,
+  );
+}
 
 export function serveStatic(app: Express) {
-  const distPath = path.resolve(__dirname, "public");
-  if (!fs.existsSync(distPath)) {
-    throw new Error(
-      `Could not find the build directory: ${distPath}, make sure to build the client first`,
-    );
-  }
+  const distPath = resolveDistPublic();
 
   app.use(express.static(distPath));
 
-  // fall through to index.html if the file doesn't exist
-  app.use("/{*path}", (_req, res) => {
-    res.sendFile(path.resolve(distPath, "index.html"));
+  app.use("/{*path}", (req, res) => {
+    const indexPath = path.resolve(distPath, "index.html");
+    const html = fs.readFileSync(indexPath, "utf-8");
+    const result = applyRouteSeoToHtml(html, req.originalUrl);
+    res.status(result.statusCode).type("html").send(result.html);
   });
 }

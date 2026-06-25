@@ -1,32 +1,76 @@
 import { Link } from "wouter";
+import { RUNWAY_REPORT_FULL } from "@shared/product";
 
-export function Logo({ showTagline = false, light = false }: { showTagline?: boolean; light?: boolean }) {
+type LogoSize = "header" | "large" | "footer";
+
+export function Logo({
+  showTagline = false,
+  light = false,
+  onDark = false,
+  size = "header",
+}: {
+  showTagline?: boolean;
+  light?: boolean;
+  /** Wordmark visible on dark backgrounds (e.g. navy header). Prefer a light page header when possible. */
+  onDark?: boolean;
+  size?: LogoSize;
+}) {
+  const large = size === "large" || light;
+  const footer = size === "footer";
+  const useFullLogo = light || onDark;
+
   return (
     <Link href="/" data-testid="link-home">
-      <div className="flex items-center gap-2.5 cursor-pointer">
-        <div className="w-8 h-8 rounded-md flex items-center justify-center shrink-0"
-          style={{ background: "linear-gradient(135deg, hsl(38 72% 52%), hsl(42 80% 60%))" }}>
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M9 1.5L2.25 4.5V9C2.25 12.7 5.25 16.17 9 17.25C12.75 16.17 15.75 12.7 15.75 9V4.5L9 1.5Z"
-              stroke="hsl(215 50% 8%)"
-              strokeWidth="1.5"
-              strokeLinejoin="round"
-              fill="none"
+      <div className={`flex items-center cursor-pointer ${footer ? "gap-2.5" : "gap-3"}`}>
+        {useFullLogo ? (
+          <img
+            src="/logo.png"
+            alt="RedundancyCalculatorUK"
+            className={
+              large
+                ? "h-28 sm:h-32 md:h-36 w-auto max-w-[min(100%,520px)] object-contain object-left"
+                : onDark
+                  ? "h-10 sm:h-11 w-auto max-w-[min(100%,280px)] object-contain object-left"
+                  : "h-12 sm:h-14 w-auto max-w-[min(100%,320px)] object-contain object-left"
+            }
+            data-testid="logo-image"
+          />
+        ) : (
+          <>
+            <img
+              src="/logo-mark.png"
+              alt=""
+              aria-hidden="true"
+              className={`shrink-0 object-contain ${
+                footer
+                  ? "h-10 w-10"
+                  : large
+                    ? "h-14 w-14 sm:h-16 sm:w-16"
+                    : "h-11 w-11 sm:h-12 sm:w-12"
+              }`}
+              data-testid="logo-mark"
             />
-            <text x="6.2" y="12.2" fontSize="7" fontWeight="700" fill="hsl(215 50% 8%)" fontFamily="serif">R</text>
-          </svg>
-        </div>
-        <div className="flex flex-col">
-          <span className={`font-serif font-semibold text-sm tracking-tight ${light ? "text-white" : "text-foreground"}`}>
-            RedundancyCalculatorUK
-          </span>
-          {showTagline && (
-            <span className={`text-[10px] tracking-wide ${light ? "text-white/60" : "text-muted-foreground"}`}>
-              Private Redundancy Runway Report
-            </span>
-          )}
-        </div>
+            <div className="flex flex-col min-w-0">
+              <span
+                className={`font-serif font-semibold tracking-tight leading-tight ${
+                  onDark ? "text-primary-foreground" : "text-foreground"
+                } ${footer ? "text-sm" : large ? "text-lg sm:text-xl" : "text-base sm:text-lg"}`}
+              >
+                RedundancyCalculator
+                <span className="text-[hsl(38_72%_47%)]">UK</span>
+              </span>
+              {showTagline && (
+                <span
+                  className={`tracking-wide leading-snug ${
+                    onDark ? "text-primary-foreground/70" : "text-muted-foreground"
+                  } ${footer ? "text-[10px] mt-0.5" : large ? "text-xs sm:text-sm" : "text-[11px] sm:text-xs"}`}
+                >
+                  {RUNWAY_REPORT_FULL}
+                </span>
+              )}
+            </div>
+          </>
+        )}
       </div>
     </Link>
   );

@@ -1,6 +1,9 @@
 const SESSION_TOKEN_KEY = "redundancy_runway_session_token";
 
 function generateToken(): string {
+  if (typeof crypto !== "undefined" && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   let result = "";
   for (let i = 0; i < 32; i++) {
@@ -16,6 +19,10 @@ export function getSessionToken(): string {
     localStorage.setItem(SESSION_TOKEN_KEY, token);
   }
   return token;
+}
+
+export function setSessionToken(token: string): void {
+  localStorage.setItem(SESSION_TOKEN_KEY, token);
 }
 
 export function clearSessionToken(): void {

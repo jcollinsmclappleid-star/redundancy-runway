@@ -5,5 +5,6 @@ Disallow: /preview
 Disallow: /results
 Disallow: /admin
 Disallow: /redundancy-reset/intake
+Disallow: /api/
 
-Sitemap: https://redundancycalculatoruk.com/sitemap.xml
+Sitemap: https://redundancycalculatoruk.co.uk/sitemap.xml

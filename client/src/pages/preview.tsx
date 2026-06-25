@@ -1,210 +1,264 @@
 import { Helmet } from "react-helmet-async";
 import { useLocation } from "wouter";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Lock, ArrowRight, ArrowLeft, Layers, Info } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { ArrowRight, ArrowLeft, Layers, Check, Lock, Mail } from "lucide-react";
 import { useWizardStore } from "@/lib/wizardStore";
-import { computeRunway, computeEssentialOnlyComparison, computeRedundancyEstimate, formatGBP, formatMonths } from "@/lib/engine";
+import { computeRunway, computeEssentialOnlyComparison, computeRedundancyEstimate, computeScenarios, formatGBP, formatMonths } from "@/lib/engine";
+import { buildPreviewConsoleScenarios, getResilienceDisplay } from "@/lib/runwayAssumptions";
 import { Logo } from "@/components/Logo";
 import { DisclaimerBanner } from "@/components/DisclaimerBanner";
+import { RriGauge } from "@/components/rri-gauge";
+import { CapitalCompositionChart } from "@/components/capital-composition-chart";
+import { RunwayConsole, buildRunwayConsoleScenarios } from "@/components/runway-console";
+import { ScenarioLeaderboard } from "@/components/scenario-leaderboard";
+import { chartTheme } from "@/lib/chart-theme";
+import { apiRequest } from "@/lib/queryClient";
+import { getSessionToken } from "@/lib/sessionToken";
+import { PersonalRunwayPreviewGap } from "@/components/private-runway-brief/PersonalRunwayPreviewGap";
+import { StatutoryFreeSummary } from "@/components/package-dashboard/StatutoryFreeSummary";
+import { LockedPackagePreviewGrid } from "@/components/package-dashboard/LockedPackagePreviewGrid";
+import { PackageTotalHero } from "@/components/preview/PackageTotalHero";
+import { PreviewIncomeAssumptionsPanel } from "@/components/preview/PreviewIncomeAssumptionsPanel";
+import { PRODUCT_COPY, RUNWAY_REPORT_PRICE_GBP } from "@shared/product";
+import { WIDER_PACKAGE_TEASER, DASHBOARD_DISCLAIMER } from "@shared/complianceCopy";
 
 export default function PreviewPage() {
   const [, navigate] = useLocation();
   const { inputs } = useWizardStore();
+  const [accessEmail, setAccessEmail] = useState("");
+  const [accessMessage, setAccessMessage] = useState("");
+  const [accessLink, setAccessLink] = useState("");
+  const [accessError, setAccessError] = useState("");
+  const [savingAccess, setSavingAccess] = useState(false);
 
   const result = useMemo(() => computeRunway(inputs), [inputs]);
+  const resilience = useMemo(() => getResilienceDisplay(inputs, result), [inputs, result]);
+  const previewScenarios = useMemo(() => buildPreviewConsoleScenarios(inputs), [inputs]);
+  const consoleScenarios = useMemo(() => buildRunwayConsoleScenarios(previewScenarios), [previewScenarios]);
+  const leaderboardScenarios = useMemo(() => computeScenarios(inputs), [inputs]);
   const essentialComparison = useMemo(() => computeEssentialOnlyComparison(inputs), [inputs]);
   const redundancyEstimate = useMemo(() => computeRedundancyEstimate(inputs.redundancyPackage), [inputs.redundancyPackage]);
 
-  const stabilityColor = result.stabilityBand === "Stable"
-    ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400"
-    : result.stabilityBand === "Watch"
-    ? "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400"
-    : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400";
+  const redundancyTotal = useMemo(() => {
+    const pkg = inputs.redundancyPackage;
+    if (pkg.useManualOverride && pkg.manualOverrideAmount > 0) return pkg.manualOverrideAmount;
+    return redundancyEstimate.totalEstimated;
+  }, [inputs.redundancyPackage, redundancyEstimate]);
 
-  const lockedItems = [
-    "Projection range (fast / typical / slow)",
-    "60-month capital trajectory chart",
-    "Income recovery scenarios (4 paths)",
-    "Capital recovery timeline",
-    "Expense sensitivity ranking",
-    "Stress cases",
-    "UK benchmark context",
-    ...(inputs.mortgageOrRent > 0 ? ["Housing pressure analysis"] : []),
-    "Structured report export",
-  ];
+  const compositionSegments = useMemo(() => [
+    { name: "Cash savings", value: inputs.cashSavings },
+    { name: "Liquid investments", value: inputs.liquidInvestments },
+    { name: "Redundancy package", value: redundancyTotal },
+    { name: "Other one-off", value: inputs.otherOneOffIncome + (inputs.unpaidWages ?? 0) },
+  ], [inputs, redundancyTotal]);
+
+  const composition = useMemo(() => [
+    { label: "Cash savings", value: inputs.cashSavings, color: chartTheme.color.cash },
+    { label: "Liquid investments", value: inputs.liquidInvestments, color: chartTheme.color.investments },
+    { label: "Redundancy package", value: redundancyTotal, color: chartTheme.color.redundancy },
+    { label: "Other one-off", value: inputs.otherOneOffIncome + (inputs.unpaidWages ?? 0), color: chartTheme.color.s4 },
+  ].filter((c) => c.value > 0), [inputs, redundancyTotal]);
+
+  const stabilityColor = resilience.band === "Stable"
+    ? "bg-emerald-100 text-emerald-800"
+    : resilience.band === "Watch" || resilience.band === "Incomplete"
+    ? "bg-amber-100 text-amber-800"
+    : "bg-red-100 text-red-800";
+
+  const saveReportAccess = async () => {
+    setSavingAccess(true);
+    setAccessMessage("");
+    setAccessError("");
+    setAccessLink("");
+    try {
+      const response = await apiRequest("POST", "/api/report-access-email", {
+        sessionToken: getSessionToken(),
+        email: accessEmail,
+        inputs,
+      });
+      const data = await response.json();
+      setAccessMessage(data.message ?? "Report access link saved.");
+      setAccessLink(data.emailSent ? "" : data.reportAccessUrl ?? "");
+    } catch (error) {
+      setAccessError(error instanceof Error ? error.message : "Could not save report access");
+    } finally {
+      setSavingAccess(false);
+    }
+  };
 
   return (
     <>
       <Helmet>
         <title>Your Free Preview — RedundancyCalculatorUK</title>
-        <meta name="description" content="Your free redundancy runway preview — baseline estimate, stability classification and capital snapshots. Unlock the full report for detailed scenario analysis." />
+        <meta name="description" content="Your free redundancy package estimate and runway preview — unlock the full report for stress tests and a plain-English brief." />
         <meta name="robots" content="noindex, nofollow" />
-        <link rel="canonical" href="https://redundancycalculatoruk.com/preview" />
-        <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="RedundancyCalculatorUK" />
-        <meta property="og:title" content="Your Free Preview — RedundancyCalculatorUK" />
-        <meta property="og:description" content="Your free redundancy runway preview — baseline estimate, stability classification and capital snapshots." />
-        <meta property="og:url" content="https://redundancycalculatoruk.com/preview" />
-        <meta property="og:image" content="https://redundancycalculatoruk.com/og-image.png" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Your Free Preview — RedundancyCalculatorUK" />
-        <meta name="twitter:description" content="Your free redundancy runway preview — baseline estimate, stability classification and capital snapshots." />
-        <meta name="twitter:image" content="https://redundancycalculatoruk.com/og-image.png" />
+        <link rel="canonical" href="https://redundancycalculatoruk.co.uk/preview" />
       </Helmet>
-    <div className="min-h-screen">
-      <DisclaimerBanner />
+      <div className="min-h-screen bg-background">
+        <DisclaimerBanner />
 
-      <header className="flex items-center justify-between gap-4 px-6 py-4 border-b flex-wrap">
-        <Logo />
-        <Button variant="outline" onClick={() => navigate("/wizard")} data-testid="button-edit-inputs">
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Edit Assumptions
-        </Button>
-      </header>
+        <header className="sticky top-0 z-40 flex items-center justify-between gap-4 px-6 py-4 border-b bg-background/95 backdrop-blur flex-wrap">
+          <Logo />
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={() => navigate("/wizard?step=0")} data-testid="button-add-package">
+              Add package details
+            </Button>
+            <Button variant="outline" onClick={() => navigate("/wizard")} data-testid="button-edit-inputs">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Edit assumptions
+            </Button>
+          </div>
+        </header>
 
-      <div className="max-w-2xl mx-auto py-10 px-6">
-        <div className="text-center mb-10">
-          <Badge variant="secondary" className="mb-4" data-testid="badge-free-preview">
-            Free Preview
-          </Badge>
-          <h1 className="font-serif text-2xl sm:text-3xl font-bold mb-2">Your Projection Summary</h1>
-          <p className="text-sm text-muted-foreground">Based on the assumptions entered</p>
-        </div>
+        <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-10">
+          <PackageTotalHero inputs={inputs} />
 
-        <Card className="mb-6">
-          <CardContent className="pt-8 pb-8 text-center">
-            <p className="text-sm text-muted-foreground mb-3">Under these assumptions, capital may last approximately</p>
-            <div className="text-4xl sm:text-5xl font-bold mb-3 font-serif" data-testid="text-runway-months">
-              {formatMonths(result.monthsUntilDepletion)}
-            </div>
-            <p className="text-xs text-muted-foreground mb-4">
-              Starting capital: {formatGBP(result.startingCapital)} | Net monthly burn: {formatGBP(result.monthlyBurn)}
-            </p>
-            <Badge className={`${stabilityColor} no-default-hover-elevate no-default-active-elevate`} data-testid="badge-preview-stability">
-              {result.stabilityBand} ({result.stabilityScore}/100)
-            </Badge>
-          </CardContent>
-        </Card>
+          <StatutoryFreeSummary inputs={inputs} />
 
-        <div className="grid grid-cols-3 gap-3 mb-6">
-          {[
-            { label: "3 months", value: result.capitalAfter3Months, id: "3m" },
-            { label: "6 months", value: result.capitalAfter6Months, id: "6m" },
-            { label: "12 months", value: result.capitalAfter12Months, id: "12m" },
-          ].map((item) => (
-            <Card key={item.id}>
-              <CardContent className="pt-4 pb-4 text-center">
-                <p className="text-xs text-muted-foreground mb-1">Capital at {item.label}</p>
-                <p className="font-semibold text-sm" data-testid={`text-capital-${item.id}`}>{formatGBP(item.value)}</p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+          <PreviewIncomeAssumptionsPanel inputs={inputs} />
 
-        <Card className="mb-6" data-testid="card-preview-redundancy-estimate">
-          <CardContent className="pt-5 pb-5">
-            <div className="flex items-start gap-3 mb-3">
-              <div className="w-8 h-8 rounded-md bg-primary/10 flex items-center justify-center shrink-0">
-                <Info className="w-4 h-4 text-muted-foreground" />
-              </div>
-              <div>
-                <p className="text-sm font-medium mb-0.5">Redundancy Package Estimate</p>
-                <p className="text-xs text-muted-foreground">Based on the package details entered</p>
-              </div>
-            </div>
-            <div className="space-y-2">
-              {redundancyEstimate.qualifyingServiceMet ? (
-                <div className="flex items-center justify-between text-sm gap-2">
-                  <span className="text-muted-foreground text-xs">Statutory redundancy</span>
-                  <span className="font-semibold" data-testid="text-statutory-redundancy">{formatGBP(redundancyEstimate.statutoryRedundancy)}</span>
-                </div>
-              ) : (
-                <div className="flex items-start gap-2 text-xs text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 rounded p-2">
-                  <span>Under these assumptions, the 2-year qualifying service minimum has not been met. Statutory redundancy is estimated at £0.</span>
-                </div>
-              )}
-              <div className="flex items-center justify-between text-sm gap-2">
-                <span className="text-muted-foreground text-xs">Notice pay</span>
-                <span className="font-semibold" data-testid="text-notice-pay">{formatGBP(redundancyEstimate.noticePay)}</span>
-              </div>
-              <div className="flex items-center justify-between text-sm gap-2">
-                <span className="text-muted-foreground text-xs">Holiday pay</span>
-                <span className="font-semibold" data-testid="text-holiday-pay">{formatGBP(redundancyEstimate.holidayPay)}</span>
-              </div>
-              <div className="flex items-center justify-between text-sm gap-2 pt-2 border-t">
-                <span className="text-xs font-medium">Estimated total package</span>
-                <span className="font-bold text-base" data-testid="text-total-package">{formatGBP(redundancyEstimate.totalEstimated)}</span>
-              </div>
-            </div>
-            <p className="text-xs text-muted-foreground/80 mt-3 leading-relaxed">
-              Statutory redundancy pay is the estimated qualifying amount. Notice pay and holiday pay are separate and may be subject to tax. The first £30,000 of a genuine redundancy payment is generally tax-free. Tax treatment depends on individual circumstances — GOV.UK, last checked April 2025.
-            </p>
-          </CardContent>
-        </Card>
-
-        {essentialComparison.monthlySaving > 0 && (
-          <Card className="mb-8" data-testid="card-preview-essential-insight">
+          <Card className="border-gold/20 bg-[hsl(40_30%_98%)]">
             <CardContent className="pt-5 pb-5">
-              <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-md bg-primary/10 flex items-center justify-center shrink-0">
-                  <Layers className="w-4 h-4 text-muted-foreground" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium mb-1">Preliminary Insight</p>
-                  <p className="text-xs text-muted-foreground">
-                    If all non-essential spending ({formatGBP(essentialComparison.monthlySaving)}/mo) were removed,
-                    the projection would
-                    {essentialComparison.extraMonths > 0
-                      ? ` extend by approximately ${essentialComparison.extraMonths} months under these assumptions.`
-                      : " not extend further (runway already exceeds 60 months under these assumptions)."
-                    }
-                  </p>
-                </div>
-              </div>
+              <h2 className="text-base font-semibold text-primary mb-2">Statutory redundancy may be only part of the picture</h2>
+              <p className="text-sm text-muted-foreground leading-relaxed">{WIDER_PACKAGE_TEASER}</p>
             </CardContent>
           </Card>
-        )}
 
-        <Card className="mb-6" data-testid="card-unlock-cta">
-          <CardContent className="pt-8 pb-8">
-            <div className="text-center mb-6">
-              <h3 className="font-serif font-semibold text-xl mb-2">Your free preview shows the baseline. The full report shows the stress cases.</h3>
-              <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-                Under the assumptions entered, your preview shows the first layer of the model. The full Private Runway Report unlocks the scenarios that usually matter most when income is uncertain.
+          <LockedPackagePreviewGrid inputs={inputs} />
+
+          <Card className="border-primary/20 bg-surface" data-testid="card-unlock-cta">
+            <CardContent className="pt-8 pb-8 text-center">
+              <h3 className="font-display font-semibold text-xl mb-2">{PRODUCT_COPY.unlockHeadline}</h3>
+              <p className="text-sm text-muted-foreground max-w-md mx-auto mb-4">
+                Go beyond the statutory estimate. Model the wider package, see how the payout feeds into your runway, and generate a plain-English brief from your figures.
               </p>
-            </div>
+              <ul className="text-xs text-muted-foreground max-w-md mx-auto mb-6 space-y-1.5 text-left">
+                {PRODUCT_COPY.unlockModules.map((item) => (
+                  <li key={item} className="flex items-start gap-2">
+                    <Check className="w-3.5 h-3.5 text-gold shrink-0 mt-0.5" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <Button className="btn-gold w-full max-w-sm" onClick={() => navigate("/unlock")} data-testid="button-unlock">
+                Unlock full report — £{RUNWAY_REPORT_PRICE_GBP}
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+              <p className="text-xs text-muted-foreground mt-4 max-w-sm mx-auto leading-relaxed">
+                One-off payment. No subscription. {DASHBOARD_DISCLAIMER}
+              </p>
+            </CardContent>
+          </Card>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 mb-6 max-w-md mx-auto">
-              {lockedItems.map((item, i) => (
-                <div key={i} className="flex items-center gap-2 text-sm" data-testid={`locked-feature-${i}`}>
-                  <Lock className="w-3 h-3 text-muted-foreground shrink-0" />
-                  <span className="text-muted-foreground text-xs">{item}</span>
+          {/* Runway section — demoted below package */}
+          <section className="space-y-4 pt-4 border-t">
+            <div className="flex items-center gap-2">
+              <Lock className="w-4 h-4 text-muted-foreground" />
+              <h2 className="text-lg font-semibold">Baseline runway preview</h2>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Under the assumptions entered, your baseline runway is {formatMonths(result.monthsUntilDepletion)} with starting capital of {formatGBP(result.startingCapital)}.
+            </p>
+
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+              {[
+                { label: "Baseline runway", value: formatMonths(result.monthsUntilDepletion), stripe: chartTheme.color.s1 },
+                { label: "Starting capital", value: formatGBP(result.startingCapital), stripe: chartTheme.color.cash },
+                { label: "Net monthly burn", value: formatGBP(result.monthlyBurn), stripe: chartTheme.color.attention },
+                { label: "RRI score", value: `${resilience.score}/100`, stripe: chartTheme.color.s2 },
+              ].map((m) => (
+                <div key={m.label} className="bg-white rounded-xl border border-slate-200 border-t-4 shadow-sm px-4 py-4" style={{ borderTopColor: m.stripe }}>
+                  <p className="text-[9px] uppercase tracking-wide text-slate-400 mb-1">{m.label}</p>
+                  <p className="text-lg font-bold text-[#1a3357] tabular-nums">{m.value}</p>
                 </div>
               ))}
             </div>
 
-            <div className="text-center">
-              <div className="text-3xl font-bold mb-1">&pound;39</div>
-              <p className="text-xs text-muted-foreground mb-4">One-off payment. No subscription. Access your report for 6 months.</p>
-              <Button className="w-full max-w-xs" onClick={() => navigate("/results")} data-testid="button-unlock">
-                Unlock my private report
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
-              <p className="text-xs text-muted-foreground mt-3 max-w-xs mx-auto">
-                If the full report does not add meaningful clarity beyond the free preview, contact support within 7 days.
-              </p>
+            <div className="flex flex-col sm:flex-row items-start gap-4 rounded-xl border bg-muted/30 p-4">
+              <RriGauge score={resilience.score} size={90} label="Runway Resilience" />
+              <div>
+                <Badge className={`${stabilityColor} mb-2`}>{resilience.bandLabel} ({resilience.score}/100)</Badge>
+                <p className="text-xs text-muted-foreground">
+                  {resilience.incomeModelled
+                    ? "Full scenario range, stress tests and month-by-month paths are in the paid report."
+                    : "Add prior income in the wizard to model recovery paths and a fuller resilience score."}
+                </p>
+              </div>
             </div>
-          </CardContent>
-        </Card>
+          </section>
 
-        <p className="text-xs text-muted-foreground text-center">
-          All projections are illustrative estimates based on assumptions entered. Not financial advice.
-        </p>
+          {consoleScenarios.length > 0 && composition.length > 0 && (
+            <section className="space-y-3" data-testid="section-locked-console">
+              <RunwayConsole
+                scenarios={consoleScenarios}
+                composition={composition}
+                locked
+                defaultActiveIndex={0}
+                onUnlock={() => navigate("/unlock")}
+                hideStress
+                unlockLabel="Unlock full runway report"
+                footerText="Unlock to reveal exact trajectories, stress tests and sensitivity analysis"
+              />
+            </section>
+          )}
+
+          <ScenarioLeaderboard scenarios={leaderboardScenarios} locked onUnlock={() => navigate("/unlock")} />
+
+          <Card data-testid="card-capital-composition">
+            <CardContent className="pt-6 pb-6">
+              <p className="text-sm font-medium mb-1">Starting capital composition</p>
+              <p className="text-xs text-muted-foreground mb-4">How your modelled starting capital is made up under these assumptions.</p>
+              <CapitalCompositionChart segments={compositionSegments} />
+            </CardContent>
+          </Card>
+
+          {essentialComparison.monthlySaving > 0 && (
+            <Card data-testid="card-preview-essential-insight">
+              <CardContent className="pt-5 pb-5">
+                <div className="flex items-start gap-3">
+                  <Layers className="w-4 h-4 text-muted-foreground shrink-0 mt-0.5" />
+                  <p className="text-xs text-muted-foreground">
+                    If all non-essential spending ({formatGBP(essentialComparison.monthlySaving)}/mo) were removed under these assumptions, the projection would
+                    {essentialComparison.extraMonths > 0
+                      ? ` extend by approximately ${essentialComparison.extraMonths} months.`
+                      : " not extend further."}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          <PersonalRunwayPreviewGap inputs={inputs} locked />
+
+          <Card className="border-primary/15" data-testid="card-report-access-email">
+            <CardContent className="pt-6 pb-6">
+              <div className="flex items-start gap-3 mb-4">
+                <Mail className="w-4 h-4 text-primary shrink-0 mt-1" />
+                <div>
+                  <p className="text-sm font-semibold">Save report access for another device</p>
+                  <p className="text-xs text-muted-foreground mt-1">Add an email to recover your report access link.</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-3 items-end">
+                <div>
+                  <Label htmlFor="report-access-email" className="text-xs mb-1.5 block">Email address</Label>
+                  <Input id="report-access-email" type="email" value={accessEmail} onChange={(e) => setAccessEmail(e.target.value)} placeholder="you@example.com" />
+                </div>
+                <Button variant="outline" onClick={saveReportAccess} disabled={!accessEmail.trim() || savingAccess}>
+                  {savingAccess ? "Saving..." : "Save access link"}
+                </Button>
+              </div>
+              {accessMessage && <p className="text-xs text-muted-foreground mt-3">{accessMessage}</p>}
+              {accessError && <p className="text-xs text-destructive mt-3">{accessError}</p>}
+            </CardContent>
+          </Card>
+        </main>
       </div>
-    </div>
     </>
   );
 }

@@ -1,0 +1,38 @@
+PRIVATE RUNWAY BRIEF - REDUNDANCYCALCULATORUK
+Example export file
+====================
+
+This is an illustrative sample only. It is not legal, tax, mortgage, employment, debt, benefits, pension, investment, medical, mental health or financial advice.
+
+PACKAGE ESTIMATE
+The sample model combines an enhanced redundancy package, notice pay, holiday pay and cash savings. Statutory redundancy remains visible as a reference figure when an enhanced amount is entered.
+
+AT A GLANCE
+- Baseline runway: 10.4 months
+- Starting capital: GBP 42,850
+- Net monthly burn: GBP 2,840
+- Housing pressure: elevated but modelled as an assumption, not a prediction
+
+EXECUTIVE SUMMARY
+Under the sample assumptions, the baseline runway appears manageable, but stress scenarios show how quickly the picture changes if replacement income is delayed or fixed costs remain high.
+
+RUNWAY RANGE
+- Baseline: uses the sample figures as entered.
+- Slow recovery: models a longer job-gap assumption.
+- Severe case: removes replacement income from the projection.
+- Structural case: models a lower-income recovery path.
+
+CAPITAL COMPOSITION
+- Redundancy package
+- Cash savings
+- Liquid investments
+
+MONTHLY PRESSURE MAP
+Housing, essential costs and replacement income timing are the main pressure points in this sample.
+
+QUESTIONS TO TAKE FORWARD
+- Which package figures should be verified against employer documents?
+- Which monthly costs are fixed and which could change?
+- What income recovery assumptions should be modelled separately?
+
+This sample demonstrates the format of a Private Runway Brief. Personal results depend entirely on the figures entered.

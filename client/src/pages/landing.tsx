@@ -20,9 +20,6 @@ import {
   Users,
   Repeat,
   TrendingUp,
-  Clock,
-  Heart,
-  BadgePoundSterling,
 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Logo } from "@/components/Logo";
@@ -30,13 +27,23 @@ import { DisclaimerBanner } from "@/components/DisclaimerBanner";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Footer } from "@/components/Footer";
 import { RunwayCommandCentrePreview } from "@/components/RunwayCommandCentrePreview";
-import heroLandscape from "@assets/generated_images/hero-road-landscape.png";
+import { LandingDashboardShowcase } from "@/components/landing-dashboard-showcase";
+import { BriefExampleEmbed } from "@/components/private-runway-brief/BriefExampleEmbed";
+import { LandingHeroScene } from "@/components/landing-hero-scene";
+import { heroTheme } from "@/lib/chart-theme";
+import {
+  COMMAND_CENTRE_NAME,
+  PRODUCT_COPY,
+  RUNWAY_BRIEF_NAME,
+  RUNWAY_REPORT_FULL,
+  RUNWAY_REPORT_PRICE_GBP,
+} from "@shared/product";
 
 const NAV_LINKS = [
   { label: "How it works", href: "#how-it-works" },
   { label: "Scenarios", href: "#scenarios" },
   { label: "Pricing", href: "#pricing" },
-  { label: "Guides", href: "/statutory-redundancy-pay", external: true },
+  { label: "Guides", href: "/statutory-redundancy-pay-calculator", external: true },
   { label: "About", href: "/about", external: true },
 ];
 
@@ -53,31 +60,31 @@ export default function LandingPage() {
       <Helmet>
         <title>RedundancyCalculatorUK | UK Statutory Redundancy Pay & Runway Calculator</title>
         <meta name="description" content="Calculate your UK statutory redundancy pay and model how long your money may last. Free redundancy runway report with mortgage sensitivity, income scenarios and expense analysis. Not financial advice." />
-        <link rel="canonical" href="https://redundancycalculatoruk.com/" />
+        <link rel="canonical" href="https://redundancycalculatoruk.co.uk/" />
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="RedundancyCalculatorUK" />
         <meta property="og:title" content="RedundancyCalculatorUK | UK Statutory Redundancy Pay & Runway Calculator" />
         <meta property="og:description" content="Calculate your UK statutory redundancy pay and model how long your money may last. Free redundancy runway report with mortgage sensitivity, income scenarios and expense analysis." />
-        <meta property="og:url" content="https://redundancycalculatoruk.com/" />
-        <meta property="og:image" content="https://redundancycalculatoruk.com/og-image.png" />
+        <meta property="og:url" content="https://redundancycalculatoruk.co.uk/" />
+        <meta property="og:image" content="https://redundancycalculatoruk.co.uk/og-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="RedundancyCalculatorUK | UK Statutory Redundancy Pay & Runway Calculator" />
         <meta name="twitter:description" content="Calculate your UK statutory redundancy pay and model how long your money may last. Free redundancy runway report with mortgage sensitivity, income scenarios and expense analysis." />
-        <meta name="twitter:image" content="https://redundancycalculatoruk.com/og-image.png" />
+        <meta name="twitter:image" content="https://redundancycalculatoruk.co.uk/og-image.png" />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org", "@type": "Organization",
-          "name": "RedundancyCalculatorUK", "url": "https://redundancycalculatoruk.com",
+          "name": "RedundancyCalculatorUK", "url": "https://redundancycalculatoruk.co.uk",
           "description": "UK statutory redundancy pay calculator and financial runway modelling tool."
         })}</script>
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org", "@type": "WebApplication",
-          "name": "RedundancyCalculatorUK", "url": "https://redundancycalculatoruk.com",
+          "name": "RedundancyCalculatorUK", "url": "https://redundancycalculatoruk.co.uk",
           "applicationCategory": "FinanceApplication", "operatingSystem": "Web",
           "offers": [
             { "@type": "Offer", "price": "0", "priceCurrency": "GBP", "name": "Free Preview" },
-            { "@type": "Offer", "price": "39", "priceCurrency": "GBP", "name": "Private Runway Report" }
+            { "@type": "Offer", "price": "39", "priceCurrency": "GBP", "name": "Private Redundancy Runway Report" }
           ],
-          "provider": { "@type": "Organization", "name": "RedundancyCalculatorUK", "url": "https://redundancycalculatoruk.com" }
+          "provider": { "@type": "Organization", "name": "RedundancyCalculatorUK", "url": "https://redundancycalculatoruk.co.uk" }
         })}</script>
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org", "@type": "FAQPage",
@@ -85,8 +92,8 @@ export default function LandingPage() {
             { "@type": "Question", "name": "Is this financial advice?", "acceptedAnswer": { "@type": "Answer", "text": "No. RedundancyCalculatorUK is a non-advisory modelling tool. All outputs are estimates and may not reflect actual outcomes." } },
             { "@type": "Question", "name": "Is my data private?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. All financial calculations run entirely in your browser. No sensitive financial data is stored on our servers." } },
             { "@type": "Question", "name": "Is statutory redundancy pay included?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The calculator uses current UK statutory redundancy rules including age-band multipliers, service caps and the current weekly pay cap." } },
-            { "@type": "Question", "name": "What does the paid report unlock?", "acceptedAnswer": { "@type": "Answer", "text": "The full Private Runway Report (£39, one-off) unlocks slow and severe scenarios, mortgage pressure test, household resilience view, expense sensitivity ranking, month-by-month capital path, VR comparison, structural transition scenario, and exportable report." } },
-            { "@type": "Question", "name": "Is this a subscription?", "acceptedAnswer": { "@type": "Answer", "text": "No. Both the Private Runway Report and the 7-Day Redundancy Reset are one-off payments. No recurring charges." } }
+            { "@type": "Question", "name": "What does the paid report unlock?", "acceptedAnswer": { "@type": "Answer", "text": `The full ${RUNWAY_REPORT_FULL} (£${RUNWAY_REPORT_PRICE_GBP}, one-off) unlocks slow and severe scenarios, mortgage pressure test, household resilience view, expense sensitivity ranking, month-by-month capital path, VR comparison, structural transition scenario, and exportable report.` } },
+            { "@type": "Question", "name": "Is this a subscription?", "acceptedAnswer": { "@type": "Answer", "text": `No. Both the ${RUNWAY_REPORT_FULL} and the 7-Day Redundancy Reset are one-off payments. No recurring charges.` } }
           ]
         })}</script>
       </Helmet>
@@ -97,17 +104,17 @@ export default function LandingPage() {
         {/* ── HEADER ──────────────────────────────────────────────────── */}
         <header
           className="sticky top-0 z-50 backdrop-blur-md border-b"
-          style={{ background: "hsl(215 50% 8% / 0.97)", borderColor: "hsl(215 30% 16%)" }}
+          style={{ background: heroTheme.gradientHeader, borderColor: heroTheme.border }}
           data-testid="header-landing"
         >
-          <div className="max-w-6xl mx-auto flex items-center justify-between gap-4 px-5 py-3">
+          <div className="max-w-6xl mx-auto flex items-center justify-between gap-4 px-5 py-4 sm:py-5">
             <Logo light />
             <nav className="hidden md:flex items-center gap-6" data-testid="nav-desktop">
               {NAV_LINKS.map((link) =>
                 link.external ? (
                   <Link key={link.label} href={link.href}
                     className="text-sm font-medium transition-colors hover:text-white"
-                    style={{ color: "hsl(215 15% 60%)" }}
+                    style={{ color: heroTheme.textMuted }}
                     data-testid={`nav-${link.label.toLowerCase().replace(/\s/g, "-")}`}>
                     {link.label}
                   </Link>
@@ -115,7 +122,7 @@ export default function LandingPage() {
                   <button key={link.label}
                     onClick={() => scrollTo(link.href.replace("#", ""))}
                     className="text-sm font-medium transition-colors hover:text-white"
-                    style={{ color: "hsl(215 15% 60%)" }}
+                    style={{ color: heroTheme.textMuted }}
                     data-testid={`nav-${link.label.toLowerCase().replace(/\s/g, "-")}`}>
                     {link.label}
                   </button>
@@ -123,12 +130,12 @@ export default function LandingPage() {
               )}
             </nav>
             <div className="flex items-center gap-2">
-              <ThemeToggle />
+              <ThemeToggle onDark />
               <Button size="sm" className="btn-gold rounded-full px-5 hidden sm:flex"
                 onClick={() => navigate("/wizard")} data-testid="button-header-start">
-                Build my report <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
+                {PRODUCT_COPY.buildCta} <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
               </Button>
-              <button className="md:hidden p-1" style={{ color: "hsl(215 15% 60%)" }}
+              <button className="md:hidden p-1" style={{ color: heroTheme.textMuted }}
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 data-testid="button-mobile-menu" aria-label="Toggle navigation">
                 {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -137,7 +144,7 @@ export default function LandingPage() {
           </div>
           {mobileMenuOpen && (
             <div className="md:hidden border-t px-5 py-4 flex flex-col gap-3"
-              style={{ background: "hsl(215 50% 8%)", borderColor: "hsl(215 30% 16%)" }}
+              style={{ background: heroTheme.navy, borderColor: heroTheme.border }}
               data-testid="nav-mobile">
               {NAV_LINKS.map((link) =>
                 link.external ? (
@@ -155,258 +162,127 @@ export default function LandingPage() {
               <Button size="sm" className="btn-gold rounded-full mt-2"
                 onClick={() => { navigate("/wizard"); setMobileMenuOpen(false); }}
                 data-testid="button-mobile-cta">
-                Build my report <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
+                {PRODUCT_COPY.buildCta} <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
               </Button>
             </div>
           )}
         </header>
 
         {/* ── HERO ────────────────────────────────────────────────────── */}
-        <section data-testid="section-hero" className="relative overflow-hidden" style={{ background: "hsl(215 60% 6%)" }}>
+        <section data-testid="section-hero" className="relative overflow-hidden" style={{ background: heroTheme.navy }}>
+          <div className="max-w-6xl mx-auto">
+            {/* Text block — solid navy, no landscape bleed */}
+            <div className="relative z-10 px-5 pt-10 pb-6 md:pt-16 md:pb-8 md:flex md:items-start md:gap-12">
+              <div className="md:flex-1 md:max-w-xl">
+                <div
+                  className="inline-flex items-center gap-2 rounded-full px-3 py-1 mb-5 border"
+                  style={{ borderColor: "hsl(192 55% 42%)", background: "hsl(192 55% 22% / 0.35)" }}
+                  data-testid="hero-eyebrow"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full shrink-0 bg-teal-400" />
+                  <span className="text-[10px] font-semibold tracking-widest uppercase text-teal-200/90">
+                    PRIVATE · ASSUMPTION-BASED · UK FOCUSED
+                  </span>
+                </div>
 
-          {/* Full-bleed scenic background — mobile only */}
-          <img
-            src={heroLandscape} alt="" aria-hidden="true"
-            className="absolute inset-0 w-full h-full object-cover object-[center_55%] md:hidden pointer-events-none"
-          />
-          {/* Gradient overlay: very dark at top (text zone) → transparent (road zone) → slight tint at bottom */}
-          <div
-            className="absolute inset-0 md:hidden pointer-events-none"
-            style={{
-              background: "linear-gradient(to bottom, hsl(215 60% 6% / 0.97) 0%, hsl(215 60% 6% / 0.97) 44%, hsl(215 60% 6% / 0.14) 64%, hsl(215 60% 8% / 0.28) 100%)"
-            }}
-          />
+                <h1
+                  className="font-serif text-4xl sm:text-5xl lg:text-[3.25rem] font-bold leading-[1.1] text-white mb-4"
+                  data-testid="hero-headline"
+                >
+                  {PRODUCT_COPY.heroH1}
+                </h1>
 
-          {/* ── TEXT BLOCK — solid dark navy, text always above any visual ── */}
-          <div className="relative z-10 max-w-6xl mx-auto px-5 pt-12 pb-8 md:pt-20 md:pb-0
-                          md:flex md:items-center md:min-h-[600px] md:gap-10">
-
-            {/* Left: text content */}
-            <div className="md:flex-1 md:max-w-xl">
-
-              {/* Eyebrow — teal pill badge */}
-              <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 mb-5 border"
-                style={{ borderColor: "hsl(192 60% 38%)", background: "hsl(192 60% 18% / 0.25)" }}
-                data-testid="hero-eyebrow">
-                <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: "hsl(192 60% 56%)" }} />
-                <span className="text-[10px] font-semibold tracking-widest uppercase"
-                  style={{ color: "hsl(192 60% 62%)" }}>
-                  PRIVATE · ASSUMPTION-BASED · UK FOCUSED
-                </span>
-              </div>
-
-              <h1 className="font-serif text-4xl sm:text-5xl lg:text-[3.25rem] font-bold leading-[1.1] text-white mb-4"
-                data-testid="hero-headline">
-                Model how long your money may last if work changes.
-              </h1>
-
-              <p className="text-base leading-relaxed mb-6 lg:max-w-lg"
-                style={{ color: "hsl(215 15% 65%)" }} data-testid="hero-subheadline">
-                Build a private redundancy runway report for redundancy, restructuring, voluntary redundancy,
-                AI-related uncertainty, mortgage pressure or a slower return to work.
-              </p>
-
-              {/* CTAs — full-width stacked on mobile, side-by-side on sm+ */}
-              <div className="flex flex-col sm:flex-row gap-3 mb-4">
-                <Button size="lg" className="btn-gold rounded-full px-7 text-base w-full sm:w-auto"
-                  onClick={() => navigate("/wizard")} data-testid="button-hero-primary">
-                  Build my private report <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-                <Button size="lg" variant="outline"
-                  className="rounded-full px-7 text-base w-full sm:w-auto hover:text-white hover:bg-white/10"
-                  style={{ borderColor: "hsl(215 30% 30%)", color: "hsl(215 15% 65%)" }}
-                  onClick={() => scrollTo("scenarios")} data-testid="button-hero-secondary">
-                  See what's included <ChevronDown className="w-4 h-4 ml-2" />
-                </Button>
-              </div>
-
-              {/* Privacy line */}
-              <div className="flex items-start gap-2 mb-0">
-                <ShieldCheck className="w-3.5 h-3.5 mt-0.5 shrink-0" style={{ color: "hsl(215 15% 42%)" }} />
-                <p className="text-xs leading-relaxed" style={{ color: "hsl(215 15% 42%)" }}>
-                  Your data stays in your browser. One-off report access. Not financial advice.
+                <p className="text-base leading-relaxed mb-6 lg:max-w-lg text-slate-300" data-testid="hero-subheadline">
+                  {PRODUCT_COPY.heroSub}
                 </p>
-              </div>
-            </div>
 
-            {/* Right: desktop-only SVG visual */}
-            <div className="hidden md:block md:flex-1 relative" style={{ height: 500 }}>
-              {/* Ambient glows */}
-              <div className="absolute rounded-full pointer-events-none" style={{
-                width: 300, height: 300, top: "5%", right: "0%",
-                background: "radial-gradient(circle, hsl(198 65% 30% / 0.3) 0%, transparent 70%)",
-                filter: "blur(40px)"
-              }} />
-              <div className="absolute rounded-full pointer-events-none" style={{
-                width: 180, height: 180, bottom: "10%", left: "5%",
-                background: "radial-gradient(circle, hsl(38 72% 52% / 0.18) 0%, transparent 70%)",
-                filter: "blur(28px)"
-              }} />
-              {/* SVG road */}
-              <svg viewBox="0 0 400 500" className="absolute inset-0 w-full h-full" style={{ zIndex: 0 }}>
-                <defs>
-                  <linearGradient id="rg" x1="0" y1="1" x2="0" y2="0">
-                    <stop offset="0%" stopColor="hsl(38 72% 52%)" stopOpacity="0.05" />
-                    <stop offset="50%" stopColor="hsl(38 72% 52%)" stopOpacity="0.35" />
-                    <stop offset="100%" stopColor="hsl(38 72% 70%)" stopOpacity="0.75" />
-                  </linearGradient>
-                  <filter id="rg-glow"><feGaussianBlur stdDeviation="3" /></filter>
-                </defs>
-                <path d="M 55 490 C 75 430, 55 390, 115 350 C 175 310, 215 295, 195 245 C 180 200, 235 168, 255 120 C 270 80, 260 50, 265 30"
-                  fill="none" stroke="url(#rg)" strokeWidth="3.5" strokeLinecap="round" filter="url(#rg-glow)" />
-                <path d="M 55 490 C 75 430, 55 390, 115 350 C 175 310, 215 295, 195 245 C 180 200, 235 168, 255 120 C 270 80, 260 50, 265 30"
-                  fill="none" stroke="hsl(38 72% 65% / 0.25)" strokeWidth="1" strokeDasharray="8 10" strokeLinecap="round" />
-                <circle cx="265" cy="28" r="5" fill="hsl(38 72% 58%)" opacity="0.9" />
-                <circle cx="265" cy="28" r="11" fill="hsl(38 72% 58% / 0.22)" />
-              </svg>
-              {/* Desktop report card */}
-              <div className="absolute rounded-2xl border shadow-2xl overflow-hidden"
-                style={{ top: "6%", right: "4%", width: 192,
-                  background: "hsl(215 50% 10% / 0.94)", borderColor: "hsl(215 30% 24%)",
-                  backdropFilter: "blur(12px)", zIndex: 10 }}>
-                <div className="px-4 pt-4 pb-1">
-                  <p className="text-[9px] font-semibold tracking-widest uppercase mb-2" style={{ color: "hsl(38 72% 60%)" }}>Your Runway Report</p>
-                  <div className="flex items-end gap-1 mb-0.5">
-                    <span className="font-serif text-3xl font-bold text-white leading-none">10.4</span>
-                    <span className="text-xs text-white/50 mb-1">months</span>
-                  </div>
-                  <p className="text-[10px] text-white/40 mb-3">Baseline runway estimate</p>
-                  <div className="rounded-lg px-2 py-1.5 mb-3" style={{ background: "hsl(198 65% 16%)" }}>
-                    <p className="text-[9px] text-white/50 mb-0.5">Results under scenarios</p>
-                    <p className="text-xs font-semibold" style={{ color: "hsl(38 72% 65%)" }}>Range 5.1 – 18.7 months</p>
-                  </div>
+                <div className="flex flex-col sm:flex-row gap-3 mb-4">
+                  <Button
+                    size="lg"
+                    className="btn-gold rounded-full px-7 text-base w-full sm:w-auto"
+                    onClick={() => navigate("/wizard")}
+                    data-testid="button-hero-primary"
+                  >
+                    {PRODUCT_COPY.buildCta} <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="rounded-full px-7 text-base w-full sm:w-auto hover:text-white hover:bg-white/10 border-white/25 text-slate-300"
+                    onClick={() => scrollTo("pricing")}
+                    data-testid="button-hero-secondary"
+                  >
+                    See what the private report includes <ChevronDown className="w-4 h-4 ml-2" />
+                  </Button>
                 </div>
-                <div className="px-4 pb-4">
-                  {["Slow recovery","Mortgage pressure","One-income household","Voluntary redundancy","Structural transition"].map((s) => (
-                    <div key={s} className="flex items-center gap-1.5 mb-1">
-                      <Check className="w-2.5 h-2.5 shrink-0" style={{ color: "hsl(38 72% 60%)" }} />
-                      <span className="text-[10px] text-white/60">{s}</span>
-                    </div>
-                  ))}
-                  <p className="text-[8px] text-white/25 mt-2">Illustrative sample. Not financial advice.</p>
-                </div>
-              </div>
-              {/* Desktop floating cards */}
-              {[
-                { icon: Clock, label: "Slow recovery", sub: "What if a new role takes longer?", pos: { top: "30%", left: "0%" }, tint: "hsl(38 72% 52% / 0.15)", ic: "hsl(38 72% 58%)" },
-                { icon: Home, label: "Mortgage pressure", sub: "At risk if rates rise", pos: { top: "55%", right: "0%" }, tint: "hsl(198 65% 28% / 0.25)", ic: "hsl(198 65% 58%)" },
-                { icon: Users, label: "Household impact", sub: "One income supporting household?", pos: { top: "74%", left: "2%" }, tint: "hsl(175 40% 28% / 0.25)", ic: "hsl(175 40% 58%)" },
-              ].map((card) => (
-                <div key={card.label} className="absolute rounded-xl border shadow-lg px-3 py-2.5"
-                  style={{ ...card.pos, width: 152,
-                    background: "hsl(215 45% 11% / 0.92)", borderColor: "hsl(215 30% 22%)",
-                    backdropFilter: "blur(8px)", zIndex: 10 }}>
-                  <div className="flex items-center gap-2 mb-1">
-                    <div className="w-5 h-5 rounded-md flex items-center justify-center shrink-0" style={{ background: card.tint }}>
-                      <card.icon className="w-3 h-3" style={{ color: card.ic }} />
-                    </div>
-                    <p className="text-[10px] font-semibold text-white/80">{card.label}</p>
-                  </div>
-                  <p className="text-[9px] text-white/40 leading-relaxed">{card.sub}</p>
-                </div>
-              ))}
-            </div>
-          </div>
 
-          {/* ── MOBILE CARD ZONE — reference mockup layout, hidden on md+ ── */}
-          <div className="relative z-10 md:hidden px-3 pt-3 pb-8" data-testid="hero-mobile-visual">
-
-            {/* Three-column card arrangement */}
-            <div className="flex gap-[5px] items-start">
-
-              {/* LEFT: Redundancy pay estimate card */}
-              <div className="shrink-0 rounded-xl border overflow-hidden"
-                style={{ width: 108, background: "hsl(215 50% 10% / 0.97)", borderColor: "hsl(215 30% 24%)", backdropFilter: "blur(14px)" }}>
-                <div className="p-2.5">
-                  <div className="flex items-center gap-1 mb-1.5">
-                    <div className="w-4 h-4 rounded-md flex items-center justify-center shrink-0"
-                      style={{ background: "hsl(38 72% 52% / 0.2)" }}>
-                      <Calculator className="w-2.5 h-2.5" style={{ color: "hsl(38 72% 60%)" }} />
-                    </div>
-                    <p className="text-[8px] font-semibold leading-tight" style={{ color: "hsl(215 15% 70%)" }}>
-                      Redundancy pay estimate
-                    </p>
-                  </div>
-                  <p className="font-serif text-[22px] font-bold text-white leading-none mb-0.5">£28,650</p>
-                  <p className="text-[8px]" style={{ color: "hsl(215 15% 40%)" }}>Statutory estimate</p>
-                </div>
-              </div>
-
-              {/* CENTRE: Full runway report card */}
-              <div className="flex-1 min-w-0 rounded-xl border overflow-hidden"
-                style={{ background: "hsl(215 50% 10% / 0.97)", borderColor: "hsl(215 30% 26%)", backdropFilter: "blur(14px)" }}>
-                <div className="p-2.5">
-                  <p className="text-[8px] font-semibold tracking-widest uppercase mb-1"
-                    style={{ color: "hsl(38 72% 60%)" }}>Your Runway Report</p>
-                  <div className="flex items-end gap-1 mb-0">
-                    <span className="font-serif text-[22px] font-bold text-white leading-none">10.4</span>
-                    <span className="text-[9px] text-white/50 mb-0.5">months</span>
-                  </div>
-                  <p className="text-[8px] text-white/35 mb-1.5">at current burn rate</p>
-                  <div className="rounded-md px-2 py-1 mb-1.5" style={{ background: "hsl(198 65% 16%)" }}>
-                    <p className="text-[7px] text-white/45 mb-0.5">Results under scenarios</p>
-                    <p className="text-[9px] font-semibold" style={{ color: "hsl(38 72% 65%)" }}>Range 5.1 – 18.7 mo</p>
-                  </div>
-                  {["Slow recovery", "Mortgage pressure", "One-income household", "Voluntary redundancy", "Structural transition"].map((item) => (
-                    <div key={item} className="flex items-center gap-1 mb-0.5">
-                      <Check className="w-2 h-2 shrink-0" style={{ color: "hsl(38 72% 60%)" }} />
-                      <span className="text-[7.5px] leading-tight" style={{ color: "hsl(215 15% 58%)" }}>{item}</span>
-                    </div>
-                  ))}
-                  <p className="text-[7px] mt-1.5" style={{ color: "hsl(215 15% 24%)" }}>
-                    Illustrative. Not financial advice.
+                <div className="flex items-start gap-2 mb-2">
+                  <ShieldCheck className="w-3.5 h-3.5 mt-0.5 shrink-0 text-slate-500" />
+                  <p className="text-xs leading-relaxed text-slate-500">
+                    {PRODUCT_COPY.trustLine} · Your data stays in your browser. Not financial advice.
                   </p>
                 </div>
               </div>
 
-              {/* RIGHT: 3 stacked floating cards */}
-              <div className="shrink-0 flex flex-col gap-[5px]" style={{ width: 97 }}>
-                {[
-                  { icon: TrendingDown, label: "Slow recovery", sub: "What if a new role takes longer?", ic: "hsl(38 72% 58%)", tint: "hsl(38 72% 52% / 0.18)" },
-                  { icon: Users,        label: "Household impact", sub: "One income supporting the household?", ic: "hsl(175 40% 58%)", tint: "hsl(175 40% 28% / 0.25)" },
-                  { icon: Heart,        label: "Support if needed", sub: "Plan options and next steps", ic: "hsl(198 65% 58%)", tint: "hsl(198 65% 28% / 0.22)" },
-                ].map((card) => (
-                  <div key={card.label} className="rounded-xl border px-2 py-2"
-                    style={{ background: "hsl(215 45% 10% / 0.95)", borderColor: "hsl(215 30% 22%)", backdropFilter: "blur(10px)" }}>
-                    <div className="flex items-center gap-1 mb-0.5">
-                      <div className="w-4 h-4 rounded-md flex items-center justify-center shrink-0"
-                        style={{ background: card.tint }}>
-                        <card.icon className="w-2.5 h-2.5" style={{ color: card.ic }} />
-                      </div>
-                      <p className="text-[8px] font-semibold text-white/80 leading-tight">{card.label}</p>
-                    </div>
-                    <p className="text-[7px] leading-relaxed" style={{ color: "hsl(215 15% 40%)" }}>{card.sub}</p>
-                  </div>
-                ))}
+              {/* Desktop runway scene — right column */}
+              <div className="hidden md:block md:flex-1 md:min-w-0">
+                <LandingHeroScene variant="desktop" />
               </div>
-
             </div>
 
-            {/* Bottom icon pips — road milestone markers */}
-            <div className="flex items-center justify-evenly mt-5">
+            {/* Mobile runway scene — full width below copy */}
+            <div className="md:hidden">
+              <LandingHeroScene variant="mobile" />
+            </div>
+          </div>
+        </section>
+
+        {/* ── PAYOUT-FIRST SECTION ───────────────────────────────────── */}
+        <section className="py-16 px-5 bg-surface border-b" data-testid="section-payout-first">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-10">
+              <p className="text-[10px] uppercase tracking-[0.2em] text-primary font-semibold mb-3">Payout first</p>
+              <h2 className="font-display text-3xl sm:text-4xl font-bold mb-3">
+                {PRODUCT_COPY.payoutSectionHeading}
+              </h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto text-sm leading-relaxed">
+                {PRODUCT_COPY.payoutSectionBody}
+              </p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {[
-                { icon: Home,                label: "Mortgage" },
-                { icon: BadgePoundSterling,  label: "Capital" },
-                { icon: Users,               label: "Household" },
-              ].map((pip) => (
-                <div key={pip.label} className="flex flex-col items-center gap-1">
-                  <div className="w-7 h-7 rounded-full flex items-center justify-center"
-                    style={{ background: "hsl(215 40% 13%)", border: "1px solid hsl(215 30% 20%)" }}>
-                    <pip.icon className="w-3.5 h-3.5" style={{ color: "hsl(38 72% 56%)" }} />
-                  </div>
-                  <p className="text-[8px]" style={{ color: "hsl(215 15% 38%)" }}>{pip.label}</p>
-                </div>
+                { icon: Calculator, title: "Statutory redundancy estimate", desc: "Age-band rules, service caps and current weekly pay cap built in." },
+                { icon: Layers, title: "Package components", desc: "Model notice pay, holiday pay, enhanced offers and manual overrides." },
+                { icon: TrendingUp, title: "Offer comparison", desc: "Compare statutory estimate against employer or voluntary package assumptions." },
+                { icon: BarChart2, title: "Payout-to-runway bridge", desc: "See how the package feeds into starting capital and monthly burn." },
+                { icon: Home, title: "Household runway", desc: "Model mortgage pressure, income gaps and essential spending." },
+                { icon: FileText, title: "Plain-English brief", desc: "Your figures explained in a private report — not generic advice." },
+              ].map((card) => (
+                <Card key={card.title} className="border-gold/15">
+                  <CardContent className="pt-5 pb-5">
+                    <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center mb-3">
+                      <card.icon className="w-4 h-4 text-primary" />
+                    </div>
+                    <p className="text-sm font-semibold mb-1">{card.title}</p>
+                    <p className="text-xs text-muted-foreground leading-relaxed">{card.desc}</p>
+                  </CardContent>
+                </Card>
               ))}
             </div>
-
+            <div className="text-center mt-8">
+              <Button className="btn-gold rounded-full px-7" onClick={() => navigate("/wizard")} data-testid="button-payout-section-cta">
+                {PRODUCT_COPY.buildCta} <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </div>
           </div>
-
         </section>
 
         {/* ── TRUST STRIP ─────────────────────────────────────────────── */}
-        <section className="py-5 px-0 border-b"
-          style={{ background: "hsl(215 45% 9%)", borderColor: "hsl(215 30% 14%)" }}
-          data-testid="section-trust">
+        <section
+          className="py-5 px-0 border-b"
+          style={{ background: heroTheme.navySoft, borderColor: heroTheme.border }}
+          data-testid="section-trust"
+        >
           <div className="overflow-x-auto">
             <div className="flex items-start justify-start md:justify-center gap-0 min-w-max md:min-w-0 px-5">
               {[
@@ -416,15 +292,20 @@ export default function LandingPage() {
                 { icon: FileText, label: "One-off report access", sub: "One report. Yours to keep." },
                 { icon: BarChart2, label: "Non-advisory tool", sub: "Planning model, not financial advice" },
               ].map((item, i) => (
-                <div key={i} className="flex flex-col items-center text-center px-5 py-2 shrink-0 border-r last:border-r-0"
-                  style={{ borderColor: "hsl(215 30% 18%)", minWidth: 108 }}
-                  data-testid={`trust-signal-${i}`}>
-                  <div className="w-8 h-8 rounded-md flex items-center justify-center mb-2"
-                    style={{ background: "hsl(215 40% 14%)" }}>
-                    <item.icon className="w-4 h-4" style={{ color: "hsl(38 72% 58%)" }} />
+                <div
+                  key={i}
+                  className="flex flex-col items-center text-center px-5 py-2 shrink-0 border-r last:border-r-0"
+                  style={{ borderColor: heroTheme.border, minWidth: 108 }}
+                  data-testid={`trust-signal-${i}`}
+                >
+                  <div
+                    className="w-8 h-8 rounded-md flex items-center justify-center mb-2"
+                    style={{ background: `${heroTheme.gold}18` }}
+                  >
+                    <item.icon className="w-4 h-4" style={{ color: heroTheme.gold }} />
                   </div>
-                  <p className="text-[11px] font-semibold leading-tight mb-1" style={{ color: "hsl(215 15% 80%)" }}>{item.label}</p>
-                  <p className="text-[10px] leading-tight" style={{ color: "hsl(215 15% 42%)" }}>{item.sub}</p>
+                  <p className="text-[11px] font-semibold leading-tight mb-1 text-slate-200">{item.label}</p>
+                  <p className="text-[10px] leading-tight text-slate-400">{item.sub}</p>
                 </div>
               ))}
             </div>
@@ -451,9 +332,40 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* ── DASHBOARD SHOWCASE ──────────────────────────────────────── */}
+        <section className="py-16 px-5 bg-surface border-y" data-testid="section-dashboard-showcase">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-10">
+              <p className="text-[10px] uppercase tracking-[0.2em] text-primary font-semibold mb-3">What you get</p>
+              <h2 className="font-display text-3xl sm:text-4xl font-bold mb-3">
+                Advanced dashboards, built for clarity
+              </h2>
+              <p className="text-muted-foreground max-w-lg mx-auto text-sm leading-relaxed">
+                Start with a free preview of your baseline runway — then compare income recovery paths side by side in the full report.
+              </p>
+            </div>
+            <LandingDashboardShowcase />
+          </div>
+        </section>
+
+        {/* ── BRIEF EXAMPLE ───────────────────────────────────────────── */}
+        <section className="py-16 px-5 bg-background" data-testid="section-brief-example">
+          <div className="max-w-5xl mx-auto space-y-6">
+            <div className="text-center max-w-2xl mx-auto">
+              <p className="text-[10px] uppercase tracking-[0.2em] text-primary font-semibold mb-3">{RUNWAY_BRIEF_NAME}</p>
+              <h2 className="font-display text-3xl sm:text-4xl font-bold mb-3">
+                See what the plain-English brief looks like
+              </h2>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                {PRODUCT_COPY.dualProductLine}
+              </p>
+            </div>
+            <BriefExampleEmbed />
+          </div>
+        </section>
+
         {/* ── HOW IT WORKS ────────────────────────────────────────────── */}
-        <section className="py-16 px-5" id="how-it-works" data-testid="section-how-it-works"
-          style={{ background: "hsl(60 8% 96%)" }}>
+        <section className="py-16 px-5 bg-muted" id="how-it-works" data-testid="section-how-it-works">
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="font-serif text-3xl sm:text-4xl font-bold mb-3">How it works</h2>
@@ -469,7 +381,7 @@ export default function LandingPage() {
                 ].map((item) => (
                   <div key={item.step} className="flex flex-col items-center text-center" data-testid={`card-step-${item.step}`}>
                     <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm mb-6 relative z-10 shadow-md text-white"
-                      style={{ background: "linear-gradient(135deg, hsl(198 65% 20%), hsl(198 65% 32%))" }}>
+                      style={{ background: "linear-gradient(135deg, hsl(220 52% 18%), hsl(220 52% 28%))" }}>
                       {item.step}
                     </div>
                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
@@ -520,8 +432,7 @@ export default function LandingPage() {
         </section>
 
         {/* ── PRICING ─────────────────────────────────────────────────── */}
-        <section className="py-16 px-5" id="pricing" data-testid="section-pricing"
-          style={{ background: "hsl(60 8% 96%)" }}>
+        <section className="py-16 px-5 bg-muted" id="pricing" data-testid="section-pricing">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="font-serif text-3xl sm:text-4xl font-bold mb-3">Simple, one-off pricing</h2>
@@ -567,12 +478,26 @@ export default function LandingPage() {
                 <Card className="shadow-xl overflow-hidden"
                   style={{ outline: "2px solid hsl(38 72% 52%)", outlineOffset: "1px" }}>
                   <CardContent className="pt-7 pb-6">
-                    <div className="flex items-start justify-between mb-5">
+                    <div className="flex items-start justify-between mb-3">
                       <div>
+                        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">{RUNWAY_REPORT_FULL}</p>
                         <div className="flex items-baseline gap-2">
-                          <span className="text-3xl font-bold">£39</span>
-                          <span className="text-sm text-muted-foreground">One-off payment · 6 months access</span>
+                          <span className="text-3xl font-bold">£{RUNWAY_REPORT_PRICE_GBP}</span>
+                          <span className="text-sm text-muted-foreground">Two products · one payment</span>
                         </div>
+                      </div>
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+                      {PRODUCT_COPY.dualProductLine}
+                    </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
+                      <div className="rounded-lg border p-3 bg-primary/5">
+                        <p className="text-xs font-semibold mb-1.5">{COMMAND_CENTRE_NAME}</p>
+                        <p className="text-[11px] text-muted-foreground">Scenarios, capital path, sensitivity & stress tests</p>
+                      </div>
+                      <div className="rounded-lg border border-gold/30 p-3 bg-gold/5">
+                        <p className="text-xs font-semibold mb-1.5">{RUNWAY_BRIEF_NAME}</p>
+                        <p className="text-[11px] text-muted-foreground">Plain-English report from your figures</p>
                       </div>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 mb-6">
@@ -585,6 +510,7 @@ export default function LandingPage() {
                         { text: "Month-by-month capital path", locked: true },
                         { text: "Voluntary redundancy comparison", locked: true },
                         { text: "Structural transition scenario", locked: true },
+                        { text: `${RUNWAY_BRIEF_NAME} (plain English)`, locked: true },
                         { text: "Exportable private report", locked: true },
                       ].map((item, i) => (
                         <div key={i} className="flex items-center gap-2 text-sm">
@@ -597,9 +523,9 @@ export default function LandingPage() {
                     </div>
                     <Button className="w-full btn-gold rounded-lg text-base py-5"
                       onClick={() => navigate("/wizard")} data-testid="button-start-paid">
-                      Unlock my private report — £39 <ArrowRight className="w-4 h-4 ml-2" />
+                      {PRODUCT_COPY.unlockCta} <ArrowRight className="w-4 h-4 ml-2" />
                     </Button>
-                    <p className="text-xs text-muted-foreground text-center mt-2">No subscription. No recurring charges.</p>
+                    <p className="text-xs text-muted-foreground text-center mt-2">Command Centre + Private Brief · 6 months access · No subscription</p>
                   </CardContent>
                 </Card>
               </div>
@@ -623,7 +549,7 @@ export default function LandingPage() {
                   </div>
                 </div>
                 <p className="text-sm leading-relaxed mb-6" style={{ color: "hsl(186 15% 60%)" }}>
-                  Share what's going on via WhatsApp or private web-chat. Receive a calm written response within 1 working day and a practical 7-day plan. No calls. No judgement. No open-ended subscription.
+                  Share what's going on through the Private Reset Portal or WhatsApp. Receive a calm written response within 1 working day and a practical 7-day plan. No calls. No judgement. No open-ended subscription.
                 </p>
                 <Link href="/redundancy-reset" data-testid="button-reset-cta">
                   <Button className="btn-gold rounded-full px-7">
@@ -656,7 +582,7 @@ export default function LandingPage() {
             <h2 className="font-serif text-2xl font-bold text-center mb-2">UK Redundancy Guides</h2>
             <p className="text-center text-sm text-muted-foreground mb-7">Contextual reading alongside your runway report. Not financial advice.</p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <Link href="/statutory-redundancy-pay" data-testid="guide-card-statutory">
+              <Link href="/statutory-redundancy-pay-calculator" data-testid="guide-card-statutory">
                 <div className="rounded-xl border bg-card p-5 hover:shadow-md transition-shadow h-full cursor-pointer">
                   <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2">Guide</p>
                   <p className="font-semibold text-sm leading-snug mb-2">Statutory Redundancy Pay 2025</p>
@@ -670,7 +596,7 @@ export default function LandingPage() {
                   <p className="text-xs text-muted-foreground leading-relaxed">Payment holidays, rate sensitivity and what to model before contacting your lender.</p>
                 </div>
               </Link>
-              <Link href="/voluntary-redundancy" data-testid="guide-card-vr">
+              <Link href="/voluntary-redundancy-calculator" data-testid="guide-card-vr">
                 <div className="rounded-xl border bg-card p-5 hover:shadow-md transition-shadow h-full cursor-pointer">
                   <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2">Guide</p>
                   <p className="font-semibold text-sm leading-snug mb-2">Voluntary Redundancy Guide</p>
@@ -682,10 +608,9 @@ export default function LandingPage() {
         </section>
 
         {/* ── FAQ ─────────────────────────────────────────────────────── */}
-        <section className="py-16 px-5" data-testid="section-faq"
-          style={{ background: "hsl(60 8% 96%)" }}>
+        <section className="py-16 px-5 bg-muted" data-testid="section-faq">
           <div className="max-w-2xl mx-auto">
-            <h2 className="font-serif text-3xl font-bold text-center mb-10">Common questions</h2>
+            <h2 className="font-serif text-3xl font-bold text-center mb-10 text-foreground">Common questions</h2>
             <Accordion type="single" collapsible className="w-full">
               {[
                 { q: "Is this financial advice?", a: "No. RedundancyCalculatorUK is a non-advisory modelling tool. It produces illustrative projections based entirely on the assumptions you enter. It does not constitute financial, legal, tax, employment, debt, or benefits advice. All outputs are estimates and may not reflect actual outcomes." },
@@ -694,13 +619,13 @@ export default function LandingPage() {
                 { q: "Is statutory redundancy pay included?", a: "Yes. The calculator uses current UK statutory redundancy rules, including age-band multipliers, the current weekly pay cap, and the 20-year service cap. A two-year qualifying service minimum applies. Check GOV.UK for the most current thresholds." },
                 { q: "Can I model voluntary redundancy?", a: "Yes. The paid report includes a voluntary redundancy comparison scenario. You can enter a VR package amount alongside your statutory entitlement and see how each affects the runway under these assumptions." },
                 { q: "Can I use this with my partner?", a: "Yes. The income recovery step includes an optional partner income field. This adds partner monthly net income to the household runway model." },
-                { q: "What does the paid report unlock?", a: "The full Private Runway Report (£39, one-off) unlocks: slow and severe income scenarios, mortgage and housing pressure test, household resilience view, expense sensitivity ranking, month-by-month capital path, voluntary redundancy comparison, structural transition scenario, and exportable report. Access lasts 6 months." },
-                { q: "Is this a subscription?", a: "No. Both the Private Runway Report (£39) and the 7-Day Redundancy Reset are one-off payments. There are no recurring charges." },
-                { q: "What is the 7-Day Redundancy Reset?", a: "A separate one-off product for people who have completed the runway calculator and want help understanding what to do next. You receive a guided private written intake, a first written response within 1 working day, a follow-up check-in, and a final Redundancy Next-Step Plan. Intake by WhatsApp or secure web-chat. No calls." },
+                { q: "What does the paid report unlock?", a: `The full ${RUNWAY_REPORT_FULL} (£${RUNWAY_REPORT_PRICE_GBP}, one-off) unlocks: slow and severe income scenarios, mortgage and housing pressure test, household resilience view, expense sensitivity ranking, month-by-month capital path, voluntary redundancy comparison, structural transition scenario, and exportable report. Access lasts 6 months.` },
+                { q: "Is this a subscription?", a: `No. Both the ${RUNWAY_REPORT_FULL} (£${RUNWAY_REPORT_PRICE_GBP}) and the 7-Day Redundancy Reset are one-off payments. There are no recurring charges.` },
+                { q: "What is the 7-Day Redundancy Reset?", a: "A separate one-off product for people who have completed the runway calculator and want help understanding what to do next. You receive a guided private written intake, a first written response within 1 working day, a follow-up check-in, and a final Redundancy Next-Step Plan through the Private Reset Portal or WhatsApp. No calls." },
               ].map((item, i) => (
                 <AccordionItem key={i} value={`faq-${i}`}>
-                  <AccordionTrigger className="text-left text-base" data-testid={`faq-trigger-${i}`}>{item.q}</AccordionTrigger>
-                  <AccordionContent className="text-sm text-muted-foreground leading-relaxed">{item.a}</AccordionContent>
+                  <AccordionTrigger className="text-left text-base text-foreground" data-testid={`faq-trigger-${i}`}>{item.q}</AccordionTrigger>
+                  <AccordionContent className="text-sm text-foreground/75 leading-relaxed">{item.a}</AccordionContent>
                 </AccordionItem>
               ))}
             </Accordion>
@@ -708,18 +633,20 @@ export default function LandingPage() {
         </section>
 
         {/* ── BOTTOM CTA ──────────────────────────────────────────────── */}
-        <section className="py-20 px-5" data-testid="section-bottom-cta"
-          style={{ background: "linear-gradient(135deg, hsl(215 60% 6%) 0%, hsl(198 65% 12%) 100%)" }}>
+        <section
+          className="py-20 px-5"
+          data-testid="section-bottom-cta"
+          style={{ background: `linear-gradient(135deg, ${heroTheme.navy} 0%, ${heroTheme.navySoft} 55%, ${heroTheme.navyMid} 100%)` }}
+        >
           <div className="max-w-2xl mx-auto text-center">
             <h2 className="font-serif text-3xl sm:text-4xl font-bold text-white mb-4">Model your runway now.</h2>
-            <p className="mb-8 text-sm" style={{ color: "hsl(215 15% 50%)" }}>Free preview in minutes. Full private report unlocked for £39.</p>
+            <p className="mb-8 text-sm text-slate-400">Free preview in minutes. Full private report unlocked for £39.</p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <Button size="lg" className="btn-gold rounded-full px-8"
                 onClick={() => navigate("/wizard")} data-testid="button-bottom-cta">
                 Build my private report — Free preview <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
-              <Button size="lg" variant="outline" className="rounded-full px-8 hover:text-white hover:bg-white/10"
-                style={{ borderColor: "hsl(215 30% 28%)", color: "hsl(215 15% 60%)" }}
+              <Button size="lg" variant="outline" className="rounded-full px-8 hover:text-white hover:bg-white/10 border-white/25 text-slate-300"
                 onClick={() => navigate("/wizard")} data-testid="button-bottom-cta-paid">
                 Unlock full report — £39
               </Button>
@@ -728,13 +655,12 @@ export default function LandingPage() {
         </section>
 
         {/* ── FOOTER TRUST ROW ────────────────────────────────────────── */}
-        <div className="py-5 px-5 border-t"
-          style={{ background: "hsl(215 50% 8%)", borderColor: "hsl(215 30% 14%)" }}>
+        <div className="py-5 px-5 border-t" style={{ background: heroTheme.navy, borderColor: heroTheme.border }}>
           <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
             {["Private & secure", "UK focused", "Built for individuals", "Clear, neutral, supportive"].map((label) => (
               <div key={label} className="flex items-center gap-1.5">
-                <div className="w-1 h-1 rounded-full" style={{ background: "hsl(38 72% 52%)" }} />
-                <span className="text-xs" style={{ color: "hsl(215 15% 38%)" }}>{label}</span>
+                <div className="w-1 h-1 rounded-full" style={{ background: heroTheme.gold }} />
+                <span className="text-xs text-slate-500">{label}</span>
               </div>
             ))}
           </div>

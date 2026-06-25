@@ -1,6 +1,8 @@
 import { build as esbuild } from "esbuild";
 import { build as viteBuild } from "vite";
-import { rm, readFile } from "fs/promises";
+import { cp, rm, readFile } from "fs/promises";
+
+process.env.NODE_ENV ||= "production";
 
 // server deps to bundle to reduce openat(2) syscalls
 // which helps cold start times
@@ -37,6 +39,7 @@ async function buildAll() {
 
   console.log("building client...");
   await viteBuild();
+  await cp("public", "dist/public", { recursive: true, force: true });
 
   console.log("building server...");
   const pkg = JSON.parse(await readFile("package.json", "utf-8"));
@@ -57,7 +60,7 @@ async function buildAll() {
     },
     minify: true,
     external: externals,
-    logLevel: "info",
+    logLevel: "warning",
   });
 }
 

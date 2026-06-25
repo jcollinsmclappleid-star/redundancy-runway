@@ -1,0 +1,31 @@
+{
+  "sample": true,
+  "product": "Private Runway Brief",
+  "site": "RedundancyCalculatorUK",
+  "generatedAt": "2026-06-25T12:00:00.000Z",
+  "disclaimer": "This is an illustrative sample only. It is not legal, tax, mortgage, employment, debt, benefits, pension, investment, medical, mental health or financial advice.",
+  "summary": {
+    "headline": "Under the sample assumptions, the baseline runway appears manageable, but stress scenarios show how quickly the picture changes if replacement income is delayed or fixed costs remain high.",
+    "baselineRunway": "10.4 months",
+    "startingCapital": "GBP 42,850",
+    "netMonthlyBurn": "GBP 2,840"
+  },
+  "sections": [
+    {
+      "title": "Package estimate",
+      "body": "The sample model combines an enhanced redundancy package, notice pay, holiday pay and cash savings. Statutory redundancy remains visible as a reference figure when an enhanced amount is entered."
+    },
+    {
+      "title": "Runway range",
+      "body": "Baseline, slow recovery, severe case and structural case scenarios illustrate how the sample assumptions change the runway."
+    },
+    {
+      "title": "Pressure points",
+      "body": "Housing, essential costs and replacement income timing are the main pressure points in this sample."
+    },
+    {
+      "title": "Questions to take forward",
+      "body": "Verify package figures, fixed monthly costs and income recovery assumptions before relying on any personal model."
+    }
+  ]
+}

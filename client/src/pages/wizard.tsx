@@ -1,32 +1,60 @@
 import { Helmet } from "react-helmet-async";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, ArrowRight, PoundSterling, Info, AlertTriangle, CheckCircle } from "lucide-react";
+import { ArrowLeft, ArrowRight, PoundSterling, Info, AlertTriangle, CheckCircle, Briefcase, Wallet, Receipt, TrendingUp, Heart, Layers, Pencil } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useWizardStore } from "@/lib/wizardStore";
 import { getAllSectors, getSectorData } from "@/lib/sectorData";
 import { formatGBP, computeRedundancyEstimate } from "@/lib/engine";
+import { RedundancyPackageCalculator } from "@/components/redundancy-package-calculator";
+import { PackageTotalHero } from "@/components/preview/PackageTotalHero";
 import { ukBenchmarks, getAgeBandData, formatWeeksAndMonths, weeksToMonths } from "@/lib/ukBenchmarks";
 import type { RunwayInputs, RedundancyPackageInputs } from "@shared/schema";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { DisclaimerBanner } from "@/components/DisclaimerBanner";
-import { Logo } from "@/components/Logo";
+import { WizardShell } from "@/components/wizard/wizard-shell";
+import { EssentialExpenseChips } from "@/components/wizard/essential-expense-chips";
+import { IncomeAssumptionChips } from "@/components/wizard/income-assumption-chips";
 
 const STEPS = [
-  { title: "Your Current Situation", description: "Tell us about your circumstances so the model is framed correctly." },
   { title: "Redundancy Package", description: "Enter your package details. UK statutory calculation is built in." },
+  { title: "Your Current Situation", description: "Tell us about your circumstances so the model is framed correctly." },
   { title: "Capital Snapshot", description: "What savings and liquid assets are available to you right now?" },
   { title: "Income Assumptions", description: "What income do you expect during the gap period and after?" },
   { title: "Essential Expenses", description: "Your fixed monthly costs — the expenses that continue regardless." },
   { title: "Flexible Spending", description: "Discretionary and variable costs you may be able to adjust." },
   { title: "Preview Your Report", description: "Review your key assumptions before building the report." },
+];
+
+const STEP_META = [
+  { category: "Package", icon: Briefcase, pillBg: "bg-cyan-100 dark:bg-cyan-500/20", pillText: "text-cyan-700 dark:text-cyan-200", borderTop: "border-t-cyan-400", dotBg: "bg-cyan-500", dotBorder: "border-cyan-500", shieldBorder: "border-l-cyan-300 dark:border-l-cyan-500", progressBar: "[&>div]:bg-cyan-500" },
+  { category: "Situation", icon: Heart, pillBg: "bg-violet-100 dark:bg-violet-500/20", pillText: "text-violet-700 dark:text-violet-200", borderTop: "border-t-violet-400", dotBg: "bg-violet-500", dotBorder: "border-violet-500", shieldBorder: "border-l-violet-300 dark:border-l-violet-500", progressBar: "[&>div]:bg-violet-500" },
+  { category: "Capital", icon: Wallet, pillBg: "bg-amber-100 dark:bg-amber-500/20", pillText: "text-amber-700 dark:text-amber-200", borderTop: "border-t-amber-400", dotBg: "bg-amber-500", dotBorder: "border-amber-500", shieldBorder: "border-l-amber-300 dark:border-l-amber-500", progressBar: "[&>div]:bg-amber-500" },
+  { category: "Income", icon: TrendingUp, pillBg: "bg-emerald-100 dark:bg-emerald-500/20", pillText: "text-emerald-700 dark:text-emerald-200", borderTop: "border-t-emerald-400", dotBg: "bg-emerald-500", dotBorder: "border-emerald-500", shieldBorder: "border-l-emerald-300 dark:border-l-emerald-500", progressBar: "[&>div]:bg-emerald-500" },
+  { category: "Essentials", icon: Receipt, pillBg: "bg-rose-100 dark:bg-rose-500/20", pillText: "text-rose-700 dark:text-rose-200", borderTop: "border-t-rose-400", dotBg: "bg-rose-500", dotBorder: "border-rose-500", shieldBorder: "border-l-rose-300 dark:border-l-rose-500", progressBar: "[&>div]:bg-rose-500" },
+  { category: "Flexible", icon: Layers, pillBg: "bg-violet-100 dark:bg-violet-500/20", pillText: "text-violet-700 dark:text-violet-200", borderTop: "border-t-violet-400", dotBg: "bg-violet-500", dotBorder: "border-violet-500", shieldBorder: "border-l-violet-300 dark:border-l-violet-500", progressBar: "[&>div]:bg-violet-500" },
+  { category: "Review", icon: CheckCircle, pillBg: "bg-emerald-100 dark:bg-emerald-500/20", pillText: "text-emerald-700 dark:text-emerald-200", borderTop: "border-t-emerald-400", dotBg: "bg-emerald-500", dotBorder: "border-emerald-500", shieldBorder: "border-l-emerald-300 dark:border-l-emerald-500", progressBar: "[&>div]:bg-emerald-500" },
+];
+
+const STEP_COPY = [
+  { prompt: "Start with your redundancy package.", reassurance: "Best estimates work well here. If you have a confirmed offer, use the manual override. Statutory rules follow current GOV.UK caps." },
+  { prompt: "Let's frame your situation.", reassurance: "This step provides context for your report. It does not change the financial projection — rough answers are fine, and you can edit later." },
+  { prompt: "What capital is available to you right now?", reassurance: "Bank balances and accessible savings are enough — precision isn't required. The model compares your position to UK benchmarks for context only." },
+  { prompt: "What income might you have during the gap?", reassurance: "Enter what you realistically expect, not what you hope for. Sector timelines below are historical context — they do not predict your job search." },
+  { prompt: "Your essential monthly costs.", reassurance: "Fixed costs that continue regardless of employment. Tap quick-add tiles for typical UK figures, then adjust to your household." },
+  { prompt: "Spending you may be able to adjust.", reassurance: "Under these assumptions, flexible costs can be modelled separately. Toggle off to see an essential-only runway." },
+  { prompt: "Review your assumptions before building the report.", reassurance: "Take a moment to check the figures look right. When you're ready, your free preview is one click away." },
+];
+
+const WIZARD_STAGES = [
+  { label: "Your Package", steps: [0], stageNum: 1 },
+  { label: "Your Situation", steps: [1], stageNum: 2 },
+  { label: "Your Finances", steps: [2, 3], stageNum: 3 },
+  { label: "Your Runway", steps: [4, 5, 6], stageNum: 4 },
 ];
 
 function CurrencyInput({ label, value, onChange, tooltip, id }: {
@@ -188,120 +216,7 @@ function StepContext({ inputs, setInputs }: { inputs: RunwayInputs; setInputs: (
 }
 
 function StepRedundancyPackage({ inputs, setInputs }: { inputs: RunwayInputs; setInputs: (u: ((prev: RunwayInputs) => RunwayInputs) | Partial<RunwayInputs>) => void }) {
-  const pkg = inputs.redundancyPackage;
-  const isVoluntaryRedundancy = inputs.context.employmentStatus === "voluntary_redundancy";
-
-  const updatePkg = (field: string, value: number | boolean) => {
-    setInputs((prev: RunwayInputs) => ({ ...prev, redundancyPackage: { ...prev.redundancyPackage, [field]: value } }));
-  };
-
-  const estimate = useMemo(() => computeRedundancyEstimate(pkg), [pkg]);
-
-  return (
-    <div className="space-y-4">
-      <div className="rounded-md bg-muted/50 p-3">
-        <p className="text-xs text-muted-foreground">
-          Use best estimates. You can refine these figures later. If you have a confirmed package, use the manual override below.
-        </p>
-      </div>
-
-      <NumberInput label="Your age" value={pkg.age} onChange={(v) => updatePkg("age", v)} id="age" min={16} max={100} placeholder="35" />
-      <NumberInput
-        label="Years of continuous service"
-        value={pkg.yearsOfService}
-        onChange={(v) => updatePkg("yearsOfService", v)}
-        id="yearsOfService"
-        min={0}
-        max={20}
-        tooltip="Complete years of continuous employment with this employer. Capped at 20 for statutory calculation. You need at least 2 years to qualify for statutory redundancy pay."
-        placeholder="5"
-      />
-
-      {!estimate.qualifyingServiceMet && pkg.yearsOfService > 0 && (
-        <div className="rounded-md bg-amber-500/10 border border-amber-500/20 p-3">
-          <div className="flex items-start gap-2">
-            <AlertTriangle className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
-            <p className="text-xs text-muted-foreground">
-              Under these assumptions, fewer than 2 years of service means no statutory redundancy entitlement. Notice pay and holiday pay are still included. Last checked: April 2025. Source: GOV.UK.
-            </p>
-          </div>
-        </div>
-      )}
-
-      <CurrencyInput
-        label="Weekly gross pay"
-        value={pkg.weeklyGrossPay}
-        onChange={(v) => updatePkg("weeklyGrossPay", v)}
-        id="weeklyGrossPay"
-        tooltip="Gross weekly pay before deductions. Statutory redundancy is capped at £643/week (April 2025)."
-      />
-      <NumberInput label="Notice period (weeks)" value={pkg.noticeWeeks} onChange={(v) => updatePkg("noticeWeeks", v)} id="noticeWeeks" min={0} max={52} tooltip="Contractual or statutory notice period in weeks. Notice pay is subject to income tax and National Insurance." />
-      <NumberInput label="Accrued untaken holiday (weeks)" value={pkg.holidayWeeks} onChange={(v) => updatePkg("holidayWeeks", v)} id="holidayWeeks" min={0} max={10} tooltip="Untaken holiday to be paid out. Holiday pay is subject to income tax and National Insurance." />
-      <CurrencyInput
-        label="Unpaid wages (if any)"
-        value={inputs.unpaidWages ?? 0}
-        onChange={(v) => setInputs({ unpaidWages: v })}
-        id="unpaidWages"
-        tooltip="Any wages owed but not yet paid. These are subject to income tax and National Insurance."
-      />
-
-      <div className="flex items-center justify-between gap-4 p-3 rounded-md bg-muted/50">
-        <div>
-          <p className="text-sm font-medium">Enhanced package</p>
-          <p className="text-xs text-muted-foreground">Were you offered above the statutory minimum?</p>
-        </div>
-        <Switch
-          checked={pkg.enhancedPackage}
-          onCheckedChange={(v) => updatePkg("enhancedPackage", v)}
-          data-testid="switch-enhancedPackage"
-        />
-      </div>
-
-      {pkg.enhancedPackage && (
-        <CurrencyInput label="Enhanced redundancy amount" value={pkg.enhancedAmount} onChange={(v) => updatePkg("enhancedAmount", v)} id="enhancedAmount" tooltip="Total enhanced redundancy payment (replaces the statutory redundancy element in the estimate)" />
-      )}
-
-      <div className="flex items-center justify-between gap-4 p-3 rounded-md bg-muted/50">
-        <div>
-          <p className="text-sm font-medium">Use actual package amount instead</p>
-          <p className="text-xs text-muted-foreground">Override with a known confirmed total</p>
-        </div>
-        <Switch
-          checked={pkg.useManualOverride}
-          onCheckedChange={(v) => updatePkg("useManualOverride", v)}
-          data-testid="switch-useManualOverride"
-        />
-      </div>
-
-      {pkg.useManualOverride && (
-        <CurrencyInput label="Confirmed package total" value={pkg.manualOverrideAmount} onChange={(v) => updatePkg("manualOverrideAmount", v)} id="manualOverrideAmount" tooltip="The total redundancy package amount you have been offered or received" />
-      )}
-
-      {isVoluntaryRedundancy && (
-        <CurrencyInput
-          label="Voluntary redundancy offer amount"
-          value={inputs.voluntaryRedundancyAmount ?? 0}
-          onChange={(v) => setInputs({ voluntaryRedundancyAmount: v })}
-          id="voluntaryRedundancyAmount"
-          tooltip="The VR package being offered. The full report will compare this against your statutory entitlement under these assumptions."
-        />
-      )}
-
-      <div className="rounded-md bg-muted/50 p-3 mt-4 space-y-2">
-        <p className="text-sm font-medium" data-testid="text-redundancy-total">
-          Estimated package under statutory assumptions: {formatGBP(estimate.totalEstimated)}
-        </p>
-        <p className="text-xs text-muted-foreground" data-testid="text-redundancy-breakdown">
-          Statutory redundancy: {formatGBP(estimate.statutoryRedundancy)} | Notice pay: {formatGBP(estimate.noticePay)} | Holiday pay: {formatGBP(estimate.holidayPay)}
-        </p>
-        <div className="rounded-md bg-amber-500/8 border border-amber-500/15 p-2.5 mt-1">
-          <p className="text-xs text-muted-foreground">
-            <span className="font-medium text-foreground">Tax treatment note:</span> Statutory redundancy pay up to £30,000 is generally tax-free. Notice pay, holiday pay and unpaid wages are subject to income tax and National Insurance. This tool does not calculate exact personal tax liability — the amounts above are gross figures. Last checked: April 2025. Source: GOV.UK.
-          </p>
-        </div>
-      </div>
-    </div>
-  );
+  return <RedundancyPackageCalculator inputs={inputs} setInputs={setInputs} />;
 }
 
 function StepCapital({ inputs, setInputs }: { inputs: RunwayInputs; setInputs: (u: ((prev: RunwayInputs) => RunwayInputs) | Partial<RunwayInputs>) => void }) {
@@ -374,6 +289,8 @@ function StepIncome({ inputs, setInputs }: { inputs: RunwayInputs; setInputs: (u
           These figures are used to build your report assumptions. The model does not provide financial, tax, legal or employment advice.
         </p>
       </div>
+
+      <IncomeAssumptionChips onSelect={(patch) => setInputs(patch)} />
 
       <CurrencyInput label="Previous monthly net income" value={inputs.currentMonthlyNetIncome} onChange={(v) => setInputs({ currentMonthlyNetIncome: v })} tooltip="Your previous take-home pay per month (used for scenario modelling)" id="currentMonthlyNetIncome" />
       <CurrencyInput label="Replacement monthly income (gap period)" value={inputs.replacementMonthlyIncome} onChange={(v) => setInputs({ replacementMonthlyIncome: v })} tooltip="Any current part-time, freelance, or gig income during the gap period" id="replacementMonthlyIncome" />
@@ -498,6 +415,16 @@ function StepIncome({ inputs, setInputs }: { inputs: RunwayInputs; setInputs: (u
           )}
         </p>
       </div>
+
+      {inputs.currentMonthlyNetIncome <= 0 && gapIncome <= 0 && (
+        <div className="rounded-md border border-amber-200 bg-amber-50/80 p-3 flex items-start gap-2" data-testid="panel-income-nudge">
+          <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+          <p className="text-xs text-amber-900 leading-relaxed">
+            Prior income is not entered. Runway and resilience on the preview will assume capital drawdown only until you add
+            previous net income or gap-period income. The default job-gap assumption is 6 months once prior income is set.
+          </p>
+        </div>
+      )}
     </div>
   );
 }
@@ -511,6 +438,11 @@ function StepEssential({ inputs, setInputs }: { inputs: RunwayInputs; setInputs:
       <div className="rounded-md bg-muted/50 p-3">
         <p className="text-xs text-muted-foreground">Enter monthly amounts for fixed costs that continue regardless of employment status. Use best estimates.</p>
       </div>
+      <EssentialExpenseChips
+        inputs={inputs}
+        onApply={(field, value) => setInputs({ [field]: value })}
+      />
+
       <CurrencyInput label="Mortgage or rent" value={inputs.mortgageOrRent} onChange={(v) => setInputs({ mortgageOrRent: v })} id="mortgageOrRent" />
       <CurrencyInput label="Council tax" value={inputs.councilTax} onChange={(v) => setInputs({ councilTax: v })} id="councilTax" tooltip="Monthly council tax payment. Divide your annual bill by 10 (council tax is typically paid over 10 months)." />
       <CurrencyInput label="Utilities" value={inputs.utilities} onChange={(v) => setInputs({ utilities: v })} tooltip="Gas, electricity, water, broadband, phone" id="utilities" />
@@ -603,7 +535,7 @@ function StepFlexible({ inputs, setInputs }: { inputs: RunwayInputs; setInputs: 
   );
 }
 
-function StepReview({ inputs }: { inputs: RunwayInputs }) {
+function StepReview({ inputs, onEditStep }: { inputs: RunwayInputs; onEditStep: (step: number) => void }) {
   const pkg = inputs.redundancyPackage;
   const estimate = useMemo(() => computeRedundancyEstimate(pkg), [pkg]);
   const redundancyTotal = pkg.useManualOverride && pkg.manualOverrideAmount > 0 ? pkg.manualOverrideAmount : estimate.totalEstimated;
@@ -613,14 +545,14 @@ function StepReview({ inputs }: { inputs: RunwayInputs }) {
   const flexTotal = inputs.subscriptions + inputs.leisure + inputs.travel + inputs.discretionaryOther + (inputs.retrainingMonthlyCost ?? 0);
   const startingCapital = inputs.cashSavings + inputs.liquidInvestments + redundancyTotal + inputs.otherOneOffIncome + (inputs.unpaidWages ?? 0);
 
-  const summaryRows = [
-    { label: "Starting capital", value: formatGBP(startingCapital) },
-    { label: "Redundancy package", value: formatGBP(redundancyTotal) },
-    { label: "Monthly essential expenses", value: formatGBP(essentialTotal) + "/mo" },
-    { label: "Monthly flexible spending", value: formatGBP(flexTotal) + "/mo" },
-    { label: "Gap period income", value: formatGBP(gapIncome) + "/mo" },
-    { label: "Months until income resumes", value: inputs.monthsUntilNewJob > 0 ? `${inputs.monthsUntilNewJob} months` : "Not set" },
-    { label: "Emergency buffer", value: formatGBP(inputs.emergencyBuffer) },
+  const summaryRows: { label: string; value: string; editStep?: number }[] = [
+    { label: "Starting capital", value: formatGBP(startingCapital), editStep: 2 },
+    { label: "Redundancy package", value: formatGBP(redundancyTotal), editStep: 0 },
+    { label: "Monthly essential expenses", value: formatGBP(essentialTotal) + "/mo", editStep: 4 },
+    { label: "Monthly flexible spending", value: formatGBP(flexTotal) + "/mo", editStep: 5 },
+    { label: "Gap period income", value: formatGBP(gapIncome) + "/mo", editStep: 3 },
+    { label: "Months until income resumes", value: inputs.monthsUntilNewJob > 0 ? `${inputs.monthsUntilNewJob} months` : "Not set", editStep: 3 },
+    { label: "Emergency buffer", value: formatGBP(inputs.emergencyBuffer), editStep: 5 },
   ];
 
   const situationLabels: Record<string, string> = {
@@ -635,6 +567,8 @@ function StepReview({ inputs }: { inputs: RunwayInputs }) {
 
   return (
     <div className="space-y-4">
+      <PackageTotalHero inputs={inputs} showCta={false} />
+
       <div className="rounded-md bg-primary/8 border border-primary/15 p-3">
         <div className="flex items-start gap-2">
           <CheckCircle className="w-4 h-4 text-primary shrink-0 mt-0.5" />
@@ -650,9 +584,16 @@ function StepReview({ inputs }: { inputs: RunwayInputs }) {
           <span className="font-medium">{situationLabels[inputs.context.employmentStatus] ?? inputs.context.employmentStatus}</span>
         </div>
         {summaryRows.map((row) => (
-          <div key={row.label} className="flex items-center justify-between gap-2 py-2 border-b text-xs last:border-0">
+          <div key={row.label} className="flex items-center justify-between gap-2 py-2.5 border-b text-sm last:border-0 group">
             <span className="text-muted-foreground">{row.label}</span>
-            <span className="font-medium" data-testid={`review-${row.label.toLowerCase().replace(/\s+/g, "-")}`}>{row.value}</span>
+            <div className="flex items-center gap-2">
+              <span className="font-medium tabular-nums" data-testid={`review-${row.label.toLowerCase().replace(/\s+/g, "-")}`}>{row.value}</span>
+              {row.editStep !== undefined && (
+                <button type="button" onClick={() => onEditStep(row.editStep!)} className="opacity-0 group-hover:opacity-100 transition-opacity p-1 text-muted-foreground hover:text-primary" data-testid={`edit-${row.label.toLowerCase().replace(/\s+/g, "-")}`}>
+                  <Pencil className="w-3 h-3" />
+                </button>
+              )}
+            </div>
           </div>
         ))}
         {inputs.includePartnerIncome && (inputs.partnerMonthlyNetIncome ?? 0) > 0 && (
@@ -674,7 +615,7 @@ function StepReview({ inputs }: { inputs: RunwayInputs }) {
 
 function getValidationWarnings(inputs: RunwayInputs, step: number): string[] {
   const warnings: string[] = [];
-  if (step === 1) {
+  if (step === 0) {
     if (!inputs.redundancyPackage.weeklyGrossPay && !inputs.redundancyPackage.useManualOverride) {
       warnings.push("Weekly gross pay is £0 — statutory redundancy will be £0. Add your weekly pay or use manual override.");
     }
@@ -701,8 +642,17 @@ export default function WizardPage() {
   const [, navigate] = useLocation();
   const { inputs, setInputs, step, setStep } = useWizardStore();
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const stepParam = params.get("step");
+    if (stepParam == null) return;
+    const parsed = Number.parseInt(stepParam, 10);
+    if (!Number.isNaN(parsed) && parsed >= 0 && parsed < STEPS.length) {
+      setStep(parsed);
+    }
+  }, [setStep]);
+
   const totalSteps = STEPS.length;
-  const progress = ((step + 1) / totalSteps) * 100;
 
   const warnings = useMemo(() => getValidationWarnings(inputs, step), [inputs, step]);
 
@@ -723,14 +673,25 @@ export default function WizardPage() {
   }
 
   const stepComponents = [
-    <StepContext key={0} inputs={inputs} setInputs={setInputs} />,
-    <StepRedundancyPackage key={1} inputs={inputs} setInputs={setInputs} />,
+    <StepRedundancyPackage key={0} inputs={inputs} setInputs={setInputs} />,
+    <StepContext key={1} inputs={inputs} setInputs={setInputs} />,
     <StepCapital key={2} inputs={inputs} setInputs={setInputs} />,
     <StepIncome key={3} inputs={inputs} setInputs={setInputs} />,
     <StepEssential key={4} inputs={inputs} setInputs={setInputs} />,
     <StepFlexible key={5} inputs={inputs} setInputs={setInputs} />,
-    <StepReview key={6} inputs={inputs} />,
+    <StepReview key={6} inputs={inputs} onEditStep={setStep} />,
   ];
+
+  const warningsBlock = warnings.length > 0 ? (
+    <div className="mt-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 p-3">
+      {warnings.map((w, i) => (
+        <div key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+          <AlertTriangle className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
+          <span>{w}</span>
+        </div>
+      ))}
+    </div>
+  ) : null;
 
   return (
     <>
@@ -738,74 +699,44 @@ export default function WizardPage() {
         <title>Build Your Redundancy Report — RedundancyCalculatorUK</title>
         <meta name="description" content="Enter your redundancy package, savings, income assumptions and monthly costs to build your private financial runway report. UK statutory calculation built in." />
         <meta name="robots" content="noindex, nofollow" />
-        <link rel="canonical" href="https://redundancycalculatoruk.com/wizard" />
+        <link rel="canonical" href="https://redundancycalculatoruk.co.uk/wizard" />
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="RedundancyCalculatorUK" />
         <meta property="og:title" content="Build Your Redundancy Report — RedundancyCalculatorUK" />
         <meta property="og:description" content="Enter your redundancy package, savings, income assumptions and monthly costs to build your private financial runway report." />
-        <meta property="og:url" content="https://redundancycalculatoruk.com/wizard" />
-        <meta property="og:image" content="https://redundancycalculatoruk.com/og-image.png" />
+        <meta property="og:url" content="https://redundancycalculatoruk.co.uk/wizard" />
+        <meta property="og:image" content="https://redundancycalculatoruk.co.uk/og-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Build Your Redundancy Report — RedundancyCalculatorUK" />
         <meta name="twitter:description" content="Enter your redundancy package, savings, income assumptions and monthly costs to build your private financial runway report." />
-        <meta name="twitter:image" content="https://redundancycalculatoruk.com/og-image.png" />
+        <meta name="twitter:image" content="https://redundancycalculatoruk.co.uk/og-image.png" />
       </Helmet>
-    <div className="min-h-screen">
       <DisclaimerBanner />
-      <header className="flex items-center justify-between gap-4 px-6 py-4 border-b flex-wrap" data-testid="wizard-header">
-        <Logo />
-        <Badge variant="outline" className="text-xs" data-testid="badge-header-step">
-          Step {step + 1} of {totalSteps}
-        </Badge>
-      </header>
-      <div className="max-w-lg mx-auto py-8 px-4">
-        <div className="mb-6">
-          <div className="flex items-center justify-between gap-4 mb-2 flex-wrap">
-            <p className="text-xs text-muted-foreground" data-testid="text-step-indicator">
-              Step {step + 1} of {totalSteps}
-            </p>
-            <Badge variant="outline" className="text-xs">{STEPS[step].title}</Badge>
+      <WizardShell
+        step={step}
+        totalSteps={totalSteps}
+        steps={STEPS}
+        stepMeta={STEP_META}
+        wizardStages={WIZARD_STAGES}
+        prompt={STEP_COPY[step].prompt}
+        reassurance={STEP_COPY[step].reassurance}
+        onStepClick={setStep}
+        warnings={warningsBlock}
+        footer={
+          <div className="flex items-center justify-between gap-4">
+            <Button variant="outline" onClick={handleBack} data-testid="button-back">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back
+            </Button>
+            <Button onClick={handleNext} className="btn-gold" data-testid="button-next">
+              {step === totalSteps - 1 ? "Build my report" : "Continue"}
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
           </div>
-          <Progress value={progress} className="h-1.5" data-testid="progress-bar" />
-        </div>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="font-serif text-lg">{STEPS[step].title}</CardTitle>
-            <p className="text-sm text-muted-foreground">{STEPS[step].description}</p>
-          </CardHeader>
-          <CardContent className="pt-4">
-            {stepComponents[step]}
-          </CardContent>
-        </Card>
-
-        {warnings.length > 0 && (
-          <div className="mt-3 rounded-md bg-muted/50 border border-yellow-500/20 p-3">
-            {warnings.map((w, i) => (
-              <div key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
-                <AlertTriangle className="w-3.5 h-3.5 text-yellow-500 shrink-0 mt-0.5" />
-                <span>{w}</span>
-              </div>
-            ))}
-          </div>
-        )}
-
-        <div className="flex items-center justify-between gap-4 mt-6">
-          <Button variant="outline" onClick={handleBack} data-testid="button-back">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back
-          </Button>
-          <Button onClick={handleNext} data-testid="button-next">
-            {step === totalSteps - 1 ? "Build my report" : "Next"}
-            <ArrowRight className="w-4 h-4 ml-2" />
-          </Button>
-        </div>
-
-        <p className="text-xs text-muted-foreground text-center mt-4">
-          Use best estimates. Assumptions can be refined later.
-        </p>
-      </div>
-    </div>
+        }
+      >
+        {stepComponents[step]}
+      </WizardShell>
     </>
   );
 }

@@ -1,0 +1,55 @@
+import type { RunwayInputs } from "@shared/schema";
+
+/**
+ * Moderate-pressure UK redundancy sample for marketing embeds and /brief-example.
+ * Engine-tuned: baseline ~9–10 mo, slow ~6–7 mo, severe ~5–6 mo, capital ~£18k, burn ~£3.2k.
+ */
+export const EXAMPLE_RUNWAY_INPUTS: RunwayInputs = {
+  context: {
+    employmentStatus: "redundant",
+    housingType: "mortgage",
+    householdStructure: "couple",
+    hasDependents: true,
+    confidenceLevel: "comfortable",
+  },
+  redundancyPackage: {
+    age: 42,
+    yearsOfService: 6,
+    weeklyGrossPay: 720,
+    noticeWeeks: 8,
+    holidayWeeks: 2,
+    enhancedPackage: true,
+    enhancedAmount: 5600,
+    useManualOverride: false,
+    manualOverrideAmount: 0,
+  },
+  cashSavings: 4800,
+  liquidInvestments: 1200,
+  otherOneOffIncome: 0,
+  unpaidWages: 0,
+  voluntaryRedundancyAmount: 0,
+  currentMonthlyNetIncome: 2500,
+  replacementMonthlyIncome: 220,
+  monthsUntilNewJob: 4,
+  benefitSupportEstimate: 0,
+  partnerMonthlyNetIncome: 0,
+  includePartnerIncome: false,
+  mortgageOrRent: 1240,
+  utilities: 188,
+  food: 405,
+  councilTax: 168,
+  insurance: 88,
+  transport: 225,
+  debtRepayments: 340,
+  childcare: 355,
+  otherEssential: 112,
+  subscriptions: 62,
+  leisure: 175,
+  travel: 72,
+  discretionaryOther: 82,
+  retrainingMonthlyCost: 0,
+  includeNonEssential: true,
+  emergencyBuffer: 2000,
+  sector: "all",
+  mortgageSensitivityPercent: 2,
+};

@@ -22,7 +22,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { getSessionToken } from "@/lib/sessionToken";
 
 const BOUNDARY_DISCLAIMER =
-  "The 7-Day Redundancy Reset provides practical written support and planning. It is not financial advice, legal advice, debt advice, employment law advice, therapy, counselling, crisis support, medical advice or a guarantee of income, employment or outcomes.";
+  "This is practical written support only. It is not financial, legal, debt, employment, medical or mental health advice.";
 
 function useResetCheckout() {
   return useMutation({
@@ -48,17 +48,17 @@ export default function RedundancyResetPage() {
       <Helmet>
         <title>7-Day Redundancy Reset — Private Written Support | RedundancyCalculatorUK</title>
         <meta name="description" content="A private written intake and 7-day action plan for people facing redundancy. Share your situation by WhatsApp or web. Receive a calm written response within 1 working day. Not financial advice." />
-        <link rel="canonical" href="https://redundancycalculatoruk.com/redundancy-reset" />
+        <link rel="canonical" href="https://redundancycalculatoruk.co.uk/redundancy-reset" />
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="RedundancyCalculatorUK" />
         <meta property="og:title" content="7-Day Redundancy Reset — Private Written Support" />
         <meta property="og:description" content="A private written intake and 7-day action plan for people facing redundancy. Share your situation by WhatsApp or web. Receive a calm written response within 1 working day." />
-        <meta property="og:url" content="https://redundancycalculatoruk.com/redundancy-reset" />
-        <meta property="og:image" content="https://redundancycalculatoruk.com/og-image.png" />
+        <meta property="og:url" content="https://redundancycalculatoruk.co.uk/redundancy-reset" />
+        <meta property="og:image" content="https://redundancycalculatoruk.co.uk/og-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="7-Day Redundancy Reset — Private Written Support" />
         <meta name="twitter:description" content="A private written intake and 7-day action plan for people facing redundancy. Receive a calm written response within 1 working day." />
-        <meta name="twitter:image" content="https://redundancycalculatoruk.com/og-image.png" />
+        <meta name="twitter:image" content="https://redundancycalculatoruk.co.uk/og-image.png" />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Product",
@@ -147,6 +147,7 @@ export default function RedundancyResetPage() {
             </div>
           </div>
           <p className="text-xs text-primary-foreground/50 mt-2">One-off payment. No subscription.</p>
+          <p className="text-xs text-primary-foreground/60 mt-1">You will complete your private intake after payment.</p>
         </div>
       </section>
 
@@ -174,37 +175,87 @@ export default function RedundancyResetPage() {
         </div>
       </section>
 
+      {/* Final plan preview */}
+      <section className="py-14 px-6 bg-muted/20" data-testid="section-final-plan-preview">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-8">
+            <Badge variant="outline" className="mb-3 text-xs bg-gold/10 text-gold border-gold/30">
+              Tangible written output
+            </Badge>
+            <h2 className="font-serif text-2xl sm:text-3xl font-bold">
+              What your final plan includes
+            </h2>
+            <p className="text-sm text-muted-foreground mt-3 max-w-2xl mx-auto">
+              The Reset turns your situation and calculator context into a structured written plan you can come back to during the week.
+            </p>
+          </div>
+          <Card className="border-primary/15 bg-card shadow-lg overflow-hidden" data-testid="card-final-plan-preview">
+            <CardContent className="p-0">
+              <div className="bg-primary text-primary-foreground px-5 py-4 flex items-center justify-between gap-3 flex-wrap">
+                <div>
+                  <p className="text-xs uppercase tracking-widest text-primary-foreground/60">Final output</p>
+                  <h3 className="font-serif text-xl font-bold">Your Redundancy Next-Step Plan</h3>
+                </div>
+                <Badge className="bg-gold text-gold-foreground border-0 hover:bg-gold">By Day 7</Badge>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-0">
+                {[
+                  "Situation summary",
+                  "Main pressure point",
+                  "What matters most this week",
+                  "What not to rush",
+                  "Your 7-day action plan",
+                  "Your 30-day direction",
+                  "Useful scripts or templates where relevant",
+                  "Signposting where professional support may be needed",
+                ].map((item, i) => (
+                  <div key={item} className={`flex items-start gap-3 p-4 ${i % 2 === 0 ? "sm:border-r" : ""} ${i < 6 ? "border-b" : ""}`}>
+                    <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                    <span className="text-sm text-foreground/85">{item}</span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
       {/* 7-Day journey */}
       <section className="py-14 px-6 bg-muted/20" data-testid="section-journey">
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-4xl mx-auto">
           <h2 className="font-serif text-2xl sm:text-3xl font-bold text-center mb-3">
-            How the 7 days work
+            How it works
           </h2>
           <p className="text-center text-muted-foreground text-sm mb-10 max-w-lg mx-auto">
-            After your intake, you receive a structured written response and a practical 7-day plan.
-            This is written support, not a live conversation.
+            After payment, the experience stays structured: intake, written response, one follow-up check-in, then your final plan.
           </p>
           <div className="relative">
-            <div className="hidden sm:block absolute top-6 left-[calc(16.67%+1rem)] right-[calc(16.67%+1rem)] h-px bg-border" />
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+            <div className="hidden sm:block absolute top-6 left-[12.5%] right-[12.5%] h-px bg-border" />
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-6">
               {[
                 {
-                  day: "Day 1",
+                  day: "1",
+                  icon: Shield,
+                  title: "Complete private intake",
+                  desc: "Answer guided questions so the first written response can be prepared from your actual situation.",
+                },
+                {
+                  day: "2",
                   icon: MessageSquare,
                   title: "First written response",
-                  desc: "You receive a written acknowledgement and an initial practical response to your situation — based on what you shared in your intake.",
+                  desc: "Receive your first private written response within 1 working day after intake submission.",
                 },
                 {
-                  day: "Day 3–4",
+                  day: "3",
                   icon: Clock,
-                  title: "Structured 7-day plan",
-                  desc: "A clear written plan arrives covering what to prioritise, what to look into, and what to set aside for now. Structured. Practical. Written.",
+                  title: "Follow-up check-in",
+                  desc: "Complete one follow-up check-in during the 7-day reset so the final plan can focus on what changed.",
                 },
                 {
-                  day: "Day 7",
+                  day: "4",
                   icon: CheckCircle2,
-                  title: "Follow-up check",
-                  desc: "A brief written follow-up to see if there are practical questions you need addressed before the programme ends.",
+                  title: "Final plan by Day 7",
+                  desc: "Receive your Redundancy Next-Step Plan with practical priorities and calm signposting where relevant.",
                 },
               ].map((item) => (
                 <div key={item.day} className="flex flex-col items-center text-center" data-testid={`journey-step-${item.day}`}>
@@ -221,7 +272,7 @@ export default function RedundancyResetPage() {
             </div>
           </div>
           <p className="text-center text-xs text-muted-foreground mt-8 italic">
-            First written response within 1 working day. This is not live chat.
+            One-off payment. No subscription. Practical written support only.
           </p>
         </div>
       </section>
@@ -295,22 +346,22 @@ export default function RedundancyResetPage() {
               <div className="flex items-center justify-center gap-3 mb-2">
                 <span className="text-4xl font-bold">£79</span>
                 <div className="text-left">
-                  <div className="line-through text-muted-foreground text-sm">£99</div>
+                  <div className="line-through text-muted-foreground text-sm">£99 standard</div>
                   <Badge className="bg-amber-500/80 text-white border-amber-400/40 text-xs">
-                    Launch price
+                    £79 launch offer for first 20 customers
                   </Badge>
                 </div>
               </div>
               <p className="text-sm text-muted-foreground mb-6">
-                One-off payment · first 20 customers · no subscription
+                One-off payment. No subscription. Practical written support only.
               </p>
               <ul className="space-y-2 mb-6 text-sm text-left max-w-xs mx-auto">
                 {[
                   "Guided intake form (7 questions)",
                   "First written response within 1 working day",
-                  "Practical 7-day written plan",
-                  "Day 7 written follow-up",
-                  "WhatsApp or web message delivery",
+                  "Private Reset Portal",
+                  "One follow-up check-in",
+                  "Final Redundancy Next-Step Plan by Day 7",
                 ].map((item, i) => (
                   <li key={i} className="flex items-center gap-2">
                     <CheckCircle2 className="w-3.5 h-3.5 text-primary shrink-0" />
@@ -342,7 +393,7 @@ export default function RedundancyResetPage() {
                 </p>
               )}
               <p className="text-xs text-muted-foreground mt-3">
-                No subscription. No recurring charges.
+                You will complete your private intake after payment.
               </p>
             </CardContent>
           </Card>

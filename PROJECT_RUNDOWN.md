@@ -50,23 +50,23 @@
 
 ---
 
-## 3. The 6-Step Wizard
+## 3. The 7-Step Wizard
 
-**Step 1: Your Current Position (Context Layer)**
+**Step 1: Redundancy Package**
+- Age, Years of Service (capped at 20 for statutory)
+- Weekly Gross Pay (statutory cap £751/week)
+- Notice Period (weeks), Accrued Holiday (weeks)
+- Enhanced Package toggle + amount
+- Manual Override toggle + amount (replaces estimate)
+- **Live estimate:** Shows statutory redundancy + notice pay + holiday pay, with tax-free threshold (£30,000)
+
+**Step 2: Your Current Position (Context Layer)**
 - Employment status: Redundant / At Risk / Other Disruption
 - Housing type: Mortgage / Renting / Owned Outright / Other
 - Household structure: Single / Couple / Family
 - Dependents: yes/no switch
 - Confidence level: Comfortable / Uncertain / Under Pressure
 - *Note: Context does not affect financial projection — purely for user framing*
-
-**Step 2: Redundancy Package**
-- Age, Years of Service (capped at 20 for statutory)
-- Weekly Gross Pay (statutory cap £643/week)
-- Notice Period (weeks), Accrued Holiday (weeks)
-- Enhanced Package toggle + amount
-- Manual Override toggle + amount (replaces estimate)
-- **Live estimate:** Shows statutory redundancy + notice pay + holiday pay, with tax-free threshold (£30,000)
 
 **Step 3: Capital Snapshot**
 - Cash Savings, Liquid Investments, Other One-Off Income
@@ -102,7 +102,7 @@ All calculations are deterministic, client-side, and assumption-framed.
 
 **`computeRedundancyEstimate(pkg)`** — UK statutory redundancy calculator
 - Age-band multipliers: <22 = 0.5x, 22-40 = 1x, 41+ = 1.5x weeks per year of service
-- Weekly pay capped at £643, years capped at 20
+- Weekly pay capped at £751, years capped at 20
 - Adds notice pay + holiday pay
 - Enhanced override replaces statutory element
 - Tax-free threshold: £30,000
