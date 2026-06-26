@@ -115,11 +115,15 @@ export function LockedPackagePreviewGrid({ inputs, onUnlock, prominent = false }
         ))}
       </div>
 
-      <div className="text-center pt-2 space-y-2">
-        <Button className="btn-gold" onClick={handleUnlock} data-testid="button-locked-package-unlock">
-          {PRODUCT_COPY.unlockCta}
+      <div className="pt-2 space-y-2 min-w-0">
+        <Button
+          className="btn-gold w-full max-w-full whitespace-normal h-auto min-h-10 py-3 px-4 flex items-center justify-center text-center"
+          onClick={handleUnlock}
+          data-testid="button-locked-package-unlock"
+        >
+          <span className="text-sm leading-snug">{PRODUCT_COPY.unlockCta}</span>
         </Button>
-        <p className="text-xs text-muted-foreground">{PRODUCT_COPY.unlockSupportingLine}</p>
+        <p className="text-xs text-muted-foreground text-center">{PRODUCT_COPY.unlockSupportingLine}</p>
       </div>
     </section>
   );
