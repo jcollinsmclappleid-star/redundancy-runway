@@ -154,9 +154,12 @@ export function LandingMaximiserFeatureCallout() {
           <p className="text-[11px] text-white/50 leading-relaxed mt-4 mb-4">{copy.ladderLocked}</p>
 
           <Link href="/unlock" className="mt-auto">
-            <Button className="btn-gold w-full sm:w-auto" data-testid="button-maximiser-feature-unlock">
-              Unlock {REDUNDANCY_PAY_MAXIMISER_NAME} — £{RUNWAY_REPORT_PRICE_GBP}
-              <ArrowRight className="w-4 h-4 ml-2" />
+            <Button className="btn-gold w-full sm:w-auto whitespace-normal h-auto min-h-10 py-2.5" data-testid="button-maximiser-feature-unlock">
+              <span className="hidden sm:inline">
+                Unlock {REDUNDANCY_PAY_MAXIMISER_NAME} — £{RUNWAY_REPORT_PRICE_GBP}
+              </span>
+              <span className="sm:hidden">{PRODUCT_COPY.maximiserUnlockCtaMobile}</span>
+              <ArrowRight className="w-4 h-4 ml-2 shrink-0" />
             </Button>
           </Link>
         </div>

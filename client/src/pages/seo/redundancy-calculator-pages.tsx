@@ -3595,8 +3595,8 @@ export function SeoCalculatorPage({ slug }: { slug: string }) {
         <meta name="twitter:title" content={page.metaTitle} />
         <meta name="twitter:description" content={page.metaDescription} />
         <meta name="twitter:image" content={`${SITE_URL}/og-image.png`} />
-        <SeoJsonLd page={page} />
       </Helmet>
+      <SeoJsonLd page={page} />
 
       <div className="min-h-screen flex flex-col">
         <DisclaimerBanner />

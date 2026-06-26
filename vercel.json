@@ -24,7 +24,7 @@
     }
   ],
   "functions": {
-    "api/[[...path]].ts": {
+    "api/index.ts": {
       "maxDuration": 60,
       "includeFiles": "dist/vercel-handler.cjs"
     },
@@ -33,6 +33,10 @@
     }
   },
   "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index"
+    },
     {
       "source": "/((?!api/).*)",
       "destination": "/api/html?pathname=$1"

@@ -93,8 +93,8 @@ export function AiRedundancySeoLayout({ page, children }: AiRedundancySeoLayoutP
         <meta name="twitter:title" content={page.metaTitle} />
         <meta name="twitter:description" content={page.metaDescription} />
         <meta name="twitter:image" content={`${SITE_URL}/og-image.png`} />
-        <AiSeoJsonLd page={page} />
       </Helmet>
+      <AiSeoJsonLd page={page} />
 
       <div className="min-h-screen flex flex-col">
         <DisclaimerBanner />

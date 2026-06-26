@@ -44,6 +44,7 @@ export const PRODUCT_COPY = {
   seeIncludedCtaMobile: "What's included",
   unlockCta: `Unlock ${RUNWAY_REPORT_FULL}`,
   unlockCtaMobile: `Unlock full report — £${RUNWAY_REPORT_PRICE_GBP}`,
+  maximiserUnlockCtaMobile: `Unlock maximiser — £${RUNWAY_REPORT_PRICE_GBP}`,
   bottomCtaFree: "Build my private report — Free preview",
   bottomCtaFreeMobile: "Start free preview",
   bottomCtaPaid: `Unlock full report — £${RUNWAY_REPORT_PRICE_GBP}`,

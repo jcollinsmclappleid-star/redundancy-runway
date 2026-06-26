@@ -16,10 +16,8 @@ import {
   Sliders,
   Sparkles,
   TrendingDown,
-  TrendingUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { RedundancyPackageDashboard } from "@/components/package-dashboard/RedundancyPackageDashboard";
 import { CapitalPathDashboard } from "@/components/dashboards/capital-path-dashboard";
 import { LandingMaximiserFeatureCallout } from "@/components/landing/LandingMaximiserFeatureCallout";
@@ -35,7 +33,6 @@ import { chartTheme } from "@/lib/chart-theme";
 import {
   PRODUCT_COPY,
   PRIVACY_COPY,
-  REDUNDANCY_PAY_MAXIMISER_NAME,
   RUNWAY_BRIEF_NAME,
   RUNWAY_REPORT_FULL,
   RUNWAY_REPORT_PRICE_GBP,
@@ -187,28 +184,6 @@ function ExplorerPanel({ tab }: { tab: ExplorerTabId }) {
   }
 }
 
-function MaximiserNavHighlight() {
-  return (
-    <div
-      className="rounded-lg border-2 border-gold/40 bg-gradient-to-br from-gold/10 to-amber-50/80 px-3 py-3 shrink-0 lg:w-full"
-      data-testid="explorer-maximiser-highlight"
-    >
-      <div className="flex items-center gap-2 mb-1.5">
-        <TrendingUp className="w-3.5 h-3.5 text-amber-800 shrink-0" />
-        <span className="text-xs font-bold text-primary leading-tight">{REDUNDANCY_PAY_MAXIMISER_NAME}</span>
-        <Badge className="text-[9px] px-1.5 py-0 bg-gold/25 text-amber-900 border-gold/40">Key feature</Badge>
-      </div>
-      <p className="text-[10px] text-muted-foreground leading-snug mb-2">
-        Ranked ways to get more from your package — unlock with the full report.
-      </p>
-      <div className="inline-flex items-center gap-1 text-[10px] text-amber-900/80 font-medium">
-        <Lock className="w-2.5 h-2.5" />
-        Paid report
-      </div>
-    </div>
-  );
-}
-
 export function LandingReportExplorer() {
   const [tab, setTab] = useState<ExplorerTabId>("package");
 
@@ -216,19 +191,19 @@ export function LandingReportExplorer() {
     <div className="w-full" data-testid="landing-report-explorer">
       <LandingMaximiserFeatureCallout />
 
+      <div className="mb-4 rounded-xl border border-primary/15 bg-primary/5 px-4 py-3 text-center lg:text-left">
+        <p className="text-sm font-semibold text-primary mb-1">Interactive sample dashboards</p>
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          <span className="lg:hidden">Tap a tab below to switch views. Scroll inside each dashboard to explore charts and line items.</span>
+          <span className="hidden lg:inline">Select a module on the left to switch views. Each dashboard is live — scroll and explore the sample data.</span>
+        </p>
+      </div>
+
       <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
         <nav
           className="lg:w-52 shrink-0 flex lg:flex-col gap-2 overflow-x-auto pb-1 lg:pb-0 -mx-1 px-1"
           aria-label="Report modules"
         >
-          <div className="hidden lg:block">
-            <MaximiserNavHighlight />
-          </div>
-
-          <div className="lg:hidden shrink-0 order-first">
-            <MaximiserNavHighlight />
-          </div>
-
           {UNLOCKED_MODULES.map((mod) => {
             const active = tab === mod.id;
             return (
@@ -290,28 +265,17 @@ export function LandingReportExplorer() {
                   {tab === "preview" && "What you get free before unlock"}
                 </p>
               </div>
-              <span className="rounded-full border border-gold/35 bg-gold/10 px-3 py-1 text-xs font-semibold text-primary hidden sm:inline">
-                Sample dashboards
+              <span className="rounded-full border border-emerald-300/50 bg-emerald-50 px-3 py-1 text-[10px] font-semibold text-emerald-800">
+                Tap &amp; scroll to explore
               </span>
             </div>
 
             <ExplorerPanel tab={tab} />
           </div>
 
-          <div className="mt-3 lg:hidden flex gap-2 overflow-x-auto pb-1">
-            {LOCKED_MODULES.slice(0, 6).map((mod) => (
-              <span
-                key={mod.label}
-                className="inline-flex items-center gap-1 rounded-full border border-dashed border-border bg-muted/40 px-2.5 py-1 text-[10px] text-muted-foreground shrink-0"
-              >
-                <Lock className="w-2.5 h-2.5" />
-                {mod.label}
-              </span>
-            ))}
-            <span className="inline-flex items-center px-2.5 py-1 text-[10px] text-muted-foreground shrink-0">
-              +{LOCKED_MODULES.length - 6} more
-            </span>
-          </div>
+          <p className="mt-3 text-[11px] text-center text-muted-foreground lg:hidden">
+            Swipe the tabs above to compare modules · scroll inside the dashboard
+          </p>
         </div>
       </div>
 
