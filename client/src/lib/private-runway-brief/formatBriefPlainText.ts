@@ -50,6 +50,26 @@ export function formatBriefPlainText(inputs: RunwayInputs, narrative: PrivateRun
       return `  ${c.label}${c.amount != null && c.amount > 0 ? `: ${formatGBP(c.amount)}` : ""}${comment ? ` — ${comment.explanation}` : ""}`;
     }),
     "",
+  ];
+
+  if (narrative.positionEnhancementCommentary) {
+    const pec = narrative.positionEnhancementCommentary;
+    lines.push(
+      "POSITION IMPROVEMENT",
+      pec.summary,
+      "",
+      ...pec.packageOpportunities.map((o) => `  • ${o}`),
+      "",
+    );
+    if (pec.consultationReadiness) {
+      lines.push("CONSULTATION READINESS", pec.consultationReadiness, "");
+    }
+    if (pec.leverageThemes.length > 0) {
+      lines.push("DECISION LEVERAGE", ...pec.leverageThemes.map((t) => `  • ${t}`), "");
+    }
+  }
+
+  lines.push(
     "AT A GLANCE",
     `  Baseline runway: ${formatMonths(dashboard.baseline.monthsUntilDepletion)}`,
     `  Severe-case runway: ${formatMonths(dashboard.severeCaseRunway)}`,
@@ -57,7 +77,7 @@ export function formatBriefPlainText(inputs: RunwayInputs, narrative: PrivateRun
     `  Net monthly burn: ${formatGBP(dashboard.baseline.netMonthlyBurn)}`,
     `  Housing pressure: ${dashboard.baseline.housingPercentOfEssentials}% of essentials`,
     "",
-  ];
+  );
 
   if (exec) {
     lines.push(

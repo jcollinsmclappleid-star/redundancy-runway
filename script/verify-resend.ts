@@ -1,7 +1,28 @@
 /**
  * Verify Resend API key and from-address configuration.
- * Run: node --env-file=.env ./node_modules/tsx/dist/cli.mjs script/verify-resend.ts
+ * Loads .env then .env.local (local overrides).
+ * Run: npm run resend:verify
  */
+import { readFileSync, existsSync } from "node:fs";
+
+function loadEnvFile(path: string) {
+  if (!existsSync(path)) return;
+  for (const line of readFileSync(path, "utf8").split("\n")) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) continue;
+    const eq = trimmed.indexOf("=");
+    if (eq <= 0) continue;
+    const key = trimmed.slice(0, eq);
+    const value = trimmed.slice(eq + 1);
+    if (process.env[key] === undefined || process.env[key] === "") {
+      process.env[key] = value;
+    }
+  }
+}
+
+loadEnvFile(".env");
+loadEnvFile(".env.local");
+
 const apiKey = process.env.RESEND_API_KEY?.trim();
 const from =
   process.env.ACCESS_EMAIL_FROM ||
@@ -11,7 +32,7 @@ const testTo = process.env.RESEND_TEST_TO?.trim();
 
 async function main() {
   if (!apiKey) {
-    console.error("RESEND_API_KEY is not set. Add it to .env or Vercel/Replit secrets.");
+    console.error("RESEND_API_KEY is not set. Add it to .env (or .env.local) and Vercel/Replit secrets.");
     process.exit(1);
   }
 
@@ -48,7 +69,7 @@ async function main() {
         from: `RedundancyCalculatorUK <${from}>`,
         to: testTo,
         subject: "Resend test — RedundancyCalculatorUK",
-        html: "<p>Resend is configured correctly for preview/staging.</p>",
+        html: "<p>Resend is configured correctly for RedundancyCalculatorUK.</p>",
       }),
     });
     const sendBody = await sendRes.json();

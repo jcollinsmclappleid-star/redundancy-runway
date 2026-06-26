@@ -16,33 +16,15 @@ import { computeRedundancyEstimate, computeRunway, formatGBP, formatMonths, UK_S
 import type { RedundancyPackageInputs, RunwayInputs } from "@shared/schema";
 
 import { SITE_URL } from "@shared/site";
+import { RUNWAY_REPORT_FULL, RUNWAY_REPORT_PRICE_GBP } from "@shared/product";
 import { TAX_SENSITIVE_DISCLAIMER } from "@shared/complianceCopy";
 import { PayoutCtaLadder } from "@/components/seo/PayoutCtaLadder";
+import { missingSeoPages } from "./missing-seo-page-content";
 
-type PageVariant = "core" | "package" | "tax" | "notice" | "holiday" | "question" | "runway" | "mortgage" | "household" | "reset" | "consultation" | "rights" | "benefits" | "age" | "eligibility" | "ai";
+import type { PageVariant, SeoPageContent } from "./seo-page-types";
 
-interface SeoPageContent {
-  slug: string;
-  metaTitle: string;
-  metaDescription: string;
-  h1: string;
-  primaryCta: string;
-  primaryHref?: string;
-  secondaryCta?: string;
-  secondaryHref?: string;
-  badge: string;
-  intro: string;
-  intent: string;
-  helps: string[];
-  assumptions: string[];
-  example: {
-    title: string;
-    body: string;
-  };
-  faqs: Array<{ question: string; answer: string }>;
-  officialLinks?: Array<{ href: string; label: string }>;
-  variant: PageVariant;
-}
+const PAID_REPORT_LABEL = `${RUNWAY_REPORT_FULL} (£${RUNWAY_REPORT_PRICE_GBP})`;
+const UNLOCK_REPORT_CTA = `Unlock full report — £${RUNWAY_REPORT_PRICE_GBP}`;
 
 interface InternalLinkItem {
   href: string;
@@ -294,7 +276,7 @@ const pages: SeoPageContent[] = [
     metaDescription: "Estimate statutory redundancy, enhanced redundancy, notice pay, holiday pay and final pay assumptions in one package view.",
     h1: "Redundancy package calculator",
     primaryCta: "Model my redundancy package",
-    secondaryCta: "Build the £39 private report",
+    secondaryCta: UNLOCK_REPORT_CTA,
     secondaryHref: "/wizard",
     badge: "Package breakdown",
     intro: "A redundancy package can include several different payments. Estimate the statutory baseline, add enhanced package assumptions, and keep notice, PILON, holiday pay and final pay separate.",
@@ -303,7 +285,7 @@ const pages: SeoPageContent[] = [
       "Separate statutory redundancy pay from enhanced or manual package assumptions.",
       "Add notice pay, PILON-style notice assumptions and accrued holiday pay.",
       "Treat unpaid wages and final payroll items as separate from statutory redundancy.",
-      "Move from a package estimate into the £39 Private Redundancy Runway Report.",
+      `Move from a package estimate into the ${PAID_REPORT_LABEL}.`,
     ],
     assumptions: [
       ...baseAssumptions,
@@ -408,7 +390,7 @@ const pages: SeoPageContent[] = [
     metaDescription: "Estimate how different parts of a redundancy package may be treated for tax and how much may support your runway.",
     h1: "Redundancy pay after tax calculator",
     primaryCta: "Model after-tax assumptions",
-    secondaryCta: "Build the £39 private report",
+    secondaryCta: UNLOCK_REPORT_CTA,
     secondaryHref: "/wizard",
     badge: "Tax boundary estimate",
     intro: "Redundancy pay, notice pay, holiday pay and unpaid wages can sit in different tax categories. Use this page to separate the components before modelling how much may support your household runway.",
@@ -417,7 +399,7 @@ const pages: SeoPageContent[] = [
       "Separate genuine redundancy payment assumptions from notice and holiday pay.",
       "Understand why the tax-free threshold does not apply to every final payment.",
       "Keep payroll items such as unpaid wages and bonuses separate.",
-      "Use the package estimate as an input to the Private Redundancy Runway Report.",
+      `Use the package estimate as an input to the ${RUNWAY_REPORT_FULL}.`,
     ],
     assumptions: [
       `Statutory redundancy pay under ${formatGBP(UK_STATUTORY_REDUNDANCY.taxFreeThreshold)} is generally not taxable, but other payments can be treated differently.`,
@@ -523,7 +505,7 @@ const pages: SeoPageContent[] = [
     metaDescription: "Estimate final pay elements after redundancy, including redundancy pay, notice pay, holiday pay and unpaid wages.",
     h1: "Redundancy final pay calculator",
     primaryCta: "Model final pay assumptions",
-    secondaryCta: "Build the £39 private report",
+    secondaryCta: UNLOCK_REPORT_CTA,
     secondaryHref: "/wizard",
     badge: "Final pay breakdown",
     intro: "Final pay after redundancy may include more than redundancy pay. Use this calculator to separate redundancy, notice, holiday and unpaid wage assumptions before modelling the household impact.",
@@ -557,7 +539,7 @@ const pages: SeoPageContent[] = [
     metaDescription: "Estimate a redundancy payout and model how it may support your household runway under different assumptions.",
     h1: "Redundancy payout calculator",
     primaryCta: "Estimate my redundancy payout",
-    secondaryCta: "Build the £39 private report",
+    secondaryCta: UNLOCK_REPORT_CTA,
     secondaryHref: "/wizard",
     badge: "Payout estimate",
     intro: "Estimate a redundancy payout using statutory, enhanced, notice and holiday assumptions, then test what that payout may mean for monthly household runway.",
@@ -566,7 +548,7 @@ const pages: SeoPageContent[] = [
       "Estimate the gross payout from statutory or enhanced redundancy assumptions.",
       "Add notice and holiday pay as separate package components.",
       "Compare the payout with a simple monthly burn rate.",
-      "Continue into the Private Redundancy Runway Report for detailed scenarios.",
+      `Continue into the ${RUNWAY_REPORT_FULL} for detailed scenarios.`,
     ],
     assumptions: [
       "A redundancy payout can combine payments with different tax and payroll treatment.",
@@ -634,7 +616,7 @@ const pages: SeoPageContent[] = [
       "Combine cash savings with redundancy pay and other accessible capital.",
       "Compare savings with essential monthly costs and housing commitments.",
       "Test income recovery assumptions without treating them as predictions.",
-      "Use the £39 Private Redundancy Runway Report for a fuller month-by-month view.",
+      `Use the ${PAID_REPORT_LABEL} for a fuller month-by-month view.`,
     ],
     assumptions: [
       "Savings runway depends on monthly burn, not only the savings balance.",
@@ -702,7 +684,7 @@ const pages: SeoPageContent[] = [
       "Estimate how long accessible capital may last during reduced income.",
       "Model redundancy pay, savings and other one-off income together.",
       "Compare current costs with expected income during the gap.",
-      "Unlock the Private Redundancy Runway Report for scenario comparisons and export.",
+      `Unlock the ${RUNWAY_REPORT_FULL} for scenario comparisons and export.`,
     ],
     assumptions: [
       "Income loss can be partial or complete, so model more than one scenario if useful.",
@@ -872,7 +854,7 @@ const pages: SeoPageContent[] = [
       "Separate essential spending from flexible monthly costs.",
       "See how housing, debt, childcare and transport affect runway.",
       "Test spending assumptions alongside redundancy pay and savings.",
-      "Use the Private Redundancy Runway Report to see expense sensitivity and capital path.",
+      `Use the ${RUNWAY_REPORT_FULL} to see expense sensitivity and capital path.`,
     ],
     assumptions: [
       "Budget modelling is assumption-based and changes when costs or income assumptions change.",
@@ -906,7 +888,7 @@ const pages: SeoPageContent[] = [
       "Estimate runway if income stops or reduces temporarily.",
       "Add redundancy pay where job loss is redundancy-related.",
       "Model savings, monthly costs and income recovery assumptions together.",
-      "Use the £39 Private Redundancy Runway Report for detailed scenario comparisons.",
+      `Use the ${PAID_REPORT_LABEL} for detailed scenario comparisons.`,
     ],
     assumptions: [
       "This page does not predict job loss, re-employment timing or income recovery.",
@@ -2776,16 +2758,54 @@ const pages: SeoPageContent[] = [
     ],
     variant: "package",
   },
+  ...missingSeoPages,
 ];
 
 export const seoCalculatorPages = pages;
 
+function slugToTitle(slug: string): string {
+  return slug
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+function createFallbackPage(slug: string): SeoPageContent {
+  const title = slugToTitle(slug);
+  return {
+    slug,
+    metaTitle: `${title} | RedundancyCalculatorUK`,
+    metaDescription: `UK redundancy preparation and private financial modelling for ${title.toLowerCase()}. Not legal or financial advice.`,
+    h1: title,
+    primaryCta: "Use the free redundancy calculator",
+    primaryHref: "/wizard",
+    secondaryCta: "View guides",
+    secondaryHref: "/",
+    badge: "UK redundancy guide",
+    intro: "Use the free calculator to estimate redundancy pay and baseline runway from your figures, then unlock the full private report for deeper preparation tools.",
+    intent: "General redundancy preparation information.",
+    helps: [
+      "Estimate UK statutory redundancy pay from your assumptions.",
+      "Model baseline runway months on household costs.",
+      "Prepare consultation questions alongside the numbers.",
+      "Unlock maximiser checks and plain-English brief in the full report.",
+    ],
+    assumptions: baseAssumptions,
+    example: {
+      title: "Start with your figures",
+      body: "Enter age, weekly pay and service years for a statutory estimate, then add notice, holiday and costs for a fuller picture.",
+    },
+    faqs: [
+      { question: "Is this financial advice?", answer: "No. Private modelling from your assumptions only." },
+      { question: "Can I start free?", answer: "Yes. The wizard free preview requires no payment." },
+      { question: "What does the paid report include?", answer: "Package maximiser, consultation prep, runway dashboards and exportable brief." },
+    ],
+    variant: "consultation",
+  };
+}
+
 function getPage(slug: string): SeoPageContent {
-  const page = pages.find((item) => item.slug === slug);
-  if (!page) {
-    throw new Error(`Unknown SEO page: ${slug}`);
-  }
-  return page;
+  return pages.find((item) => item.slug === slug) ?? createFallbackPage(slug);
 }
 
 function NumberField({ id, label, value, min, max, step = 1, onChange }: {
@@ -3064,7 +3084,7 @@ function EmbeddedRedundancyCalculator({ page }: { page: SeoPageContent }) {
 
         <p className="mt-3 text-xs text-muted-foreground">
           {page.variant === "tax" ? `${TAX_SENSITIVE_DISCLAIMER} ` : ""}
-          This is an illustrative gross estimate only. It is not legal, tax, mortgage or financial advice. The full Private Redundancy Runway Report is £39, one-off.
+          This is an illustrative gross estimate only. It is not legal, tax, mortgage or financial advice. The full {RUNWAY_REPORT_FULL} is £{RUNWAY_REPORT_PRICE_GBP}, one-off.
         </p>
       </CardContent>
     </Card>
@@ -3077,17 +3097,17 @@ function PrivateReportPreview({ isRunwayPage }: { isRunwayPage: boolean }) {
       <div className="max-w-5xl mx-auto space-y-8">
         <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_320px] gap-7 items-start">
           <div>
-            <Badge variant="outline" className="mb-4">Private Redundancy Runway Report</Badge>
+            <Badge variant="outline" className="mb-4">{RUNWAY_REPORT_FULL}</Badge>
             <h2 className="font-serif text-2xl sm:text-3xl font-bold mb-3">See the dashboard before you unlock the full report</h2>
             <p className="text-muted-foreground leading-relaxed max-w-2xl">
-              The free calculator gives the first estimate. The full Private Redundancy Runway Report turns your figures into dashboard views, scenario comparisons and an exportable written report.
+              The free calculator gives the first estimate. The full {RUNWAY_REPORT_FULL} turns your figures into dashboard views, scenario comparisons and an exportable written report.
             </p>
           </div>
           <Card className="border-primary/20 shadow-sm">
             <CardContent className="p-5">
               <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">Full report access</p>
               <div className="flex items-baseline gap-2 mb-2">
-                <span className="text-3xl font-bold">£39</span>
+                <span className="text-3xl font-bold">£{RUNWAY_REPORT_PRICE_GBP}</span>
                 <span className="text-sm text-muted-foreground">one-off</span>
               </div>
               <p className="text-sm text-muted-foreground mb-4">No subscription. Includes the Redundancy Runway Brief and exportable report access.</p>
@@ -3325,6 +3345,7 @@ function RelatedLinks({ currentSlug, variant }: { currentSlug: string; variant: 
   const standardLinks = [
     { href: "/free-redundancy-calculator", label: "Free redundancy calculator", body: "Start with the free statutory estimate." },
     { href: "/redundancy-pay-calculator-uk", label: "Redundancy pay calculator UK", body: "Generic UK redundancy pay estimate." },
+    { href: "/redundancy-pay-calculator-2026", label: "Redundancy pay calculator 2026", body: "Current-year statutory cap and formula." },
     { href: "/statutory-redundancy-pay-calculator", label: "Statutory redundancy pay calculator", body: "Focus on the legal minimum." },
     { href: "/redundancy-calculator-uk", label: "Redundancy calculator UK", body: "Pay plus runway modelling." },
     { href: "/how-does-redundancy-pay-work", label: "How redundancy pay works", body: "Plain-English formula explanation." },
@@ -3414,7 +3435,7 @@ function RelatedLinks({ currentSlug, variant }: { currentSlug: string; variant: 
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
       {links
         .filter((link) => link.href !== `/${currentSlug}`)
-        .slice(0, 8)
+        .slice(0, 10)
         .map((link) => (
           <Link key={link.href} href={link.href} data-testid={`related-${link.href.slice(1)}`}>
             <div className="rounded-md border p-4 hover:border-primary/40 hover:bg-muted/20 transition-colors h-full">
@@ -3615,7 +3636,7 @@ export function SeoCalculatorPage({ slug }: { slug: string }) {
                   )}
                 </div>
                 <p className="mt-4 text-xs text-primary-foreground/55">
-                  Free calculator first. Full Private Redundancy Runway Report: £39 one-off. Last checked: {UK_STATUTORY_REDUNDANCY.lastChecked}.
+                  Free calculator first. Full report: £{RUNWAY_REPORT_PRICE_GBP} one-off. Last checked: {UK_STATUTORY_REDUNDANCY.lastChecked}.
                 </p>
               </div>
 

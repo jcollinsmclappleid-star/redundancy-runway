@@ -1,8 +1,6 @@
 import type { RunwayInputs } from "@shared/schema";
-import { Link } from "wouter";
-import { AlertTriangle, ArrowRight } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { formatGBP } from "@/lib/engine";
 import {
   describeIncomePath,
@@ -61,20 +59,14 @@ export function PreviewIncomeAssumptionsPanel({ inputs }: PreviewIncomeAssumptio
         </div>
 
         {!incomeModelled && (
-          <div className="rounded-lg border border-amber-200 bg-amber-50/80 px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-3">
-            <div className="flex items-start gap-2 flex-1">
+          <div className="rounded-lg border border-amber-200 bg-amber-50/80 px-4 py-3">
+            <div className="flex items-start gap-2">
               <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
               <p className="text-xs text-amber-900 leading-relaxed">
-                Prior income and gap income are not entered. Runway is modelled as capital drawdown only — add income
-                assumptions to see recovery paths and a fuller resilience score.
+                Prior income is not entered. Runway is modelled as capital drawdown only. Add income detail in the
+                full report after unlock.
               </p>
             </div>
-            <Link href="/wizard?step=3">
-              <Button size="sm" variant="outline" className="shrink-0 w-full sm:w-auto" data-testid="button-add-income-assumptions">
-                Add income assumptions
-                <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
-              </Button>
-            </Link>
           </div>
         )}
       </CardContent>

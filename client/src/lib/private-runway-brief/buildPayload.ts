@@ -3,6 +3,7 @@ import { computeRedundancyEstimate } from "@/lib/engine";
 import { computeConfidence, detectWeakInputs, hasUserReportedUncertainty } from "./computeConfidence";
 import { buildBriefDashboardData } from "./buildBriefDashboardData";
 import { buildPackageDashboardData } from "@/lib/package-dashboard/buildPackageDashboardData";
+import { buildPositionEnhancementData } from "@/lib/position-enhancement/buildPositionEnhancementData";
 import type { PrivateRunwayBriefPayload } from "./types";
 
 const EMPLOYMENT_LABELS: Record<string, string> = {
@@ -18,6 +19,7 @@ const EMPLOYMENT_LABELS: Record<string, string> = {
 export function buildPayload(inputs: RunwayInputs): PrivateRunwayBriefPayload {
   const dashboard = buildBriefDashboardData(inputs);
   const packageData = buildPackageDashboardData(inputs);
+  const positionData = buildPositionEnhancementData(inputs);
   const redundancyEst = computeRedundancyEstimate(inputs.redundancyPackage);
   const confidence = computeConfidence(inputs);
 
@@ -122,5 +124,14 @@ export function buildPayload(inputs: RunwayInputs): PrivateRunwayBriefPayload {
       label: c.label,
       status: c.status,
     })),
+    positionEnhancement: {
+      situationType: positionData.briefSummary.situationType,
+      topClarificationAreas: positionData.briefSummary.topClarificationAreas,
+      missingMoneyKeys: positionData.briefSummary.missingMoneyKeys,
+      scenarioInsight: positionData.briefSummary.scenarioInsight,
+      consultationPrepGaps: positionData.briefSummary.consultationPrepGaps,
+      highValueLabels: positionData.maximiser.highValueToClarify.map((i) => i.label),
+      leverageThemes: positionData.leverageMap.map((l) => l.itemKey),
+    },
   };
 }

@@ -1,6 +1,7 @@
 import { build as esbuild } from "esbuild";
 import { build as viteBuild } from "vite";
 import { cp, rm, readFile } from "fs/promises";
+import path from "path";
 
 process.env.NODE_ENV ||= "production";
 
@@ -27,6 +28,7 @@ const allowlist = [
   "passport-local",
   "pg",
   "stripe",
+  "serverless-http",
   "uuid",
   "ws",
   "xlsx",
@@ -60,6 +62,39 @@ async function buildAll() {
     },
     minify: true,
     external: externals,
+    logLevel: "warning",
+  });
+
+  console.log("building vercel api handler...");
+  await esbuild({
+    entryPoints: ["server/vercelHandler.ts"],
+    platform: "node",
+    bundle: true,
+    format: "cjs",
+    outfile: "dist/vercel-handler.cjs",
+    define: {
+      "process.env.NODE_ENV": '"production"',
+    },
+    minify: true,
+    external: externals,
+    logLevel: "warning",
+  });
+
+  console.log("building seo html handler...");
+  await esbuild({
+    entryPoints: ["server/seo.ts"],
+    platform: "node",
+    bundle: true,
+    format: "cjs",
+    outfile: "dist/seo-handler.cjs",
+    define: {
+      "process.env.NODE_ENV": '"production"',
+    },
+    alias: {
+      "@shared/site": path.resolve("shared/site.ts"),
+      "@shared/aiRedundancySeo": path.resolve("shared/aiRedundancySeo.ts"),
+    },
+    minify: true,
     logLevel: "warning",
   });
 }

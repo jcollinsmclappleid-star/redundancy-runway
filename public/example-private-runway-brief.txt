@@ -1,38 +1,158 @@
-PRIVATE RUNWAY BRIEF - REDUNDANCYCALCULATORUK
-Example export file
+REDUNDANCY RUNWAY BRIEF — RedundancyCalculatorUK
+Private Redundancy Pay Intelligence Report
 ====================
-
-This is an illustrative sample only. It is not legal, tax, mortgage, employment, debt, benefits, pension, investment, medical, mental health or financial advice.
+Generated: 25/06/2026, 13:00:00
+Confidence: High data completeness
 
 PACKAGE ESTIMATE
-The sample model combines an enhanced redundancy package, notice pay, holiday pay and cash savings. Statutory redundancy remains visible as a reference figure when an enhanced amount is entered.
+Under the sample assumptions, the redundancy package combines an enhanced offer with notice and holiday pay. Statutory redundancy remains visible as a reference figure when an enhanced amount replaces it in the model total.
+  Estimated statutory: £4,680
+  Notice pay: £5,760
+  Holiday pay: £1,440
+  Total package in model: £12,800
+  Package completeness: 78% (Strong package picture)
+
+  Statutory redundancy pay: £4,680 — Under the sample assumptions, the statutory estimate is calculated from age, service and weekly pay. It remains in the model as a reference when an enhanced package is entered.
+  Enhanced redundancy pay: £5,600 — The enhanced redundancy assumption replaces the statutory element in the package total used for starting capital under the sample assumptions.
+  Notice pay or PILON: £5,760 — Notice pay is modelled separately from statutory redundancy and is included in the package total under the sample assumptions.
+  Accrued holiday pay: £1,440 — Accrued holiday pay is included as a separate package line under the sample assumptions entered.
+  Unpaid wages
+  Voluntary redundancy offer
+  Cash savings (runway): £4,800
+  Liquid investments (runway): £1,200
+
+POSITION IMPROVEMENT
+Under the sample assumptions, the enhanced package lifts the model total above the statutory-only baseline, but unpaid wages, bonus and payment timing are not fully confirmed in the figures entered.
+
+  • Unpaid wages are not included — confirming final payroll items could change starting capital.
+  • The employer or manual package figure should be checked against the settlement letter or offer breakdown.
+  • Comparing statutory-only (~4 months on household costs) with the entered package (~10 months) shows how component gaps affect the picture.
+  • Tax treatment is marked unclear — gross figures are used in this model until confirmed.
+
+CONSULTATION READINESS
+Under the sample assumptions, payment date and tax treatment are worth confirming with HR or payroll before relying on cash timing in this model. This is preparation support only — not legal or employment advice.
+
+DECISION LEVERAGE
+  • Package components missing — clarifying missing items could improve the package total picture.
+  • Enhanced or manual package — compare breakdown against the statutory estimate.
+  • Payment date — confirm timing so cash availability aligns with household costs.
+  • Payout improvement scenarios — different package totals could change how many months the money may last.
 
 AT A GLANCE
-- Baseline runway: 10.4 months
-- Starting capital: GBP 42,850
-- Net monthly burn: GBP 2,840
-- Housing pressure: elevated but modelled as an assumption, not a prediction
+  Baseline runway: 10 months
+  Severe-case runway: 6 months
+  Starting capital: £18,800
+  Net monthly burn: £3,292
+  Housing pressure: 40% of essentials
 
 EXECUTIVE SUMMARY
-Under the sample assumptions, the baseline runway appears manageable, but stress scenarios show how quickly the picture changes if replacement income is delayed or fixed costs remain high.
+Under the sample assumptions, the baseline runway appears manageable, but the stress scenarios show how quickly the picture changes if replacement income is delayed or fixed costs remain high.
+Under the sample assumptions, this model shows a baseline runway supported by an enhanced redundancy package, cash savings and modest gap-period replacement income. Housing costs form a material share of essential expenditure, and the severe-case scenario shortens runway when income is removed from the model. The slow-recovery scenario illustrates what changes if a longer job-gap assumption is applied. This is an illustrative sample only — not a prediction of job outcomes and not advice.
+
+QUALITATIVE FINDINGS
+  [starting_capital] Under the sample assumptions, starting capital combines the redundancy package with cash savings and liquid investments. The enhanced package figure is used in place of the statutory estimate in the model total, so the runway path reflects the package amount entered in this sample.
+  [monthly_pressure] Under the sample assumptions, net monthly burn reflects essential and flexible spending minus income included in the model. Replacement income during the job-search period reduces the monthly shortfall compared with the severe scenario, where no income is included.
+  [scenario_spread] Under the sample assumptions, the scenario range shows how runway length changes when job-gap timing or income inclusion differs from baseline. The slow-recovery scenario applies a longer gap reference — it models a possibility under changed assumptions, not a forecast.
+  [housing_pressure] Under the sample assumptions, housing is a notable pressure point within essential expenditure. In this model, housing-related assumptions flow through to monthly pressure and to runway length in the sensitivity section.
+  [sensitivity] Under the sample assumptions, replacement income timing and essential spending levels appear to change the picture most in the sensitivity tests. These are model scenarios, not predictions of what will happen.
+
+HOW YOUR FIGURES WERE USED
+  What the model calculated: Under the assumptions entered, the baseline runway is 10 months with starting capital of £18,800 and net monthly burn of £3,292. The Runway Resilience Indicator score is 70/100 (Watch).
+  How starting capital was built: Starting capital used in the model is £18,800. The component breakdown reconciles with the starting capital total used in the model. Enhanced packages replace the statutory estimate in the total when entered — components are not double-counted.
+  How monthly pressure works: Monthly essential costs are £3,121/mo and flexible costs are £391/mo. Income included in the model is £2,720/mo. Net monthly burn is the monthly shortfall after income included in the model. Under your assumptions, net monthly burn is £3,292/mo.
+
+METHODOLOGY IN CONTEXT
+This sample model calculated starting capital from the entered redundancy package, savings and investments, then projected month-by-month capital depletion using net monthly burn. Scenarios adjust job-gap duration or income inclusion while holding other sample figures constant. All runway months in this example come from that deterministic engine. The commentary reports what the model shows under the sample assumptions — not what to do next.
 
 RUNWAY RANGE
-- Baseline: uses the sample figures as entered.
-- Slow recovery: models a longer job-gap assumption.
-- Severe case: removes replacement income from the projection.
-- Structural case: models a lower-income recovery path.
+Under the sample assumptions, the scenario range shows how runway length changes when income timing, job-gap assumptions or household income structure differ from baseline.
+
+  Baseline (your assumptions): 10 months
+    Uses all figures as entered — replacement income, job-gap months, partner income and benefits where included.
+    This scenario uses all sample figures as entered, including replacement income during the job-search period and the stated job-gap duration. It is the primary reference point under the sample assumptions.
+
+  Slower Reemployment Scenario: 8 months
+    Job-gap extended to 5.5 months before prior income resumes.
+    This scenario applies a longer job-gap assumption where the labour-market reference exceeds the entered gap. Under the sample assumptions, a longer gap before full income resumes reduces runway compared with baseline.
+
+  Zero Income (severe case): 6 months
+    Replacement income, benefits and job-gap income set to zero for the full projection.
+    The severe case removes replacement income, benefits and salary for the full projection. Under the sample assumptions, this shows how starting capital would be used if no income were included in the model.
+
+  Structural Transition: 7 months
+    Models lower replacement income (30% of prior), extended 12-month gap, and reduced prior salary (80%) — illustrative only.
+    This illustrative scenario models a lower-income recovery path with an extended gap. Under the sample assumptions, it shows a more gradual return to prior earnings — not a forecast.
+
+  One-Income Household: 6 months
+    Your salary, replacement income and benefits were set to zero. Partner income is not included in this scenario.
+
 
 CAPITAL COMPOSITION
-- Redundancy package
-- Cash savings
-- Liquid investments
+Under the sample assumptions, starting capital combines the redundancy package, cash savings and liquid investments. The enhanced package replaces the statutory estimate in the model total.
+  Starting capital used in model: £18,800
+
+  Redundancy package (enhanced): £12,800 — The enhanced package plus notice and holiday pay form the redundancy component used in starting capital under the sample assumptions.
+  Cash savings: £4,800 — Cash savings provide immediate liquidity during the gap period under the sample assumptions.
+  Liquid investments: £1,200 — Liquid investments are included as accessible capital in the model under the sample assumptions.
 
 MONTHLY PRESSURE MAP
-Housing, essential costs and replacement income timing are the main pressure points in this sample.
+Under the sample assumptions, monthly pressure is driven by essential costs, with housing and debt repayments among the larger items. Net monthly burn reflects the shortfall after income included in the model.
+
+  Monthly essential costs: £3,121/mo — Essential costs form the core monthly outflow under the sample assumptions. Housing and childcare are among the larger components.
+  Monthly flexible costs: £391/mo
+  Housing costs: £1,240/mo (40% of essentials) — Housing represents a significant share of essentials under the sample assumptions — a common pressure point in redundancy runway models.
+  Debt repayments: £340/mo
+  Income included in model: £2,720/mo
+  Net monthly burn: £3,292/mo — Net monthly burn is the gap between total expenses and income included in the model. Under the sample assumptions, replacement income reduces but does not eliminate this shortfall.
+
+SENSITIVITY DRIVERS
+Under the sample assumptions, runway appears most sensitive to replacement income timing and essential spending levels. These are model stress tests, not predictions.
+
+  1. If income resumed 3 months later than assumed: 10 months → 6 months (-4 mo) — Delaying income resumption would shorten runway under the sample assumptions, as capital is drawn for longer before full income returns.
+  2. If income resumed 6 months later than assumed: 10 months → 6 months (-4 mo)
+  3. If essential expenses increased by 20%: 10 months → 7 months (-3 mo) — An increase in essential costs would reduce runway under the sample assumptions, reflecting how fixed costs affect the monthly shortfall.
+  4. If starting savings were 50% lower than assumed: 10 months → 7 months (-3 mo)
+  5. If essential expenses increased by 10%: 10 months → 8 months (-2 mo)
+  6. If housing cost increased by 1%: 10 months → 10 months (+0 mo)
+  7. If housing cost increased by 2%: 10 months → 10 months (+0 mo) — A small increase in housing cost would affect runway under the sample assumptions, given housing's share of essentials.
+  8. If all non-essential spending were removed: 10 months → 16 months (+6 mo)
+
+ASSUMPTION QUALITY
+High data completeness. Key sample inputs are populated for this illustrative example.
+
+  [complete] Income assumptions
+  [complete] Redundancy package
+  [complete] Savings and investments
+  [complete] Essential costs
+  [complete] Housing costs
+  [complete] Replacement income timing
+  [complete] Sector / job-gap assumption
+  [partial] Benefits estimate
+  [complete] Partner income
+  • redundancy_package: The package figure affects starting capital directly. In a personal report, confirming this against your settlement letter would help verify the model input.
+  • replacement_timing: The job-gap duration shapes when full income resumes in the model. This is an assumption, not a forecast.
+  • housing: Housing is a material share of essentials in this sample. Verifying the monthly housing figure would help confirm monthly pressure in a personal report.
 
 QUESTIONS TO TAKE FORWARD
-- Which package figures should be verified against employer documents?
-- Which monthly costs are fixed and which could change?
-- What income recovery assumptions should be modelled separately?
 
-This sample demonstrates the format of a Private Runway Brief. Personal results depend entirely on the figures entered.
+Financial adviser:
+  • What assumptions should I verify before relying on this runway model?
+  • How should I think about the starting capital figure in a regulated advice conversation?
+  • Which documents would help confirm the redundancy package amount entered?
+
+Mortgage broker:
+  • How should I think about my housing cost relative to gap-period income under the figures entered?
+  • Which documents would help confirm my current mortgage payment in this model?
+
+Employer / career:
+  • What assumptions in my job-gap timing should I verify with my own research?
+  • Where can I check official guidance on redundancy notice and pay?
+
+Benefits signposting:
+  • Where can I check official guidance on support during a job-search period?
+  • What assumptions should I verify before including a benefits estimate in this model?
+
+Want help turning this into a practical next-step plan?
+The 7-Day Redundancy Reset is a separate human-written support product that helps you organise the next 7 days. It is practical written support only, not advice.
+
+This is an illustrative summary based on the figures entered. It is not financial, legal, tax, employment, debt, mortgage, benefits or career advice and does not predict job outcomes.

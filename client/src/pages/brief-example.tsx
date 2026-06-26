@@ -9,7 +9,7 @@ import { SAMPLE_PRIVATE_RUNWAY_NARRATIVE } from "@/lib/private-runway-brief/samp
 import { EXAMPLE_RUNWAY_INPUTS } from "@/lib/private-runway-brief/exampleInputs";
 import { SAMPLE_EXAMPLE_LABEL } from "@/lib/private-runway-brief/sampleExample";
 import { SITE_URL } from "@shared/site";
-import { RUNWAY_BRIEF_NAME, RUNWAY_REPORT_FULL } from "@shared/product";
+import { RUNWAY_BRIEF_NAME, RUNWAY_REPORT_FULL, RUNWAY_REPORT_PRICE_GBP, REDUNDANCY_PAY_MAXIMISER_NAME } from "@shared/product";
 import { ArrowRight } from "lucide-react";
 
 export default function BriefExamplePage() {
@@ -28,7 +28,7 @@ export default function BriefExamplePage() {
             <Logo showTagline />
             <Link href="/unlock">
               <Button size="sm" className="btn-gold">
-                Unlock full report — £39
+                Unlock full report — £{RUNWAY_REPORT_PRICE_GBP}
                 <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
               </Button>
             </Link>
@@ -36,22 +36,18 @@ export default function BriefExamplePage() {
         </header>
         <main className="flex-1 px-4 sm:px-6 py-8 max-w-5xl mx-auto w-full">
           <p className="text-xs text-center text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-4 py-2 mb-4 print:hidden">
-            {SAMPLE_EXAMPLE_LABEL} Included with the {RUNWAY_REPORT_FULL} (£39).
+            {SAMPLE_EXAMPLE_LABEL} Sections 1–2 preview — including the {REDUNDANCY_PAY_MAXIMISER_NAME} teaser. Sections 3–7 unlock with the {RUNWAY_REPORT_FULL} (£{RUNWAY_REPORT_PRICE_GBP}).
           </p>
           <p className="text-center text-sm text-muted-foreground mb-6 print:hidden">
-            <a
-              href="/example-private-runway-brief.txt"
-              download
-              className="text-primary underline font-medium"
-            >
-              Download example as plain text
+            <a href="/report-example" className="text-primary underline font-medium">
+              View interactive report example
             </a>
             {" · "}
-            <a href="/example-private-runway-brief.json" download className="text-primary underline font-medium">
-              JSON
-            </a>
+            <Link href="/unlock" className="text-primary underline font-medium">
+              Unlock with your figures — £{RUNWAY_REPORT_PRICE_GBP}
+            </Link>
           </p>
-          <PrivateRunwayBriefReport inputs={EXAMPLE_RUNWAY_INPUTS} narrative={SAMPLE_PRIVATE_RUNWAY_NARRATIVE} />
+          <PrivateRunwayBriefReport inputs={EXAMPLE_RUNWAY_INPUTS} narrative={SAMPLE_PRIVATE_RUNWAY_NARRATIVE} demoMode />
         </main>
         <Footer />
       </div>

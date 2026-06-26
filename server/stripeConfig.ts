@@ -1,12 +1,12 @@
 /** Stripe product pricing (pence). */
-export const REPORT_PRICE_GBP = 3900;
-export const RESET_PRICE_GBP = 7900;
+export const REPORT_PRICE_GBP = 7900;
+export const RESET_PRICE_GBP = 9500;
 
-export const REPORT_PRODUCT_NAME = "Private Runway Report";
+export const REPORT_PRODUCT_NAME = "Private Redundancy Pay Intelligence Report";
 export const RESET_PRODUCT_NAME = "7-Day Redundancy Reset";
 
 export const REPORT_PRODUCT_DESCRIPTION =
-  "Private Runway Command Centre plus plain-English Private Runway Brief. 6 months access.";
+  "Private Runway Command Centre plus plain-English Redundancy Runway Brief. 6 months access.";
 
 export const RESET_PRODUCT_DESCRIPTION =
   "Practical written support and planning for redundancy. 7-day programme.";

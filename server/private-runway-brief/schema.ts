@@ -108,6 +108,21 @@ const payloadSchema = z.object({
       status: z.string(),
     }),
   ),
+  positionEnhancement: z.object({
+    situationType: z.enum(["at_risk", "post_redundancy", "other"]),
+    topClarificationAreas: z.array(
+      z.object({
+        itemKey: z.string(),
+        label: z.string(),
+        bucket: z.string(),
+      }),
+    ),
+    missingMoneyKeys: z.array(z.string()),
+    scenarioInsight: z.string(),
+    consultationPrepGaps: z.array(z.string()),
+    highValueLabels: z.array(z.string()),
+    leverageThemes: z.array(z.string()),
+  }),
 });
 
 export const privateRunwayBriefRequestSchema = z.object({
@@ -147,6 +162,12 @@ export const privateRunwayBriefNarrativeSchema = z.object({
         explanation: z.string().min(1),
       }),
     ),
+  }),
+  positionEnhancementCommentary: z.object({
+    summary: z.string().min(1),
+    packageOpportunities: z.array(z.string().min(1)),
+    consultationReadiness: z.string().optional(),
+    leverageThemes: z.array(z.string().min(1)),
   }),
   capitalCompositionCommentary: z.object({
     summary: z.string().min(1),
@@ -195,6 +216,19 @@ export const privateRunwayBriefNarrativeSchema = z.object({
     body: z.string().min(1),
   }),
   disclaimer: z.string().min(1),
+});
+
+export const briefNarrativeLiteSchema = z.object({
+  executiveHeadline: z.string().min(1),
+  executiveObservations: z
+    .array(
+      z.object({
+        themeKey: z.string().min(1),
+        observation: z.string().min(1),
+      }),
+    )
+    .min(1)
+    .max(3),
 });
 
 /** @deprecated */

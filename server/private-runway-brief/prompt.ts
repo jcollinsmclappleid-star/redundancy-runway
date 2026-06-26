@@ -42,6 +42,12 @@ JSON SCHEMA (all keys required):
       { "itemKey": "string — use exact itemKey from PACKAGE COMPONENTS in payload", "explanation": "string — 1-2 sentences about what this component means in the model, no amounts" }
     ]
   },
+  "positionEnhancementCommentary": {
+    "summary": "string — 2-4 sentences on package maximisation opportunities and preparation gaps under assumptions entered; reference highValueLabels and scenarioInsight from POSITION ENHANCEMENT in payload; no amounts; no entitlement or outcome promises",
+    "packageOpportunities": ["string — 1-2 sentences each on areas that could improve package understanding; use labels from payload only"],
+    "consultationReadiness": "string — optional; 2-3 sentences on consultation prep for at_risk situationType only; omit key or use empty string if post_redundancy or other",
+    "leverageThemes": ["string — 1 sentence each referencing leverage theme keys from payload; planning framing only"]
+  },
   "capitalCompositionCommentary": {
     "summary": "string — how components combine, reference reconciliation if provided",
     "itemComments": [

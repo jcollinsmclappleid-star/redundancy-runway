@@ -1,8 +1,11 @@
 import { useState } from "react";
-import { Columns3, Sparkles } from "lucide-react";
+import { Link } from "wouter";
+import { Columns3, Lock, Sparkles, ArrowRight } from "lucide-react";
 import { RunwayConsole, DEMO_CONSOLE_SCENARIOS, DEMO_COMPOSITION } from "@/components/runway-console";
 import { ScenarioLeaderboard } from "@/components/scenario-leaderboard";
+import { Button } from "@/components/ui/button";
 import { chartTheme } from "@/lib/chart-theme";
+import { PRODUCT_COPY, RUNWAY_REPORT_FULL, RUNWAY_REPORT_PRICE_GBP, REDUNDANCY_PAY_MAXIMISER_NAME } from "@shared/product";
 import type { ScenarioComparison } from "@shared/schema";
 
 const DEMO_LEADERBOARD: ScenarioComparison[] = [
@@ -88,6 +91,39 @@ export function LandingDashboardShowcase() {
       </div>
 
       <div className="relative">
+        <div className="mb-6 rounded-2xl border border-gold/25 bg-gradient-to-br from-primary via-[hsl(220_52%_22%)] to-[hsl(220_52%_16%)] p-4 sm:p-5">
+          <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
+            <div>
+              <p className="text-[10px] uppercase tracking-widest text-gold/90 font-semibold mb-1">{RUNWAY_REPORT_FULL}</p>
+              <p className="text-sm text-white/90 font-medium">What unlocks after your free preview</p>
+            </div>
+            <span className="rounded-full border border-gold/35 bg-gold/15 px-3 py-1 text-xs font-semibold text-gold">
+              £{RUNWAY_REPORT_PRICE_GBP} one-off
+            </span>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            {[REDUNDANCY_PAY_MAXIMISER_NAME, "Protection playbooks", "Scenario dashboards", "Plain-English brief"].map((module) => (
+              <div key={module} className="rounded-lg border border-white/10 bg-white/5 px-2.5 py-2 relative">
+                <Lock className="w-3 h-3 text-gold absolute top-2 right-2" />
+                <p className="text-[10px] font-medium text-white/85 pr-4 leading-snug">{module}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Link href="/report-example">
+              <Button variant="outline" size="sm" className="border-white/25 text-slate-200 hover:bg-white/10 hover:text-white">
+                View full example
+              </Button>
+            </Link>
+            <Link href="/unlock">
+              <Button size="sm" className="btn-gold">
+                {PRODUCT_COPY.unlockCta}
+                <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+
         {view === "preview" && (
           <div className="space-y-6">
             <div className="rounded-2xl bg-gradient-to-br from-primary via-[hsl(220_52%_22%)] to-[hsl(220_52%_16%)] text-white px-6 py-6">

@@ -13,14 +13,22 @@ import {
   PRIVATE_RUNWAY_BRIEF_DISCLAIMER,
   privateRunwayBriefNarrativeSchema,
 } from "./private-runway-brief/schema";
-import { buildPrivateRunwayBriefUserPrompt } from "./private-runway-brief/buildUserPrompt";
+import { buildPrivateRunwayBriefUserPrompt, buildPrivateRunwayBriefLiteUserPrompt } from "./private-runway-brief/buildUserPrompt";
+import { getBriefAiMode } from "@shared/briefAiPolicy";
+import { PRIVATE_RUNWAY_BRIEF_LITE_SYSTEM_PROMPT } from "./private-runway-brief/prompt-lite";
+import { briefNarrativeLiteSchema } from "./private-runway-brief/schema";
+import { validateBriefNarrativeLite } from "@shared/validateBriefNarrative";
 import { REPORT_PRICE_GBP } from "./stripeConfig";
 import { buildReportLineItem, buildResetLineItem } from "./stripeCheckout";
+import { buildCheckoutBranding } from "./stripeBranding";
 import {
   fulfillCheckoutSession,
   isHandledWebhookEvent,
   STRIPE_WEBHOOK_EVENTS,
 } from "./stripeFulfillment";
+import { isDevReportAccessGranted } from "@shared/devAccess";
+import { ensureGrantedProducts, isGrantedAccessEmail } from "./grantedAccess";
+import { buildMaximiserInsights } from "../client/src/lib/position-enhancement/buildMaximiserInsights";
 
 const openai = process.env.OPENAI_API_KEY
   ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
@@ -170,6 +178,28 @@ export async function registerRoutes(
         return res.status(400).json({ message: "Invalid token" });
       }
 
+      if (isDevReportAccessGranted()) {
+        const devExpiry = new Date();
+        devExpiry.setMonth(devExpiry.getMonth() + 6);
+        return res.json({
+          hasAccess: true,
+          expiresAt: devExpiry.toISOString(),
+          purchasedAt: new Date().toISOString(),
+          devGranted: true,
+        });
+      }
+
+      const sessionEmail = req.session?.email;
+      if (sessionEmail && isGrantedAccessEmail(sessionEmail)) {
+        const granted = await ensureGrantedProducts(sessionEmail);
+        return res.json({
+          hasAccess: true,
+          expiresAt: granted.expiresAt,
+          purchasedAt: new Date().toISOString(),
+          granted: true,
+        });
+      }
+
       const purchase = await storage.getPurchaseBySessionToken(token);
 
       if (!purchase) {
@@ -222,6 +252,7 @@ export async function registerRoutes(
         success_url: `${origin}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${origin}/unlock`,
         metadata: { product: "report", sessionToken },
+        ...buildCheckoutBranding(origin),
       });
 
       await storage.createPurchase({
@@ -294,7 +325,9 @@ export async function registerRoutes(
 
       const purchases = await storage.getPaidPurchasesByEmail(email);
       const validPurchase = purchases.find((p) => purchaseHasAccess(p));
-      if (!validPurchase) {
+      const granted = isGrantedAccessEmail(email);
+
+      if (!validPurchase && !granted) {
         return res.json({ sent: true });
       }
 
@@ -332,6 +365,11 @@ export async function registerRoutes(
       req.session.email = magicLink.email;
       await new Promise<void>((resolve, reject) => req.session.save((err) => (err ? reject(err) : resolve())));
 
+      if (isGrantedAccessEmail(magicLink.email)) {
+        const granted = await ensureGrantedProducts(magicLink.email);
+        return res.redirect(`/access?token=${encodeURIComponent(granted.sessionToken)}`);
+      }
+
       const purchases = await storage.getPaidPurchasesByEmail(magicLink.email);
       const validPurchase = purchases.find((p) => purchaseHasAccess(p));
       if (!validPurchase) {
@@ -348,9 +386,35 @@ export async function registerRoutes(
   app.get("/api/auth/me", async (req, res) => {
     try {
       res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, private");
+      if (isDevReportAccessGranted()) {
+        const devExpiry = new Date();
+        devExpiry.setMonth(devExpiry.getMonth() + 6);
+        return res.json({
+          authenticated: Boolean(req.session?.email),
+          email: req.session?.email,
+          hasAccess: true,
+          expiresAt: devExpiry.toISOString(),
+          devGranted: true,
+        });
+      }
+
       const email = req.session?.email;
       if (!email) {
         return res.json({ authenticated: false, hasAccess: false });
+      }
+
+      if (isGrantedAccessEmail(email)) {
+        const granted = await ensureGrantedProducts(email);
+        return res.json({
+          authenticated: true,
+          email,
+          hasAccess: true,
+          expiresAt: granted.expiresAt,
+          purchasedAt: new Date().toISOString(),
+          sessionToken: granted.sessionToken,
+          resetPortalUrl: granted.resetPortalUrl,
+          granted: true,
+        });
       }
 
       const purchases = await storage.getPaidPurchasesByEmail(email);
@@ -474,6 +538,22 @@ export async function registerRoutes(
         });
       }
 
+      if (isGrantedAccessEmail(email)) {
+        const granted = await ensureGrantedProducts(email);
+        const token = randomBytes(48).toString("hex");
+        await storage.createMagicLink(email, token, new Date(Date.now() + 60 * 60 * 1000));
+        await sendMagicLinkEmail(email, token, origin);
+        const reportLink = `${origin}/access?token=${encodeURIComponent(granted.sessionToken)}`;
+        const resetLink = `${origin}${granted.resetPortalUrl}`;
+        return res.json({
+          success: true,
+          emailSent: true,
+          message: "Sign-in link sent. Your report and Reset portal access are ready.",
+          reportLinks: [reportLink],
+          resetLinks: [resetLink],
+        });
+      }
+
       const sessions = await storage.getSessionsByEmail(email);
       const reportLinks = sessions.map((session) => `${origin}/access?token=${encodeURIComponent(session.sessionToken)}`);
       const resets = await storage.getResetsByEmail(email);
@@ -571,6 +651,7 @@ export async function registerRoutes(
           sessionToken: sessionToken ?? "",
           portalToken,
         },
+        ...buildCheckoutBranding(origin),
       });
 
       // Pre-create a server-side pending record so the stripeSessionId is known
@@ -762,8 +843,46 @@ export async function registerRoutes(
     }
   });
 
+  app.get("/api/brief-config", (_req, res) => {
+    res.json({ aiMode: getBriefAiMode() });
+  });
+
+  app.post("/api/package-maximiser-insights", async (req, res) => {
+    try {
+      const parsed = calculationBodySchema.safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ message: "Invalid request payload", errors: parsed.error.flatten() });
+      }
+
+      const { sessionToken, inputs } = parsed.data;
+
+      if (!isDevReportAccessGranted()) {
+        const purchase = await storage.getPurchaseBySessionToken(sessionToken);
+        if (!purchase || (purchase.status !== "paid" && purchase.status !== "completed")) {
+          return res.status(403).json({ message: "No active purchase found for this session." });
+        }
+        if (purchase.expiresAt && new Date() > new Date(purchase.expiresAt)) {
+          return res.status(403).json({ message: "Your access has expired. Please renew to use this feature." });
+        }
+      }
+
+      const insights = buildMaximiserInsights(inputs);
+      return res.json({ insights, generatedAt: new Date().toISOString() });
+    } catch (error) {
+      console.error("Package maximiser insights error:", error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
   app.post("/api/private-runway-brief", async (req, res) => {
     try {
+      const aiMode = getBriefAiMode();
+      if (aiMode === "off") {
+        return res.status(400).json({
+          message: "AI enhancement is disabled. Your report is built from expert templates and your figures.",
+        });
+      }
+
       if (!openai) {
         return res.status(503).json({ message: "Brief generation is not configured. Please try again later." });
       }
@@ -775,18 +894,68 @@ export async function registerRoutes(
 
       const { sessionToken, payload } = parsed.data;
 
-      const purchase = await storage.getPurchaseBySessionToken(sessionToken);
-      if (!purchase || (purchase.status !== "paid" && purchase.status !== "completed")) {
-        return res.status(403).json({ message: "No active purchase found for this session." });
-      }
-      if (purchase.expiresAt && new Date() > new Date(purchase.expiresAt)) {
-        return res.status(403).json({ message: "Your access has expired. Please renew to use this feature." });
+      if (!isDevReportAccessGranted()) {
+        const purchase = await storage.getPurchaseBySessionToken(sessionToken);
+        if (!purchase || (purchase.status !== "paid" && purchase.status !== "completed")) {
+          return res.status(403).json({ message: "No active purchase found for this session." });
+        }
+        if (purchase.expiresAt && new Date() > new Date(purchase.expiresAt)) {
+          return res.status(403).json({ message: "Your access has expired. Please renew to use this feature." });
+        }
       }
 
       const rlKey = `private-runway-brief:${sessionToken}`;
       if (!rateLimit(rlKey, 3, 60 * 60 * 1000)) {
         return res.status(429).json({
           message: "You have generated too many briefs recently. Please try again in an hour.",
+        });
+      }
+
+      if (aiMode === "lite") {
+        const allowedThemeKeys = payload.executiveSummaryThemeKeys;
+        const userPrompt = buildPrivateRunwayBriefLiteUserPrompt(payload, allowedThemeKeys);
+        const response = await openai.chat.completions.create({
+          model: "gpt-4.1-mini",
+          messages: [
+            { role: "system", content: PRIVATE_RUNWAY_BRIEF_LITE_SYSTEM_PROMPT },
+            { role: "user", content: userPrompt },
+          ],
+          temperature: 0.35,
+          max_tokens: 800,
+          response_format: { type: "json_object" },
+        });
+
+        const raw = response.choices[0]?.message?.content;
+        if (!raw) {
+          return res.status(502).json({ message: "The brief service returned an empty response. Please try again." });
+        }
+
+        let liteData: unknown;
+        try {
+          liteData = JSON.parse(raw);
+        } catch {
+          return res.status(502).json({ message: "The brief service returned an unexpected format. Please try again." });
+        }
+
+        const parsedLite = briefNarrativeLiteSchema.safeParse(liteData);
+        if (!parsedLite.success) {
+          console.error("Brief lite validation failed:", parsedLite.error.flatten());
+          return res.status(502).json({ message: "The brief was incomplete. Please try again." });
+        }
+
+        const compliance = validateBriefNarrativeLite(parsedLite.data);
+        if (!compliance.ok) {
+          console.error("Brief lite compliance failed:", compliance.violations);
+          return res.status(502).json({ message: "The brief summary did not pass compliance checks. Please try again." });
+        }
+
+        return res.json({
+          narrativeLite: {
+            ...parsedLite.data,
+            generatedAt: new Date().toISOString(),
+            aiEnhanced: true,
+          },
+          aiMode: "lite",
         });
       }
 
@@ -828,6 +997,7 @@ export async function registerRoutes(
           generatedAt: new Date().toISOString(),
           disclaimer: PRIVATE_RUNWAY_BRIEF_DISCLAIMER,
         },
+        aiMode: "legacy",
       });
     } catch (err: unknown) {
       console.error("Private runway brief error:", err);
@@ -835,6 +1005,27 @@ export async function registerRoutes(
         return res.status(429).json({ message: "The brief service is busy. Please try again in a moment." });
       }
       return res.status(502).json({ message: "Something went wrong generating your brief. Please try again." });
+    }
+  });
+
+  app.post("/api/gdpr/delete", async (req, res) => {
+    try {
+      const clientIp = req.ip || "unknown";
+      if (!rateLimit(`gdpr:${clientIp}`, 3, 60 * 60 * 1000)) {
+        return res.status(429).json({ message: "Too many requests. Please try again later." });
+      }
+
+      const parsed = z.object({ email: emailSchema }).safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ message: "Valid email address required" });
+      }
+
+      await storage.deletePersonalDataByEmail(parsed.data.email);
+      console.log("[gdpr] Data deletion request processed");
+      return res.json({ success: true, message: "All personal data for this email has been removed." });
+    } catch (error) {
+      console.error("GDPR delete error:", error);
+      return res.status(500).json({ message: "Failed to process deletion request" });
     }
   });
 

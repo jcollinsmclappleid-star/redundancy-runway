@@ -1,26 +1,13 @@
-import type { CSSProperties, ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
 import {
   Calculator,
-  TrendingDown,
-  Check,
   Home,
   Users,
-  Heart,
   BadgePoundSterling,
   Clock,
 } from "lucide-react";
 import { heroTheme } from "@/lib/chart-theme";
-import { HorizonReportIcon } from "@/components/horizon-report-icon";
 import heroLandscape from "@assets/generated_images/hero-road-landscape.png";
-
-const REPORT_ITEMS = [
-  "Slow recovery",
-  "Mortgage pressure",
-  "One-income household",
-  "Voluntary redundancy",
-  "Structural transition",
-];
 
 type Anchor = { top: string; left?: string; right?: string };
 
@@ -30,50 +17,43 @@ type SignpostDef = {
   label: string;
   sub: string;
   anchor: Anchor;
-  /** Connector line end on road (viewBox 0–100) */
   road: { x: number; y: number };
 };
+
+const PACKAGE_CHIPS = ["Statutory", "Notice", "Holiday", "Enhanced"] as const;
 
 const MOBILE_SIGNPOSTS: SignpostDef[] = [
   {
     id: "pay",
     icon: Calculator,
-    label: "Redundancy pay",
-    sub: "£28,650 statutory",
-    anchor: { top: "42%", left: "3%" },
-    road: { x: 24, y: 72 },
+    label: "Full package",
+    sub: "£34,200 sample",
+    anchor: { top: "5%", left: "2%" },
+    road: { x: 24, y: 76 },
   },
   {
     id: "slow",
-    icon: TrendingDown,
+    icon: Clock,
     label: "Slow recovery",
     sub: "Longer job search",
-    anchor: { top: "50%", right: "3%" },
-    road: { x: 65, y: 62 },
+    anchor: { top: "5%", right: "2%" },
+    road: { x: 76, y: 74 },
+  },
+  {
+    id: "household",
+    icon: Users,
+    label: "Household impact",
+    sub: "One income supporting household",
+    anchor: { top: "58%", left: "2%" },
+    road: { x: 26, y: 88 },
   },
   {
     id: "mortgage",
     icon: Home,
     label: "Mortgage pressure",
     sub: "If rates rise",
-    anchor: { top: "62%", left: "2%" },
-    road: { x: 30, y: 74 },
-  },
-  {
-    id: "household",
-    icon: Users,
-    label: "Household impact",
-    sub: "One income",
-    anchor: { top: "72%", right: "3%" },
-    road: { x: 74, y: 78 },
-  },
-  {
-    id: "support",
-    icon: Heart,
-    label: "Support if needed",
-    sub: "Next steps",
-    anchor: { top: "82%", left: "6%" },
-    road: { x: 50, y: 84 },
+    anchor: { top: "58%", right: "2%" },
+    road: { x: 74, y: 86 },
   },
 ];
 
@@ -81,34 +61,34 @@ const DESKTOP_SIGNPOSTS: SignpostDef[] = [
   {
     id: "pay",
     icon: Calculator,
-    label: "Redundancy pay estimate",
-    sub: "£28,650 statutory",
-    anchor: { top: "10%", left: "4%" },
-    road: { x: 30, y: 72 },
+    label: "Redundancy package",
+    sub: "£34,200 sample",
+    anchor: { top: "6%", left: "2%" },
+    road: { x: 26, y: 68 },
   },
   {
     id: "slow",
     icon: Clock,
     label: "Slow recovery",
     sub: "What if a new role takes longer?",
-    anchor: { top: "32%", left: "2%" },
-    road: { x: 42, y: 52 },
+    anchor: { top: "8%", right: "2%" },
+    road: { x: 74, y: 66 },
   },
   {
     id: "mortgage",
     icon: Home,
     label: "Mortgage pressure",
     sub: "At risk if rates rise",
-    anchor: { top: "54%", left: "2%" },
-    road: { x: 36, y: 66 },
+    anchor: { top: "46%", left: "1%" },
+    road: { x: 30, y: 78 },
   },
   {
     id: "household",
     icon: Users,
     label: "Household impact",
     sub: "One income supporting household",
-    anchor: { top: "68%", left: "4%" },
-    road: { x: 32, y: 80 },
+    anchor: { top: "48%", right: "2%" },
+    road: { x: 72, y: 76 },
   },
 ];
 
@@ -118,35 +98,15 @@ const ROAD_MARKERS = [
   { icon: Users, label: "Household", left: "78%" },
 ];
 
-/** Where the road meets the horizon in the landscape image */
-const HORIZON = {
-  mobile: { top: "8%", left: "56%" },
-  desktop: { top: "7%", left: "50%" },
-} as const;
-
-/** Report card sits *below* the horizon beacon — road leads to the glow, card is the payoff */
-const REPORT_ANCHOR = {
-  mobile: { top: "21%", left: "56%" },
-  desktop: { top: "17%", left: "50%" },
-} as const;
-
 function anchorToPercent(anchor: Anchor): { x: number; y: number } {
   const y = parseFloat(anchor.top);
   let x = 50;
-  if (anchor.left) x = parseFloat(anchor.left) + 12;
-  if (anchor.right) x = 100 - parseFloat(anchor.right) - 12;
-  return { x, y: y + 8 };
+  if (anchor.left) x = parseFloat(anchor.left) + 10;
+  if (anchor.right) x = 100 - parseFloat(anchor.right) - 10;
+  return { x, y: y + 6 };
 }
 
-function ConnectorLines({
-  signposts,
-  horizon,
-  report,
-}: {
-  signposts: SignpostDef[];
-  horizon: { x: number; y: number };
-  report: { x: number; y: number };
-}) {
+function ConnectorLines({ signposts }: { signposts: SignpostDef[] }) {
   return (
     <svg
       className="absolute inset-0 w-full h-full pointer-events-none z-[5]"
@@ -155,27 +115,6 @@ function ConnectorLines({
       aria-hidden="true"
       data-testid="hero-connectors"
     >
-      {/* Road terminus → horizon glow */}
-      <line
-        x1={horizon.x}
-        y1={horizon.y + 6}
-        x2={horizon.x}
-        y2={horizon.y}
-        stroke={heroTheme.gold}
-        strokeWidth="0.5"
-        strokeOpacity="0.7"
-      />
-      {/* Horizon → report destination */}
-      <line
-        x1={horizon.x}
-        y1={horizon.y + 2}
-        x2={report.x}
-        y2={report.y}
-        stroke={heroTheme.gold}
-        strokeWidth="0.35"
-        strokeDasharray="1.2 1.8"
-        strokeOpacity="0.55"
-      />
       {signposts.map((s) => {
         const from = anchorToPercent(s.anchor);
         return (
@@ -188,7 +127,7 @@ function ConnectorLines({
             stroke={heroTheme.gold}
             strokeWidth="0.35"
             strokeDasharray="1.2 1.8"
-            strokeOpacity="0.5"
+            strokeOpacity="0.45"
           />
         );
       })}
@@ -196,155 +135,72 @@ function ConnectorLines({
   );
 }
 
-/** Glowing report at the horizon — road destination (logo metaphor) */
-function HorizonGoal({ top, left, compact }: { top: string; left: string; compact?: boolean }) {
-  const size = compact ? 48 : 64;
-  return (
-    <div
-      className="absolute z-[25] -translate-x-1/2 -translate-y-[60%] pointer-events-none"
-      style={{ top, left }}
-      data-testid="hero-horizon-goal"
-      aria-hidden="true"
-    >
-      <HorizonReportIcon size={size} />
-    </div>
-  );
-}
-
-function DarkCard({
-  children,
-  className = "",
-  style,
-}: {
-  children: ReactNode;
-  className?: string;
-  style?: CSSProperties;
-}) {
-  return (
-    <div
-      className={`rounded-xl border shadow-xl backdrop-blur-md ${className}`}
-      style={{
-        background: "rgba(11, 25, 46, 0.94)",
-        borderColor: "rgba(201, 168, 76, 0.28)",
-        boxShadow: "0 8px 32px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.04)",
-        ...style,
-      }}
-    >
-      {children}
-    </div>
-  );
-}
-
-/** Compact road-side signpost */
 function SignpostCard({
   icon: Icon,
   label,
   sub,
-  compact,
   featured,
+  compact,
 }: {
   icon: LucideIcon;
   label: string;
   sub: string;
-  compact?: boolean;
   featured?: boolean;
+  compact?: boolean;
 }) {
   if (featured) {
     return (
-      <DarkCard>
-        <div className={compact ? "p-2.5" : "p-3"}>
-          <div className="flex items-center gap-1.5 mb-1.5">
+      <div className="rounded-lg border border-slate-200/90 bg-white/[0.97] shadow-lg backdrop-blur-sm">
+        <div className={compact ? "p-2" : "p-2.5"}>
+          <div className="flex items-center gap-1.5 mb-1">
             <div
               className={`rounded-md flex items-center justify-center shrink-0 ${compact ? "w-5 h-5" : "w-6 h-6"}`}
-              style={{ background: `${heroTheme.gold}28` }}
+              style={{ background: `${heroTheme.gold}22` }}
             >
-              <Icon className={compact ? "w-3 h-3" : "w-3.5 h-3.5"} style={{ color: heroTheme.goldSoft }} />
+              <Icon className={compact ? "w-3 h-3" : "w-3.5 h-3.5"} style={{ color: heroTheme.gold }} />
             </div>
-            <p className={`font-semibold text-white/90 leading-tight ${compact ? "text-[8px]" : "text-[10px]"}`}>{label}</p>
+            <p className={`font-semibold text-slate-800 leading-tight ${compact ? "text-[9px]" : "text-[11px]"}`}>
+              {label}
+            </p>
           </div>
-          <p className={`font-serif font-bold text-white leading-none ${compact ? "text-xl" : "text-2xl"}`}>{sub}</p>
-          <p className={`text-white/50 mt-0.5 ${compact ? "text-[7px]" : "text-[9px]"}`}>Statutory estimate</p>
+          <p className={`font-serif font-bold text-[#1a3357] leading-none ${compact ? "text-base" : "text-xl"}`}>
+            {sub}
+          </p>
+          <div className="flex flex-wrap gap-0.5 mt-1.5">
+            {PACKAGE_CHIPS.map((chip) => (
+              <span
+                key={chip}
+                className={`rounded-full bg-slate-100 font-medium text-slate-600 ${
+                  compact ? "px-1 py-px text-[7px]" : "px-1.5 py-0.5 text-[8px]"
+                }`}
+              >
+                {chip}
+              </span>
+            ))}
+          </div>
         </div>
-      </DarkCard>
+      </div>
     );
   }
 
   return (
-    <DarkCard>
+    <div className="rounded-lg border border-slate-200/90 bg-white/[0.97] shadow-lg backdrop-blur-sm">
       <div className={`flex items-start gap-1.5 ${compact ? "p-2" : "p-2.5"}`}>
         <div
           className={`rounded-md flex items-center justify-center shrink-0 mt-0.5 ${compact ? "w-5 h-5" : "w-6 h-6"}`}
-          style={{ background: `${heroTheme.gold}22` }}
+          style={{ background: `${heroTheme.gold}18` }}
         >
-          <Icon className={compact ? "w-2.5 h-2.5" : "w-3 h-3"} style={{ color: heroTheme.goldSoft }} />
+          <Icon className={compact ? "w-2.5 h-2.5" : "w-3 h-3"} style={{ color: heroTheme.gold }} />
         </div>
         <div className="min-w-0">
-          <p className={`font-semibold text-white/90 leading-tight ${compact ? "text-[8px]" : "text-[10px]"}`}>{label}</p>
-          <p className={`text-white/50 leading-snug ${compact ? "text-[7px] line-clamp-2" : "text-[9px]"}`}>{sub}</p>
-        </div>
-      </div>
-    </DarkCard>
-  );
-}
-
-function ReportCard({ compact, destination }: { compact?: boolean; destination?: boolean }) {
-  return (
-    <div
-      className="rounded-xl border overflow-hidden shadow-2xl"
-      style={{
-        background: destination ? "rgba(255,255,255,0.97)" : heroTheme.cream,
-        borderColor: heroTheme.cardBorder,
-        boxShadow: destination
-          ? "0 8px 28px rgba(0,0,0,0.28), 0 0 0 1px rgba(201,168,76,0.35)"
-          : "0 12px 40px rgba(0,0,0,0.35), 0 0 24px rgba(201,168,76,0.12)",
-      }}
-      data-testid="hero-report-card"
-    >
-      <div className={destination ? "px-3 py-2.5" : compact ? "p-2.5" : "px-4 pt-4 pb-1"}>
-        <p
-          className={`font-semibold tracking-widest uppercase ${destination ? "text-[7px] mb-1" : compact ? "text-[8px] mb-1" : "text-[9px] mb-2"}`}
-          style={{ color: heroTheme.gold }}
-        >
-          Your Runway Report
-        </p>
-        <div className="flex items-end gap-1 mb-0">
-          <span
-            className={`font-serif font-bold leading-none ${destination ? "text-lg" : compact ? "text-xl" : "text-3xl"}`}
-            style={{ color: heroTheme.navySoft }}
-          >
-            10.4
-          </span>
-          <span className={`mb-0.5 ${destination ? "text-[8px]" : compact ? "text-[9px]" : "text-xs"}`} style={{ color: heroTheme.textSubtle }}>
-            months
-          </span>
-        </div>
-        <p className={`${destination ? "text-[7px] mb-1" : compact ? "text-[8px] mb-1.5" : "text-[10px] mb-3"}`} style={{ color: heroTheme.textSubtle }}>
-          {destination ? "Baseline runway" : compact ? "at current burn rate" : "Baseline runway estimate"}
-        </p>
-        <div className={`rounded-md border border-slate-100 bg-slate-50 ${destination ? "px-1.5 py-1" : compact ? "px-2 py-1 mb-1.5" : "px-2 py-1.5 mb-3"}`}>
-          <p className={`mb-0.5 ${destination ? "text-[6px]" : compact ? "text-[7px]" : "text-[9px]"}`} style={{ color: heroTheme.textSubtle }}>
-            Results under scenarios
+          <p className={`font-semibold text-slate-800 leading-tight ${compact ? "text-[9px]" : "text-[11px]"}`}>
+            {label}
           </p>
-          <p className={`font-semibold ${destination ? "text-[8px]" : compact ? "text-[9px]" : "text-xs"}`} style={{ color: heroTheme.navySoft }}>
-            Range 5.1 – 18.7 {compact || destination ? "mo" : "months"}
+          <p className={`text-slate-500 leading-snug ${compact ? "text-[8px] line-clamp-2" : "text-[10px]"}`}>
+            {sub}
           </p>
         </div>
       </div>
-      {!destination && (
-        <div className={compact ? "px-2.5 pb-2.5" : "px-4 pb-4"}>
-          {(compact ? REPORT_ITEMS.slice(0, 3) : REPORT_ITEMS).map((item) => (
-            <div key={item} className={`flex items-center gap-1 ${compact ? "mb-0.5" : "mb-1"}`}>
-              <Check className={`shrink-0 ${compact ? "w-2 h-2" : "w-2.5 h-2.5"}`} style={{ color: heroTheme.gold }} />
-              <span className={`leading-tight ${compact ? "text-[7px]" : "text-[10px]"}`} style={{ color: heroTheme.textSubtle }}>
-                {item}
-              </span>
-            </div>
-          ))}
-          <p className={`mt-1.5 text-slate-400 ${compact ? "text-[7px]" : "text-[8px]"}`}>
-            Illustrative sample. Not financial advice.
-          </p>
-        </div>
-      )}
     </div>
   );
 }
@@ -368,7 +224,69 @@ function RoadMarkers({ compact }: { compact?: boolean }) {
           >
             <m.icon className={compact ? "w-3.5 h-3.5" : "w-4 h-4"} style={{ color: heroTheme.navy }} />
           </div>
-          {!compact && <p className="text-[9px] font-medium text-white/70 drop-shadow-md whitespace-nowrap">{m.label}</p>}
+          <p
+            className={`font-medium text-white/80 drop-shadow-md whitespace-nowrap ${
+              compact ? "text-[7px]" : "text-[9px]"
+            }`}
+          >
+            {m.label}
+          </p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function HeroRoadScene({ isMobile, className = "" }: { isMobile: boolean; className?: string }) {
+  const signposts = isMobile ? MOBILE_SIGNPOSTS : DESKTOP_SIGNPOSTS;
+  const signpostWidth = isMobile ? 112 : 148;
+  const payWidth = isMobile ? 116 : 160;
+
+  return (
+    <div
+      className={`relative w-full overflow-hidden ${
+        isMobile ? "min-h-[380px] px-3 pb-8" : "h-full min-h-[540px] rounded-2xl"
+      } ${className}`}
+      data-testid={isMobile ? "hero-mobile-visual" : "hero-desktop-visual"}
+    >
+      <img
+        src={heroLandscape}
+        alt=""
+        aria-hidden="true"
+        className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+        style={{ objectPosition: isMobile ? "50% 30%" : "50% 28%" }}
+      />
+
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: isMobile
+            ? `linear-gradient(to bottom, transparent 0%, transparent 72%, rgba(15, 27, 45, 0.3) 100%)`
+            : `linear-gradient(135deg, transparent 0%, transparent 30%, transparent 75%, rgba(15, 27, 45, 0.32) 100%)`,
+        }}
+      />
+
+      <ConnectorLines signposts={signposts} />
+      <RoadMarkers compact={isMobile} />
+
+      {signposts.map((s) => (
+        <div
+          key={s.id}
+          className="absolute z-10"
+          style={{
+            top: s.anchor.top,
+            left: s.anchor.left,
+            right: s.anchor.right,
+            width: s.id === "pay" ? payWidth : signpostWidth,
+            maxWidth: s.id === "pay" ? payWidth : signpostWidth,
+          }}
+          data-testid={`hero-signpost-${s.id}`}
+        >
+          {s.id === "pay" ? (
+            <SignpostCard icon={s.icon} label={s.label} sub={s.sub} featured compact={isMobile} />
+          ) : (
+            <SignpostCard icon={s.icon} label={s.label} sub={s.sub} compact={isMobile} />
+          )}
         </div>
       ))}
     </div>
@@ -381,84 +299,5 @@ interface LandingHeroSceneProps {
 }
 
 export function LandingHeroScene({ variant, className = "" }: LandingHeroSceneProps) {
-  const isMobile = variant === "mobile";
-  const signposts = isMobile ? MOBILE_SIGNPOSTS : DESKTOP_SIGNPOSTS;
-  const signpostWidth = isMobile ? 118 : 152;
-  const horizon = isMobile ? HORIZON.mobile : HORIZON.desktop;
-  const reportAnchor = isMobile ? REPORT_ANCHOR.mobile : REPORT_ANCHOR.desktop;
-
-  const horizonSvg = { x: parseFloat(horizon.left), y: parseFloat(horizon.top) };
-  const reportSvg = { x: parseFloat(reportAnchor.left), y: parseFloat(reportAnchor.top) + 6 };
-
-  return (
-    <div
-      className={`relative w-full overflow-hidden ${isMobile ? "min-h-[540px] sm:min-h-[580px]" : "h-full min-h-[540px] rounded-2xl"} ${className}`}
-      data-testid={isMobile ? "hero-mobile-visual" : "hero-desktop-visual"}
-    >
-      <img
-        src={heroLandscape}
-        alt=""
-        aria-hidden="true"
-        className="absolute inset-0 w-full h-full object-cover pointer-events-none"
-        style={{ objectPosition: isMobile ? "56% 28%" : "50% 26%" }}
-      />
-
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: isMobile
-            ? `linear-gradient(to bottom,
-                transparent 0%,
-                transparent 18%,
-                transparent 78%,
-                rgba(15, 27, 45, 0.5) 100%)`
-            : `linear-gradient(135deg,
-                transparent 0%,
-                transparent 25%,
-                transparent 72%,
-                rgba(15, 27, 45, 0.38) 100%)`,
-        }}
-      />
-
-      <ConnectorLines signposts={signposts} horizon={horizonSvg} report={reportSvg} />
-      <RoadMarkers compact={isMobile} />
-
-      {/* End-goal: horizon glow — always visible above the report */}
-      <HorizonGoal top={horizon.top} left={horizon.left} compact={isMobile} />
-
-      {/* Destination report — compact, hangs below the horizon */}
-      <div
-        className="absolute z-20 -translate-x-1/2"
-        style={{
-          top: reportAnchor.top,
-          left: reportAnchor.left,
-          width: isMobile ? "min(148px, 36vw)" : 168,
-        }}
-      >
-        <ReportCard destination compact={isMobile} />
-      </div>
-
-      {/* Signposts — staggered along the road, alternating sides */}
-      {signposts.map((s) => (
-        <div
-          key={s.id}
-          className="absolute z-10"
-          style={{
-            top: s.anchor.top,
-            left: s.anchor.left,
-            right: s.anchor.right,
-            width: s.id === "pay" && !isMobile ? 168 : signpostWidth,
-            maxWidth: s.id === "pay" ? (isMobile ? 118 : 168) : signpostWidth,
-          }}
-          data-testid={`hero-signpost-${s.id}`}
-        >
-          {s.id === "pay" ? (
-            <SignpostCard icon={s.icon} label={s.label} sub="£28,650" compact={isMobile} featured />
-          ) : (
-            <SignpostCard icon={s.icon} label={s.label} sub={s.sub} compact={isMobile} />
-          )}
-        </div>
-      ))}
-    </div>
-  );
+  return <HeroRoadScene isMobile={variant === "mobile"} className={className} />;
 }

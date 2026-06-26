@@ -5,6 +5,7 @@ import { ArrowRight, ShieldCheck, Calculator, Globe } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { DisclaimerBanner } from "@/components/DisclaimerBanner";
 import { Footer } from "@/components/Footer";
+import { PRIVACY_COPY } from "@shared/product";
 
 export default function AboutPage() {
   return (
@@ -12,17 +13,17 @@ export default function AboutPage() {
       <Helmet>
         <title>About RedundancyCalculatorUK | Private UK Redundancy Runway Modelling</title>
         <meta name="description" content="RedundancyCalculatorUK is a private, non-advisory modelling tool for UK redundancy scenarios. Built for individuals who want to understand their financial runway before making decisions." />
-        <link rel="canonical" href="https://redundancycalculatoruk.co.uk/about" />
+        <link rel="canonical" href="https://www.redundancycalculatoruk.co.uk/about" />
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="RedundancyCalculatorUK" />
         <meta property="og:title" content="About RedundancyCalculatorUK" />
         <meta property="og:description" content="A private, non-advisory UK redundancy runway modelling tool. Built for individuals, not institutions." />
-        <meta property="og:url" content="https://redundancycalculatoruk.co.uk/about" />
-        <meta property="og:image" content="https://redundancycalculatoruk.co.uk/og-image.png" />
+        <meta property="og:url" content="https://www.redundancycalculatoruk.co.uk/about" />
+        <meta property="og:image" content="https://www.redundancycalculatoruk.co.uk/og-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="About RedundancyCalculatorUK" />
         <meta name="twitter:description" content="A private, non-advisory UK redundancy runway modelling tool. Built for individuals, not institutions." />
-        <meta name="twitter:image" content="https://redundancycalculatoruk.co.uk/og-image.png" />
+        <meta name="twitter:image" content="https://www.redundancycalculatoruk.co.uk/og-image.png" />
       </Helmet>
 
       <div className="min-h-screen flex flex-col">
@@ -61,7 +62,7 @@ export default function AboutPage() {
                   RedundancyCalculatorUK is a private, assumption-based financial runway modelling tool. It takes the inputs you provide — your redundancy package, savings, monthly costs, income assumptions — and shows you how long your capital may last under different scenarios.
                 </p>
                 <p className="text-muted-foreground leading-relaxed">
-                  The model runs entirely in your browser. Nothing is transmitted to a server. The tool uses current UK statutory redundancy rules and historical labour market data as reference points — but every projection is based on your own assumptions, not anyone else's.
+                  Core calculations run in your browser and are stored locally on your device. Payment and access use our server; we do not store your financial figures there. The tool uses current UK statutory redundancy rules and historical labour market data as reference points — but every projection is based on your own assumptions.
                 </p>
               </div>
 
@@ -74,7 +75,7 @@ export default function AboutPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {[
-                  { icon: ShieldCheck, title: "Private by design", body: "All calculations run in your browser. No financial data is stored on our servers." },
+                  { icon: ShieldCheck, title: "Private by design", body: PRIVACY_COPY.modellingLocal },
                   { icon: Calculator, title: "UK statutory rules", body: "Age-band multipliers, weekly pay caps and service limits — current rules built in." },
                   { icon: Globe, title: "Assumption-based", body: "Every output reflects your inputs. Change an assumption, the model updates." },
                 ].map((item, i) => (
@@ -112,7 +113,7 @@ export default function AboutPage() {
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </Link>
-                <p className="text-xs text-muted-foreground mt-3">No account required. All calculations stay in your browser.</p>
+                <p className="text-xs text-muted-foreground mt-3">No account required. {PRIVACY_COPY.modellingLocal}</p>
               </div>
             </div>
           </section>

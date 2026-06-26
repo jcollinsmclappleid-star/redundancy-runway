@@ -1,7 +1,7 @@
 import { db } from "./db";
 import { sessions, purchases, calculations, resets, magicLinks } from "@shared/schema";
 import type { Session, InsertSession, Purchase, InsertPurchase, Calculation, InsertCalculation, Reset, MagicLink } from "@shared/schema";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, inArray, sql } from "drizzle-orm";
 
 export interface ResetFulfilmentUpdate {
   status?: string;
@@ -33,6 +33,7 @@ export interface IStorage {
   createCalculation(calc: InsertCalculation): Promise<Calculation>;
   getCalculationsBySessionToken(token: string): Promise<Calculation[]>;
   createPendingReset(stripeSessionId: string, portalToken: string, sessionToken?: string): Promise<Reset>;
+  createGrantedReset(email: string, portalToken: string): Promise<Reset>;
   getResetByStripeSessionId(stripeSessionId: string): Promise<Reset | undefined>;
   getResetByPortalToken(portalToken: string): Promise<Reset | undefined>;
   getResetsByEmail(email: string): Promise<Reset[]>;
@@ -40,6 +41,7 @@ export interface IStorage {
   getResets(): Promise<Reset[]>;
   updateResetFulfilment(id: string, data: ResetFulfilmentUpdate): Promise<void>;
   updateResetPaid(stripeSessionId: string, paid: string): Promise<void>;
+  deletePersonalDataByEmail(email: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -161,6 +163,24 @@ export class DatabaseStorage implements IStorage {
     return created;
   }
 
+  async createGrantedReset(email: string, portalToken: string): Promise<Reset> {
+    const normalized = email.toLowerCase().trim();
+    const [created] = await db
+      .insert(resets)
+      .values({
+        stripeSessionId: `granted-reset:${portalToken.slice(0, 16)}`,
+        portalToken,
+        email: normalized,
+        name: normalized.split("@")[0] || "Granted access",
+        contactMethod: "webchat",
+        intakeAnswers: {},
+        status: "Intake needed",
+        paid: "paid",
+      })
+      .returning();
+    return created;
+  }
+
   async getResetByStripeSessionId(stripeSessionId: string): Promise<Reset | undefined> {
     const [reset] = await db.select().from(resets).where(eq(resets.stripeSessionId, stripeSessionId));
     return reset;
@@ -224,6 +244,33 @@ export class DatabaseStorage implements IStorage {
 
   async updateResetPaid(stripeSessionId: string, paid: string): Promise<void> {
     await db.update(resets).set({ paid, updatedAt: new Date() }).where(eq(resets.stripeSessionId, stripeSessionId));
+  }
+
+  async deletePersonalDataByEmail(email: string): Promise<void> {
+    const normalized = email.toLowerCase().trim();
+    const userSessions = await this.getSessionsByEmail(normalized);
+    const sessionTokens = userSessions.map((s) => s.sessionToken);
+
+    await db.update(purchases).set({ email: null }).where(eq(purchases.email, normalized));
+    await db.delete(magicLinks).where(eq(magicLinks.email, normalized));
+    await db.update(sessions).set({ email: null }).where(eq(sessions.email, normalized));
+
+    if (sessionTokens.length > 0) {
+      await db.delete(calculations).where(inArray(calculations.sessionToken, sessionTokens));
+    }
+
+    await db
+      .update(resets)
+      .set({
+        email: null,
+        name: "[removed]",
+        intakeAnswers: {},
+        adminNotes: null,
+        updatedAt: new Date(),
+      })
+      .where(eq(resets.email, normalized));
+
+    await db.execute(sql`DELETE FROM user_sessions WHERE sess->>'email' = ${normalized}`);
   }
 }
 

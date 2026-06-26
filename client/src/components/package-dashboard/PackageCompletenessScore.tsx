@@ -1,10 +1,13 @@
 import type { RunwayInputs } from "@shared/schema";
 import { buildPackageDashboardData } from "@/lib/package-dashboard/buildPackageDashboardData";
 import { COMPLETENESS_DISCLAIMER } from "@shared/complianceCopy";
+import { labelCompletenessField } from "@shared/completenessLabels";
 
 interface PackageCompletenessScoreProps {
   inputs: RunwayInputs;
   compact?: boolean;
+  /** Show named missing fields (preview / conversion). */
+  showMissingLabels?: boolean;
 }
 
 const BAND_CLS = {
@@ -14,8 +17,13 @@ const BAND_CLS = {
   detailed: "bg-primary/10 text-primary border-primary/20",
 };
 
-export function PackageCompletenessScore({ inputs, compact = false }: PackageCompletenessScoreProps) {
+export function PackageCompletenessScore({
+  inputs,
+  compact = false,
+  showMissingLabels = false,
+}: PackageCompletenessScoreProps) {
   const { completeness } = buildPackageDashboardData(inputs);
+  const missingLabels = completeness.missingKeys.map(labelCompletenessField);
 
   return (
     <div
@@ -42,7 +50,23 @@ export function PackageCompletenessScore({ inputs, compact = false }: PackageCom
           style={{ width: `${completeness.percent}%` }}
         />
       </div>
-      {!compact && completeness.missingKeys.length > 0 && (
+      {showMissingLabels && missingLabels.length > 0 && (
+        <div className="mb-2">
+          <p className="text-xs font-medium text-foreground/80 mb-1">Not yet in the model</p>
+          <ul className="text-xs text-muted-foreground space-y-0.5">
+            {missingLabels.slice(0, 5).map((label) => (
+              <li key={label} className="flex items-center gap-1.5">
+                <span className="w-1 h-1 rounded-full bg-amber-500 shrink-0" />
+                {label}
+              </li>
+            ))}
+            {missingLabels.length > 5 && (
+              <li className="text-muted-foreground/80">+ {missingLabels.length - 5} more</li>
+            )}
+          </ul>
+        </div>
+      )}
+      {!compact && !showMissingLabels && completeness.missingKeys.length > 0 && (
         <p className="text-xs text-muted-foreground">
           Some figures are not yet included in the model. Add package or runway assumptions to build a fuller picture.
         </p>

@@ -20,6 +20,7 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { getSessionToken } from "@/lib/sessionToken";
+import { RESET_PRICE_GBP_DISPLAY } from "@shared/product";
 
 const BOUNDARY_DISCLAIMER =
   "This is practical written support only. It is not financial, legal, debt, employment, medical or mental health advice.";
@@ -47,28 +48,31 @@ export default function RedundancyResetPage() {
     <>
       <Helmet>
         <title>7-Day Redundancy Reset — Private Written Support | RedundancyCalculatorUK</title>
-        <meta name="description" content="A private written intake and 7-day action plan for people facing redundancy. Share your situation by WhatsApp or web. Receive a calm written response within 1 working day. Not financial advice." />
-        <link rel="canonical" href="https://redundancycalculatoruk.co.uk/redundancy-reset" />
+        <meta name="description" content="A private written intake and 7-day action plan for people facing redundancy. Share your situation through the Private Reset Portal. Receive a calm written response within 1 working day. Not financial advice." />
+        <link rel="canonical" href="https://www.redundancycalculatoruk.co.uk/redundancy-reset" />
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="RedundancyCalculatorUK" />
         <meta property="og:title" content="7-Day Redundancy Reset — Private Written Support" />
-        <meta property="og:description" content="A private written intake and 7-day action plan for people facing redundancy. Share your situation by WhatsApp or web. Receive a calm written response within 1 working day." />
-        <meta property="og:url" content="https://redundancycalculatoruk.co.uk/redundancy-reset" />
-        <meta property="og:image" content="https://redundancycalculatoruk.co.uk/og-image.png" />
+        <meta property="og:description" content="A private written intake and 7-day action plan for people facing redundancy. Share your situation through the Private Reset Portal. Receive a calm written response within 1 working day." />
+        <meta property="og:url" content="https://www.redundancycalculatoruk.co.uk/redundancy-reset" />
+        <meta property="og:image" content="https://www.redundancycalculatoruk.co.uk/og-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="7-Day Redundancy Reset — Private Written Support" />
         <meta name="twitter:description" content="A private written intake and 7-day action plan for people facing redundancy. Receive a calm written response within 1 working day." />
-        <meta name="twitter:image" content="https://redundancycalculatoruk.co.uk/og-image.png" />
+        <meta name="twitter:image" content="https://www.redundancycalculatoruk.co.uk/og-image.png" />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Product",
           "name": "7-Day Redundancy Reset",
           "description": "Private written intake and 7-day action plan for people facing redundancy. Not financial, legal or employment advice.",
           "brand": { "@type": "Brand", "name": "RedundancyCalculatorUK" },
-          "offers": [
-            { "@type": "Offer", "price": "79", "priceCurrency": "GBP", "availability": "https://schema.org/InStock", "name": "Launch Price — 7-Day Redundancy Reset" },
-            { "@type": "Offer", "price": "99", "priceCurrency": "GBP", "availability": "https://schema.org/InStock", "name": "Standard Price — 7-Day Redundancy Reset" }
-          ]
+          "offers": {
+            "@type": "Offer",
+            "price": String(RESET_PRICE_GBP_DISPLAY),
+            "priceCurrency": "GBP",
+            "availability": "https://schema.org/InStock",
+            "name": "7-Day Redundancy Reset",
+          }
         })}</script>
       </Helmet>
     <div className="min-h-screen flex flex-col">
@@ -138,15 +142,7 @@ export default function RedundancyResetPage() {
               {(checkout.error as Error)?.message ?? "Something went wrong. Please try again."}
             </p>
           )}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-6">
-            <div className="flex items-center gap-2 text-primary-foreground/70 text-sm">
-              <div className="line-through text-primary-foreground/40">£99</div>
-              <Badge className="bg-amber-500/80 text-white border-amber-400/40 text-xs font-semibold">
-                £79 — launch price for first 20 customers
-              </Badge>
-            </div>
-          </div>
-          <p className="text-xs text-primary-foreground/50 mt-2">One-off payment. No subscription.</p>
+          <p className="text-sm text-primary-foreground/70 mt-6">£{RESET_PRICE_GBP_DISPLAY} · one-off payment · no subscription</p>
           <p className="text-xs text-primary-foreground/60 mt-1">You will complete your private intake after payment.</p>
         </div>
       </section>
@@ -297,7 +293,7 @@ export default function RedundancyResetPage() {
                     "A practical 7-day written action plan",
                     "Structured priorities based on your intake",
                     "Day 7 written follow-up",
-                    "Option to receive support via WhatsApp or private web message",
+                    "Written responses delivered via your Private Reset Portal",
                   ].map((item, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm">
                       <CheckCircle2 className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
@@ -343,18 +339,10 @@ export default function RedundancyResetPage() {
           <h2 className="font-serif text-2xl sm:text-3xl font-bold mb-6">One-off. Written. Private.</h2>
           <Card className="ring-2 ring-primary shadow-lg mb-6" data-testid="card-pricing">
             <CardContent className="pt-8 pb-8">
-              <div className="flex items-center justify-center gap-3 mb-2">
-                <span className="text-4xl font-bold">£79</span>
-                <div className="text-left">
-                  <div className="line-through text-muted-foreground text-sm">£99 standard</div>
-                  <Badge className="bg-amber-500/80 text-white border-amber-400/40 text-xs">
-                    £79 launch offer for first 20 customers
-                  </Badge>
-                </div>
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <span className="text-4xl font-bold">£{RESET_PRICE_GBP_DISPLAY}</span>
               </div>
-              <p className="text-sm text-muted-foreground mb-6">
-                One-off payment. No subscription. Practical written support only.
-              </p>
+              <p className="text-sm text-muted-foreground mb-1">One-off payment. No subscription.</p>
               <ul className="space-y-2 mb-6 text-sm text-left max-w-xs mx-auto">
                 {[
                   "Guided intake form (7 questions)",
@@ -384,7 +372,7 @@ export default function RedundancyResetPage() {
                 disabled={checkout.isPending}
                 data-testid="button-pricing-cta"
               >
-                {checkout.isPending ? "Loading…" : "Start my 7-Day Redundancy Reset — £79"}
+                {checkout.isPending ? "Loading…" : `Start my 7-Day Redundancy Reset — £${RESET_PRICE_GBP_DISPLAY}`}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
               {checkout.isError && (
@@ -415,7 +403,7 @@ export default function RedundancyResetPage() {
             {[
               {
                 q: "What is the 7-Day Redundancy Reset?",
-                a: "It is a practical written support service for people in or approaching redundancy. After a guided intake, you receive a written response to your situation and a practical 7-day plan delivered via WhatsApp or secure web message. This is written, asynchronous support — not live chat, not calls.",
+                a: "It is a practical written support service for people in or approaching redundancy. After a guided intake, you receive a written response to your situation and a practical 7-day plan delivered via your Private Reset Portal. This is written, asynchronous support — not live chat, not calls.",
               },
               {
                 q: "Is this financial or legal advice?",
@@ -424,10 +412,6 @@ export default function RedundancyResetPage() {
               {
                 q: "What happens after I pay?",
                 a: "You will be redirected to a short intake form (7 questions about your situation). Once submitted, you will receive a first written response within 1 working day. A structured 7-day plan follows within 3–4 days, with a brief written follow-up on day 7.",
-              },
-              {
-                q: "Is WhatsApp live chat?",
-                a: "No. The WhatsApp delivery option is for receiving your written responses and plan as WhatsApp messages. It is not a live chat service, instant messaging, or on-demand support. Response times are within working days, not minutes.",
               },
               {
                 q: "What is the 7-day plan?",
@@ -466,7 +450,7 @@ export default function RedundancyResetPage() {
               disabled={checkout.isPending}
               data-testid="button-bottom-cta"
             >
-              {checkout.isPending ? "Loading…" : "Start my 7-Day Redundancy Reset — £79"}
+              {checkout.isPending ? "Loading…" : `Start my 7-Day Redundancy Reset — £${RESET_PRICE_GBP_DISPLAY}`}
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
             <Link href="/wizard">

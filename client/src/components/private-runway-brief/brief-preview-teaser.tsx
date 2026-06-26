@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Lock, FileText } from "lucide-react";
 import { useLocation } from "wouter";
 import { chartTheme } from "@/lib/chart-theme";
+import { RUNWAY_BRIEF_NAME, RUNWAY_REPORT_FULL, RUNWAY_REPORT_PRICE_GBP } from "@shared/product";
 
 const MOCK_METRICS = [
   { label: "Baseline runway", value: "34 mo" },
@@ -50,8 +51,8 @@ export function BriefPreviewTeaser() {
         <div className="px-5 py-4 border-b border-white/10">
           <div className="flex items-center gap-2 mb-1">
             <FileText className="w-4 h-4 text-gold" />
-            <h3 className="text-sm font-semibold text-white">Private Runway Brief</h3>
-            <span className="text-[10px] text-white/50 bg-white/10 px-2 py-0.5 rounded-full">Included with £39 report</span>
+            <h3 className="text-sm font-semibold text-white">{RUNWAY_BRIEF_NAME}</h3>
+            <span className="text-[10px] text-white/50 bg-white/10 px-2 py-0.5 rounded-full">Included with £{RUNWAY_REPORT_PRICE_GBP} report</span>
           </div>
           <p className="text-xs text-white/60">
             Your Command Centre shows the model. Your Private Runway Brief explains the figures in plain English.
@@ -107,7 +108,7 @@ export function BriefPreviewTeaser() {
               onClick={() => navigate("/unlock")}
               data-testid="button-unlock-brief-preview"
             >
-              Unlock Private Runway Report — £39
+              Unlock {RUNWAY_REPORT_FULL} — £{RUNWAY_REPORT_PRICE_GBP}
             </Button>
           </div>
         </div>

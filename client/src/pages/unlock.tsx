@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Logo } from "@/components/Logo";
+import { SiteHeader } from "@/components/SiteHeader";
 import { DisclaimerBanner } from "@/components/DisclaimerBanner";
 import { Footer } from "@/components/Footer";
 import { useAccess } from "@/hooks/use-access";
@@ -13,6 +13,7 @@ import { Link } from "wouter";
 import {
   COMMAND_CENTRE_NAME,
   PRODUCT_COPY,
+  PRIVACY_COPY,
   RUNWAY_BRIEF_NAME,
   RUNWAY_REPORT_FULL,
   RUNWAY_REPORT_PRICE_GBP,
@@ -63,9 +64,7 @@ export default function UnlockPage() {
       </Helmet>
       <div className="min-h-screen flex flex-col bg-background">
         <DisclaimerBanner />
-        <header className="border-b px-6 py-4">
-          <div className="max-w-3xl mx-auto"><Logo showTagline /></div>
-        </header>
+        <SiteHeader />
         <main className="flex-1 px-6 py-12">
           <div className="max-w-3xl mx-auto space-y-8">
           <Card className="w-full border-gold/30">
@@ -93,6 +92,7 @@ export default function UnlockPage() {
 
               <p className="text-3xl font-bold text-center mb-1">£{RUNWAY_REPORT_PRICE_GBP}</p>
               <p className="text-xs text-muted-foreground text-center mb-6">One-off payment · 6 months access · Return on any device via email sign-in</p>
+              <p className="text-xs text-muted-foreground text-center mb-6 px-2 leading-relaxed">{PRIVACY_COPY.exportDelivery}</p>
               <Button className="btn-gold w-full" onClick={startCheckout} disabled={checkingOut} data-testid="button-unlock-checkout">
                 {checkingOut ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Redirecting…</> : <>{PRODUCT_COPY.fullScenarioCta} <ArrowRight className="w-4 h-4 ml-2" /></>}
               </Button>

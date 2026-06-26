@@ -1,5 +1,6 @@
 import { Check } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { Link } from "wouter";
 import { Progress } from "@/components/ui/progress";
 import { Logo } from "@/components/Logo";
 
@@ -56,51 +57,54 @@ export function WizardShell({
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60" data-testid="wizard-header">
-        <div className="max-w-6xl mx-auto px-4 h-16 sm:h-[4.5rem] flex items-center justify-between gap-4">
+        <div className="max-w-6xl mx-auto px-4 h-14 sm:h-16 flex items-center justify-between gap-4">
           <Logo />
-
-          <div className="flex-1 max-w-2xl mx-auto hidden lg:flex items-start justify-center gap-6">
-            {wizardStages.map((st) => {
-              const stageComplete = st.steps.every((s) => s < step);
-              const stageActive = st.steps.includes(step);
-              return (
-                <div key={st.stageNum} className="flex flex-col items-center gap-1 min-w-0">
-                  <span className={`text-[9px] font-semibold uppercase tracking-widest whitespace-nowrap transition-colors ${
-                    stageActive ? "text-primary" : stageComplete ? "text-primary/70" : "text-muted-foreground"
-                  }`}>
-                    {st.label}
-                  </span>
-                  <div className="flex items-center gap-0.5">
-                    {st.steps.map((stepIdx) => (
-                      <button
-                        key={stepIdx}
-                        type="button"
-                        onClick={() => stepIdx <= step && onStepClick(stepIdx)}
-                        disabled={stepIdx > step}
-                        data-testid={`stepper-step-${stepIdx}`}
-                        title={steps[stepIdx].title}
-                        className="p-0.5 disabled:cursor-default"
-                      >
-                        <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold border shrink-0 transition-all duration-300 ${
-                          stepIdx < step
-                            ? `${stepMeta[stepIdx].dotBg} ${stepMeta[stepIdx].dotBorder} text-white`
-                            : stepIdx === step
-                            ? `${stepMeta[stepIdx].dotBg} ${stepMeta[stepIdx].dotBorder} text-white ring-2 ring-offset-1 ring-offset-background ring-current`
-                            : "border-muted-foreground/40 text-muted-foreground bg-background"
-                        }`}>
-                          {stepIdx < step ? <Check className="w-3 h-3" /> : stepIdx + 1}
-                        </div>
-                      </button>
-                    ))}
+          <div className="flex items-center gap-4">
+            <div className="flex-1 max-w-2xl hidden lg:flex items-start justify-center gap-6">
+              {wizardStages.map((st) => {
+                const stageComplete = st.steps.every((s) => s < step);
+                const stageActive = st.steps.includes(step);
+                return (
+                  <div key={st.stageNum} className="flex flex-col items-center gap-1 min-w-0">
+                    <span className={`text-[9px] font-semibold uppercase tracking-widest whitespace-nowrap transition-colors ${
+                      stageActive ? "text-primary" : stageComplete ? "text-primary/70" : "text-muted-foreground"
+                    }`}>
+                      {st.label}
+                    </span>
+                    <div className="flex items-center gap-0.5">
+                      {st.steps.map((stepIdx) => (
+                        <button
+                          key={stepIdx}
+                          type="button"
+                          onClick={() => stepIdx <= step && onStepClick(stepIdx)}
+                          disabled={stepIdx > step}
+                          data-testid={`stepper-step-${stepIdx}`}
+                          title={steps[stepIdx].title}
+                          className="p-0.5 disabled:cursor-default"
+                        >
+                          <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold border shrink-0 transition-all duration-300 ${
+                            stepIdx < step
+                              ? `${stepMeta[stepIdx].dotBg} ${stepMeta[stepIdx].dotBorder} text-white`
+                              : stepIdx === step
+                              ? `${stepMeta[stepIdx].dotBg} ${stepMeta[stepIdx].dotBorder} text-white ring-2 ring-offset-1 ring-offset-background ring-current`
+                              : "border-muted-foreground/40 text-muted-foreground bg-background"
+                          }`}>
+                            {stepIdx < step ? <Check className="w-3 h-3" /> : stepIdx + 1}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
+            <Link href="/recover" className="text-sm font-medium text-muted-foreground hover:text-foreground underline-offset-4 hover:underline shrink-0" data-testid="wizard-link-sign-in">
+              Sign in
+            </Link>
+            <span className="text-xs text-muted-foreground lg:hidden shrink-0" data-testid="text-step-progress-mobile">
+              {stage ? `Stage ${stage.stageNum} of 3` : ""} · Step {step + 1}/{totalSteps}
+            </span>
           </div>
-
-          <span className="text-xs text-muted-foreground lg:hidden" data-testid="text-step-progress-mobile">
-            {stage ? `Stage ${stage.stageNum} of 3` : ""} · Step {step + 1}/{totalSteps}
-          </span>
         </div>
         <Progress value={progress} className={`h-1.5 rounded-none ${meta.progressBar}`} data-testid="progress-bar" />
       </header>
@@ -157,7 +161,7 @@ export function WizardShell({
             <div className="mt-6">{footer}</div>
 
             <p className="text-xs text-foreground/70 text-center mt-4">
-              Use best estimates. Assumptions can be refined later. All calculations run in your browser.
+              Use best estimates. Assumptions can be refined later. Core calculations run in your browser.
             </p>
           </div>
         </div>

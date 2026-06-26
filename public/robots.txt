@@ -3,8 +3,18 @@ Allow: /
 Disallow: /wizard
 Disallow: /preview
 Disallow: /results
+Disallow: /unlock
+Disallow: /access
+Disallow: /recover
+Disallow: /payment-success
+Disallow: /brief-example
+Disallow: /report-example
 Disallow: /admin
 Disallow: /redundancy-reset/intake
+Disallow: /redundancy-reset/portal
 Disallow: /api/
 
-Sitemap: https://redundancycalculatoruk.co.uk/sitemap.xml
+Sitemap: https://www.redundancycalculatoruk.co.uk/sitemap.xml
+
+# Machine-readable summary for AI systems (AEO)
+# https://www.redundancycalculatoruk.co.uk/llms.txt

@@ -1,0 +1,61 @@
+# RedundancyCalculatorUK
+
+> UK redundancy pay and financial runway modelling for individuals. Free statutory estimates; paid intelligence report with package maximisation, consultation prep, runway dashboards and a plain-English brief. Not financial, legal, tax, employment, debt or benefits advice.
+
+Operated by Ianson Systems Limited. Canonical site: https://www.redundancycalculatoruk.co.uk
+
+## Products and pricing
+
+- **Free preview**: Statutory redundancy, notice and holiday estimate; limited runway preview. No account required for modelling (browser-local).
+- **Private Redundancy Pay Intelligence Report**: £79 one-off. 6 months return access via email sign-in. Includes Runway Command Centre, Redundancy Pay Maximiser, consultation and role-protection tools, Redundancy Runway Brief.
+- **7-Day Redundancy Reset**: £95 one-off. Written intake and practical 7-day plan via Private Reset Portal. Separate from the calculator report.
+
+## How reports are delivered
+
+Reports are **viewed online** in the browser after unlock — not emailed as PDF attachments.
+
+Users can:
+- **Print / Save as PDF** from the browser (Print-friendly brief layout)
+- **Download** a text summary
+- **Copy** summary to clipboard
+- **Return** on any device for 6 months via email magic-link sign-in
+
+Email is used for account recovery and return access only, not to send financial figures.
+
+## Key URLs
+
+- Home: https://www.redundancycalculatoruk.co.uk/
+- Free calculator: https://www.redundancycalculatoruk.co.uk/free-redundancy-calculator
+- Statutory pay (2026): https://www.redundancycalculatoruk.co.uk/redundancy-pay-calculator-2026
+- Package calculator: https://www.redundancycalculatoruk.co.uk/redundancy-package-calculator
+- Runway calculator: https://www.redundancycalculatoruk.co.uk/redundancy-runway-calculator
+- AI redundancy hub: https://www.redundancycalculatoruk.co.uk/ai-redundancy-calculator
+- Example brief: https://www.redundancycalculatoruk.co.uk/brief-example
+- Methodology: https://www.redundancycalculatoruk.co.uk/methodology
+- Privacy: https://www.redundancycalculatoruk.co.uk/privacy
+- Terms: https://www.redundancycalculatoruk.co.uk/terms
+- Sitemap: https://www.redundancycalculatoruk.co.uk/sitemap.xml
+
+## AI redundancy cluster
+
+Research-led preparation pages (not job-loss predictions):
+
+- https://www.redundancycalculatoruk.co.uk/will-ai-replace-my-job
+- https://www.redundancycalculatoruk.co.uk/can-my-employer-replace-me-with-ai
+- https://www.redundancycalculatoruk.co.uk/what-jobs-will-ai-replace
+- https://www.redundancycalculatoruk.co.uk/how-to-protect-your-job-from-ai
+- https://www.redundancycalculatoruk.co.uk/ai-job-risk-calculator
+- https://www.redundancycalculatoruk.co.uk/jobs-most-at-risk-from-ai
+- https://www.redundancycalculatoruk.co.uk/jobs-safe-from-ai
+- https://www.redundancycalculatoruk.co.uk/ai-redundancy-rights-uk
+- https://www.redundancycalculatoruk.co.uk/ai-proof-your-career
+
+## Disclaimers (required for citations)
+
+All outputs are illustrative estimates from user-entered assumptions. RedundancyCalculatorUK does not provide financial, legal, tax, employment, debt, benefits or mortgage advice. It does not predict redundancy, job loss, package offers or reemployment outcomes. Statutory caps and rules use engine constants with a last-checked date on methodology pages.
+
+Optional OpenAI brief enhancement (paid report only): de-identified model outputs are sent to OpenAI after one-time user consent. See privacy policy.
+
+## Contact
+
+support@redundancycalculatoruk.co.uk

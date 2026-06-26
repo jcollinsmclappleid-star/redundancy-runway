@@ -17,33 +17,42 @@ import {
   FileText,
   Menu,
   X,
-  Users,
-  Repeat,
   TrendingUp,
+  ListChecks,
+  ClipboardList,
+  MessageSquare,
+  Calendar,
 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Logo } from "@/components/Logo";
 import { DisclaimerBanner } from "@/components/DisclaimerBanner";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { useAccess } from "@/hooks/use-access";
 import { Footer } from "@/components/Footer";
 import { RunwayCommandCentrePreview } from "@/components/RunwayCommandCentrePreview";
-import { LandingDashboardShowcase } from "@/components/landing-dashboard-showcase";
-import { BriefExampleEmbed } from "@/components/private-runway-brief/BriefExampleEmbed";
+import { LandingReportExplorer } from "@/components/landing-report-explorer";
 import { LandingHeroScene } from "@/components/landing-hero-scene";
+import { LandingWhatsIncluded } from "@/components/landing/LandingWhatsIncluded";
 import { heroTheme } from "@/lib/chart-theme";
+
+const GOLD_CTA =
+  "btn-gold rounded-full whitespace-normal h-auto min-h-10 py-2.5 inline-flex items-center justify-center text-center text-sm sm:text-base";
 import {
   COMMAND_CENTRE_NAME,
   PRODUCT_COPY,
+  PRIVACY_COPY,
+  REDUNDANCY_PAY_MAXIMISER_NAME,
+  RESET_PRICE_GBP_DISPLAY,
   RUNWAY_BRIEF_NAME,
   RUNWAY_REPORT_FULL,
   RUNWAY_REPORT_PRICE_GBP,
 } from "@shared/product";
+import { GUIDE_CONTENT_YEAR, SITE_URL } from "@shared/site";
 
 const NAV_LINKS = [
+  { label: "What's included", href: "#whats-included" },
   { label: "How it works", href: "#how-it-works" },
-  { label: "Scenarios", href: "#scenarios" },
   { label: "Pricing", href: "#pricing" },
-  { label: "Guides", href: "/statutory-redundancy-pay-calculator", external: true },
+  { label: "Guides", href: "#guides" },
   { label: "About", href: "/about", external: true },
 ];
 
@@ -54,51 +63,52 @@ function scrollTo(id: string) {
 export default function LandingPage() {
   const [, navigate] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { isAuthenticated, email, logout, isLoading } = useAccess();
 
   return (
     <>
       <Helmet>
         <title>RedundancyCalculatorUK | UK Statutory Redundancy Pay & Runway Calculator</title>
-        <meta name="description" content="Calculate your UK statutory redundancy pay and model how long your money may last. Free redundancy runway report with mortgage sensitivity, income scenarios and expense analysis. Not financial advice." />
-        <link rel="canonical" href="https://redundancycalculatoruk.co.uk/" />
+        <meta name="description" content="UK redundancy pay calculator — estimate statutory redundancy pay, notice pay, holiday pay and your full package. See how many months the money may last and unlock tools to improve your position. Not financial advice." />
+        <link rel="canonical" href={`${SITE_URL}/`} />
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="RedundancyCalculatorUK" />
         <meta property="og:title" content="RedundancyCalculatorUK | UK Statutory Redundancy Pay & Runway Calculator" />
-        <meta property="og:description" content="Calculate your UK statutory redundancy pay and model how long your money may last. Free redundancy runway report with mortgage sensitivity, income scenarios and expense analysis." />
-        <meta property="og:url" content="https://redundancycalculatoruk.co.uk/" />
-        <meta property="og:image" content="https://redundancycalculatoruk.co.uk/og-image.png" />
+        <meta property="og:description" content="UK redundancy pay calculator — statutory pay, package components and how long the money may last on your household costs. Private modelling from your figures." />
+        <meta property="og:url" content={`${SITE_URL}/`} />
+        <meta property="og:image" content={`${SITE_URL}/og-image.png`} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="RedundancyCalculatorUK | UK Statutory Redundancy Pay & Runway Calculator" />
-        <meta name="twitter:description" content="Calculate your UK statutory redundancy pay and model how long your money may last. Free redundancy runway report with mortgage sensitivity, income scenarios and expense analysis." />
-        <meta name="twitter:image" content="https://redundancycalculatoruk.co.uk/og-image.png" />
+        <meta name="twitter:description" content="UK redundancy pay calculator — statutory pay, package components and how long the money may last on your household costs. Private modelling from your figures." />
+        <meta name="twitter:image" content={`${SITE_URL}/og-image.png`} />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org", "@type": "Organization",
-          "name": "RedundancyCalculatorUK", "url": "https://redundancycalculatoruk.co.uk",
+          "name": "RedundancyCalculatorUK", "url": SITE_URL,
           "description": "UK statutory redundancy pay calculator and financial runway modelling tool."
         })}</script>
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org", "@type": "WebApplication",
-          "name": "RedundancyCalculatorUK", "url": "https://redundancycalculatoruk.co.uk",
+          "name": "RedundancyCalculatorUK", "url": SITE_URL,
           "applicationCategory": "FinanceApplication", "operatingSystem": "Web",
           "offers": [
             { "@type": "Offer", "price": "0", "priceCurrency": "GBP", "name": "Free Preview" },
-            { "@type": "Offer", "price": "39", "priceCurrency": "GBP", "name": "Private Redundancy Runway Report" }
+            { "@type": "Offer", "price": String(RUNWAY_REPORT_PRICE_GBP), "priceCurrency": "GBP", "name": RUNWAY_REPORT_FULL }
           ],
-          "provider": { "@type": "Organization", "name": "RedundancyCalculatorUK", "url": "https://redundancycalculatoruk.co.uk" }
+          "provider": { "@type": "Organization", "name": "RedundancyCalculatorUK", "url": SITE_URL }
         })}</script>
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org", "@type": "FAQPage",
           "mainEntity": [
             { "@type": "Question", "name": "Is this financial advice?", "acceptedAnswer": { "@type": "Answer", "text": "No. RedundancyCalculatorUK is a non-advisory modelling tool. All outputs are estimates and may not reflect actual outcomes." } },
-            { "@type": "Question", "name": "Is my data private?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. All financial calculations run entirely in your browser. No sensitive financial data is stored on our servers." } },
+            { "@type": "Question", "name": "Is my data private?", "acceptedAnswer": { "@type": "Answer", "text": PRIVACY_COPY.faqPrivacy } },
             { "@type": "Question", "name": "Is statutory redundancy pay included?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The calculator uses current UK statutory redundancy rules including age-band multipliers, service caps and the current weekly pay cap." } },
-            { "@type": "Question", "name": "What does the paid report unlock?", "acceptedAnswer": { "@type": "Answer", "text": `The full ${RUNWAY_REPORT_FULL} (£${RUNWAY_REPORT_PRICE_GBP}, one-off) unlocks slow and severe scenarios, mortgage pressure test, household resilience view, expense sensitivity ranking, month-by-month capital path, VR comparison, structural transition scenario, and exportable report.` } },
+            { "@type": "Question", "name": "What does the paid report unlock?", "acceptedAnswer": { "@type": "Answer", "text": `The full ${RUNWAY_REPORT_FULL} (£${RUNWAY_REPORT_PRICE_GBP}, one-off) unlocks protection measures playbook, package maximisation checks, missing money checklist, payout improvement scenarios, consultation preparation tools, role protection planner, Runway Command Centre dashboards, plain-English brief, and exportable report. Modelling and preparation tools — not legal or employment advice.` } },
             { "@type": "Question", "name": "Is this a subscription?", "acceptedAnswer": { "@type": "Answer", "text": `No. Both the ${RUNWAY_REPORT_FULL} and the 7-Day Redundancy Reset are one-off payments. No recurring charges.` } }
           ]
         })}</script>
       </Helmet>
 
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-screen flex flex-col overflow-x-clip max-w-[100vw]">
         <DisclaimerBanner />
 
         {/* ── HEADER ──────────────────────────────────────────────────── */}
@@ -108,7 +118,7 @@ export default function LandingPage() {
           data-testid="header-landing"
         >
           <div className="max-w-6xl mx-auto flex items-center justify-between gap-4 px-5 py-4 sm:py-5">
-            <Logo light />
+            <Logo onDark />
             <nav className="hidden md:flex items-center gap-6" data-testid="nav-desktop">
               {NAV_LINKS.map((link) =>
                 link.external ? (
@@ -130,10 +140,26 @@ export default function LandingPage() {
               )}
             </nav>
             <div className="flex items-center gap-2">
-              <ThemeToggle onDark />
-              <Button size="sm" className="btn-gold rounded-full px-5 hidden sm:flex"
+              {!isLoading && isAuthenticated && email ? (
+                <div className="hidden md:flex items-center gap-2 text-xs" style={{ color: heroTheme.textMuted }}>
+                  <span className="truncate max-w-[140px]">{email}</span>
+                  <button type="button" className="underline" onClick={() => void logout()} data-testid="button-landing-sign-out">
+                    Sign out
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  href="/recover"
+                  className="hidden md:inline text-sm font-medium hover:text-white transition-colors"
+                  style={{ color: heroTheme.textMuted }}
+                  data-testid="link-landing-sign-in"
+                >
+                  Sign in
+                </Link>
+              )}
+              <Button size="sm" className={`${GOLD_CTA} px-5 hidden sm:flex`}
                 onClick={() => navigate("/wizard")} data-testid="button-header-start">
-                {PRODUCT_COPY.buildCta} <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
+                {PRODUCT_COPY.buildCta} <ArrowRight className="w-3.5 h-3.5 ml-1.5 shrink-0" />
               </Button>
               <button className="md:hidden p-1" style={{ color: heroTheme.textMuted }}
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -159,67 +185,138 @@ export default function LandingPage() {
                   </button>
                 )
               )}
-              <Button size="sm" className="btn-gold rounded-full mt-2"
+              <Link
+                href="/recover"
+                className="md:hidden text-sm py-1"
+                style={{ color: "hsl(215 15% 60%)" }}
+                onClick={() => setMobileMenuOpen(false)}
+                data-testid="link-mobile-sign-in"
+              >
+                Sign in
+              </Link>
+              <Button size="sm" className={`${GOLD_CTA} mt-2 w-full`}
                 onClick={() => { navigate("/wizard"); setMobileMenuOpen(false); }}
                 data-testid="button-mobile-cta">
-                {PRODUCT_COPY.buildCta} <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
+                <span className="sm:hidden">{PRODUCT_COPY.buildCtaMobile}</span>
+                <span className="hidden sm:inline">{PRODUCT_COPY.buildCta}</span>
+                <ArrowRight className="w-3.5 h-3.5 ml-1.5 shrink-0" />
               </Button>
             </div>
           )}
         </header>
 
         {/* ── HERO ────────────────────────────────────────────────────── */}
-        <section data-testid="section-hero" className="relative overflow-hidden" style={{ background: heroTheme.navy }}>
+        <section data-testid="section-hero" className="relative overflow-x-clip" style={{ background: heroTheme.navy }}>
           <div className="max-w-6xl mx-auto">
             {/* Text block — solid navy, no landscape bleed */}
-            <div className="relative z-10 px-5 pt-10 pb-6 md:pt-16 md:pb-8 md:flex md:items-start md:gap-12">
+            <div className="relative z-10 px-5 pt-8 pb-5 sm:pt-10 sm:pb-6 md:pt-16 md:pb-8 md:flex md:items-start md:gap-12">
               <div className="md:flex-1 md:max-w-xl">
                 <div
-                  className="inline-flex items-center gap-2 rounded-full px-3 py-1 mb-5 border"
+                  className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 mb-4 border"
                   style={{ borderColor: "hsl(192 55% 42%)", background: "hsl(192 55% 22% / 0.35)" }}
                   data-testid="hero-eyebrow"
                 >
                   <span className="w-1.5 h-1.5 rounded-full shrink-0 bg-teal-400" />
-                  <span className="text-[10px] font-semibold tracking-widest uppercase text-teal-200/90">
-                    PRIVATE · ASSUMPTION-BASED · UK FOCUSED
+                  <span className="text-[11px] sm:text-xs font-semibold tracking-widest uppercase text-teal-200/90">
+                    {PRODUCT_COPY.heroEyebrow}
                   </span>
                 </div>
 
+                <div className="flex flex-wrap gap-1.5 mb-4" data-testid="hero-seo-terms">
+                  {PRODUCT_COPY.heroSeoTerms.map((term) => (
+                    <span
+                      key={term}
+                      className="rounded-full border border-white/15 bg-white/[0.06] px-2.5 py-1 text-[11px] font-medium text-slate-300"
+                    >
+                      {term}
+                    </span>
+                  ))}
+                </div>
+
                 <h1
-                  className="font-serif text-4xl sm:text-5xl lg:text-[3.25rem] font-bold leading-[1.1] text-white mb-4"
+                  className="font-serif text-[1.65rem] sm:text-4xl lg:text-[3rem] font-bold leading-[1.15] text-white mb-4"
                   data-testid="hero-headline"
                 >
                   {PRODUCT_COPY.heroH1}
                 </h1>
 
-                <p className="text-base leading-relaxed mb-6 lg:max-w-lg text-slate-300" data-testid="hero-subheadline">
+                <p className="text-[15px] sm:text-base leading-relaxed mb-4 lg:max-w-lg text-slate-300" data-testid="hero-subheadline">
                   {PRODUCT_COPY.heroSub}
                 </p>
 
-                <div className="flex flex-col sm:flex-row gap-3 mb-4">
+                <ul className="space-y-2 mb-4 lg:max-w-lg" data-testid="hero-outcomes">
+                  {PRODUCT_COPY.heroOutcomes.map((outcome) => (
+                    <li key={outcome} className="flex items-start gap-2 text-sm sm:text-[15px] text-slate-200">
+                      <Check className="w-4 h-4 text-teal-300 shrink-0 mt-0.5" />
+                      <span>{outcome}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <p className="text-sm font-medium text-teal-200/90 mb-3 lg:max-w-lg" data-testid="hero-positioning-line">
+                  {PRODUCT_COPY.positioningSupporting}
+                </p>
+
+                <Link
+                  href="/ai-redundancy-calculator"
+                  className="inline-block text-xs text-slate-400 hover:text-teal-200/90 mb-5 transition-colors"
+                  data-testid="hero-ai-guide-link"
+                >
+                  Worried about AI-driven restructuring? Read our readiness guides →
+                </Link>
+
+                <div className="flex flex-col sm:flex-row gap-3 mb-5">
                   <Button
                     size="lg"
-                    className="btn-gold rounded-full px-7 text-base w-full sm:w-auto"
+                    className={`${GOLD_CTA} px-6 sm:px-7 w-full sm:w-auto`}
                     onClick={() => navigate("/wizard")}
                     data-testid="button-hero-primary"
                   >
-                    {PRODUCT_COPY.buildCta} <ArrowRight className="w-4 h-4 ml-2" />
+                    <span className="sm:hidden">{PRODUCT_COPY.buildCtaMobile}</span>
+                    <span className="hidden sm:inline">{PRODUCT_COPY.buildCta}</span>
+                    <ArrowRight className="w-4 h-4 ml-2 shrink-0" />
                   </Button>
                   <Button
                     size="lg"
                     variant="outline"
-                    className="rounded-full px-7 text-base w-full sm:w-auto hover:text-white hover:bg-white/10 border-white/25 text-slate-300"
-                    onClick={() => scrollTo("pricing")}
+                    className="rounded-full px-6 sm:px-7 w-full sm:w-auto whitespace-normal h-auto min-h-10 py-2.5 inline-flex items-center justify-center text-center text-sm sm:text-base hover:text-white hover:bg-white/10 border-white/25 text-slate-300"
+                    onClick={() => scrollTo("whats-included")}
                     data-testid="button-hero-secondary"
                   >
-                    See what the private report includes <ChevronDown className="w-4 h-4 ml-2" />
+                    <span className="sm:hidden">{PRODUCT_COPY.seeIncludedCtaMobile}</span>
+                    <span className="hidden sm:inline">{PRODUCT_COPY.seeIncludedCta}</span>
+                    <ChevronDown className="w-4 h-4 ml-2 shrink-0" />
                   </Button>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-5" data-testid="hero-assurance">
+                  {PRODUCT_COPY.heroAssurance.map((item) => (
+                    <div
+                      key={item.label}
+                      className="rounded-lg bg-white/[0.06] px-2.5 py-2.5"
+                    >
+                      <p className="text-xs font-semibold text-slate-100 leading-snug">{item.label}</p>
+                      <p className="text-[11px] text-slate-400 leading-snug mt-1">{item.sub}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="grid grid-cols-3 gap-2 mb-5" data-testid="hero-pillars">
+                  {PRODUCT_COPY.heroPillars.map((pillar) => (
+                    <div
+                      key={pillar.label}
+                      className="rounded-lg bg-white/[0.06] px-2 py-2.5 text-center"
+                    >
+                      <p className="text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-teal-200/90 leading-tight">{pillar.label}</p>
+                      <p className="text-[11px] text-slate-400 leading-snug mt-1">{pillar.desc}</p>
+                    </div>
+                  ))}
                 </div>
 
                 <div className="flex items-start gap-2 mb-2">
                   <ShieldCheck className="w-3.5 h-3.5 mt-0.5 shrink-0 text-slate-500" />
                   <p className="text-xs leading-relaxed text-slate-500">
-                    {PRODUCT_COPY.trustLine} · Your data stays in your browser. Not financial advice.
+                    {PRODUCT_COPY.trustLine} · {PRIVACY_COPY.heroTrust}. Not financial advice.
                   </p>
                 </div>
               </div>
@@ -237,11 +334,13 @@ export default function LandingPage() {
           </div>
         </section>
 
+        <LandingWhatsIncluded />
+
         {/* ── PAYOUT-FIRST SECTION ───────────────────────────────────── */}
         <section className="py-16 px-5 bg-surface border-b" data-testid="section-payout-first">
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-10">
-              <p className="text-[10px] uppercase tracking-[0.2em] text-primary font-semibold mb-3">Payout first</p>
+              <p className="text-[10px] uppercase tracking-[0.2em] text-primary font-semibold mb-3">Package + runway</p>
               <h2 className="font-display text-3xl sm:text-4xl font-bold mb-3">
                 {PRODUCT_COPY.payoutSectionHeading}
               </h2>
@@ -251,12 +350,12 @@ export default function LandingPage() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {[
-                { icon: Calculator, title: "Statutory redundancy estimate", desc: "Age-band rules, service caps and current weekly pay cap built in." },
-                { icon: Layers, title: "Package components", desc: "Model notice pay, holiday pay, enhanced offers and manual overrides." },
-                { icon: TrendingUp, title: "Offer comparison", desc: "Compare statutory estimate against employer or voluntary package assumptions." },
-                { icon: BarChart2, title: "Payout-to-runway bridge", desc: "See how the package feeds into starting capital and monthly burn." },
-                { icon: Home, title: "Household runway", desc: "Model mortgage pressure, income gaps and essential spending." },
-                { icon: FileText, title: "Plain-English brief", desc: "Your figures explained in a private report — not generic advice." },
+                { icon: Calculator, title: "Where could the package total go higher?", desc: "Statutory baseline with notice, holiday and enhanced components modelled separately — ranked by runway months gained." },
+                { icon: TrendingDown, title: "How many months left?", desc: "Baseline runway on your household costs, with slow and severe scenarios." },
+                { icon: ListChecks, title: REDUNDANCY_PAY_MAXIMISER_NAME, desc: "Ranks uplift levers by runway impact — notice, holiday, enhanced and PILON-style assumptions." },
+                { icon: TrendingUp, title: "Which outcome is worth pushing for?", desc: "Payout scenarios compared side by side with months gained or lost." },
+                { icon: BarChart2, title: "Where does the money go?", desc: "Payout-to-runway bridge from package components to starting capital." },
+                { icon: Home, title: "What if costs rise?", desc: "Mortgage pressure, income gaps and stress-case runway modelling." },
               ].map((card) => (
                 <Card key={card.title} className="border-gold/15">
                   <CardContent className="pt-5 pb-5">
@@ -270,32 +369,46 @@ export default function LandingPage() {
               ))}
             </div>
             <div className="text-center mt-8">
-              <Button className="btn-gold rounded-full px-7" onClick={() => navigate("/wizard")} data-testid="button-payout-section-cta">
-                {PRODUCT_COPY.buildCta} <ArrowRight className="w-4 h-4 ml-2" />
+              <Button className={`${GOLD_CTA} px-7`} onClick={() => navigate("/wizard")} data-testid="button-payout-section-cta">
+                <span className="sm:hidden">{PRODUCT_COPY.buildCtaMobile}</span>
+                <span className="hidden sm:inline">{PRODUCT_COPY.buildCta}</span>
+                <ArrowRight className="w-4 h-4 ml-2 shrink-0" />
               </Button>
             </div>
           </div>
         </section>
 
+        {/* ── SITUATION ADAPT ─────────────────────────────────────────── */}
+        <section className="py-10 px-5 bg-background border-b" id="position-tools" data-testid="section-position-tools">
+          <div className="max-w-3xl mx-auto text-center">
+            <p className="text-[10px] uppercase tracking-[0.2em] text-primary font-semibold mb-2">Adapts to your situation</p>
+            <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+              Already redundant? The report emphasises package breakdown, payout scenarios and runway impact. At risk of redundancy?
+              Consultation prep, role protection and alternative-role tools surface first — all included in the same £{RUNWAY_REPORT_PRICE_GBP} report.
+            </p>
+            <Button variant="outline" className="rounded-full" onClick={() => scrollTo("whats-included")}>
+              View full package contents
+            </Button>
+          </div>
+        </section>
+
         {/* ── TRUST STRIP ─────────────────────────────────────────────── */}
         <section
-          className="py-5 px-0 border-b"
+          className="py-5 px-5 border-b"
           style={{ background: heroTheme.navySoft, borderColor: heroTheme.border }}
           data-testid="section-trust"
         >
-          <div className="overflow-x-auto">
-            <div className="flex items-start justify-start md:justify-center gap-0 min-w-max md:min-w-0 px-5">
+          <div className="max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
               {[
-                { icon: ShieldCheck, label: "UK statutory assumptions", sub: "Age-band rules, service caps and current thresholds" },
-                { icon: Lock, label: "Private modelling", sub: "Your data stays in your browser" },
-                { icon: Home, label: "Mortgage & household scenarios", sub: "Test rate rises, rent and one-income" },
-                { icon: FileText, label: "One-off report access", sub: "One report. Yours to keep." },
-                { icon: BarChart2, label: "Non-advisory tool", sub: "Planning model, not financial advice" },
+                { icon: ShieldCheck, label: `One-off £${RUNWAY_REPORT_PRICE_GBP}`, sub: "6 months access · no subscription" },
+                { icon: Lock, label: "Browser-local modelling", sub: "Core figures stay on your device" },
+                { icon: Calculator, label: "UK statutory basis", sub: "Current caps and age bands" },
+                { icon: ClipboardList, label: "HR-ready preparation", sub: "Questions, checklists & templates" },
+                { icon: BarChart2, label: "Runway you can plan around", sub: "Months left under your costs" },
               ].map((item, i) => (
                 <div
                   key={i}
-                  className="flex flex-col items-center text-center px-5 py-2 shrink-0 border-r last:border-r-0"
-                  style={{ borderColor: heroTheme.border, minWidth: 108 }}
+                  className="flex flex-col items-center text-center px-2 py-2"
                   data-testid={`trust-signal-${i}`}
                 >
                   <div
@@ -304,11 +417,10 @@ export default function LandingPage() {
                   >
                     <item.icon className="w-4 h-4" style={{ color: heroTheme.gold }} />
                   </div>
-                  <p className="text-[11px] font-semibold leading-tight mb-1 text-slate-200">{item.label}</p>
-                  <p className="text-[10px] leading-tight text-slate-400">{item.sub}</p>
+                  <p className="text-xs font-semibold leading-snug mb-1 text-slate-200">{item.label}</p>
+                  <p className="text-[11px] leading-snug text-slate-400">{item.sub}</p>
                 </div>
               ))}
-            </div>
           </div>
         </section>
 
@@ -317,14 +429,44 @@ export default function LandingPage() {
           <div className="max-w-5xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
               <div>
-                <h2 className="font-serif text-3xl sm:text-4xl font-bold mb-5 leading-snug">
-                  Redundancy is not just a payout question. It is a runway question.
+                <h2 className="font-serif text-3xl sm:text-4xl font-bold mb-6 leading-snug">
+                  You need three answers — not just a statutory figure.
                 </h2>
-                <p className="text-muted-foreground leading-relaxed text-base mb-4">
-                  A redundancy package can look manageable on day one. The harder question is how it behaves over time: if a new role takes longer than expected, if mortgage or rent still needs paying, if replacement income is lower, or if the household temporarily relies on one income.
-                </p>
-                <p className="text-muted-foreground leading-relaxed text-base">
-                  RedundancyCalculatorUK helps you model that picture privately — under your own assumptions, before speaking to a financial adviser, solicitor, or anyone else.
+                <div className="space-y-3 mb-6">
+                  {[
+                    {
+                      icon: Calculator,
+                      headline: "Where could your package total go higher?",
+                      line: "Decompose statutory, notice, holiday and enhanced lines — model uplift scenarios and rank runway impact.",
+                    },
+                    {
+                      icon: Calendar,
+                      headline: "How long will the money last?",
+                      line: "Runway months on your real household costs.",
+                    },
+                    {
+                      icon: MessageSquare,
+                      headline: "What should you ask HR?",
+                      line: "Consultation prep and evidence — not legal advice.",
+                    },
+                  ].map((card) => (
+                    <div
+                      key={card.headline}
+                      className="flex items-start gap-3 rounded-xl border bg-card p-4"
+                      data-testid={`three-answers-${card.headline.toLowerCase().replace(/\s+/g, "-")}`}
+                    >
+                      <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                        <card.icon className="w-4 h-4 text-primary" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold mb-0.5">{card.headline}</p>
+                        <p className="text-xs text-muted-foreground leading-relaxed">{card.line}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Private modelling from your figures · one-off £{RUNWAY_REPORT_PRICE_GBP} · not financial advice.
                 </p>
               </div>
               <RunwayCommandCentrePreview />
@@ -332,35 +474,19 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ── DASHBOARD SHOWCASE ──────────────────────────────────────── */}
-        <section className="py-16 px-5 bg-surface border-y" data-testid="section-dashboard-showcase">
+        {/* ── REPORT EXPLORER ─────────────────────────────────────────── */}
+        <section className="py-16 px-5 bg-surface border-y" data-testid="section-report-explorer">
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-10">
-              <p className="text-[10px] uppercase tracking-[0.2em] text-primary font-semibold mb-3">What you get</p>
+              <p className="text-[10px] uppercase tracking-[0.2em] text-primary font-semibold mb-3">Explore the report</p>
               <h2 className="font-display text-3xl sm:text-4xl font-bold mb-3">
-                Advanced dashboards, built for clarity
+                See what your private report includes
               </h2>
               <p className="text-muted-foreground max-w-lg mx-auto text-sm leading-relaxed">
-                Start with a free preview of your baseline runway — then compare income recovery paths side by side in the full report.
+                Sample dashboards for package breakdown, runway path and your plain-English brief — start free, unlock when you are ready.
               </p>
             </div>
-            <LandingDashboardShowcase />
-          </div>
-        </section>
-
-        {/* ── BRIEF EXAMPLE ───────────────────────────────────────────── */}
-        <section className="py-16 px-5 bg-background" data-testid="section-brief-example">
-          <div className="max-w-5xl mx-auto space-y-6">
-            <div className="text-center max-w-2xl mx-auto">
-              <p className="text-[10px] uppercase tracking-[0.2em] text-primary font-semibold mb-3">{RUNWAY_BRIEF_NAME}</p>
-              <h2 className="font-display text-3xl sm:text-4xl font-bold mb-3">
-                See what the plain-English brief looks like
-              </h2>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                {PRODUCT_COPY.dualProductLine}
-              </p>
-            </div>
-            <BriefExampleEmbed />
+            <LandingReportExplorer />
           </div>
         </section>
 
@@ -392,41 +518,6 @@ export default function LandingPage() {
                   </div>
                 ))}
               </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ── SCENARIOS ───────────────────────────────────────────────── */}
-        <section className="py-16 px-5 bg-background" id="scenarios" data-testid="section-scenarios">
-          <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="font-serif text-3xl sm:text-4xl font-bold mb-3">Scenarios the report models</h2>
-              <p className="text-muted-foreground max-w-md mx-auto text-sm">Free preview gives you the baseline. The full report unlocks every scenario.</p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
-              {[
-                { icon: BarChart2, label: "Baseline", desc: "How long the money lasts at your current burn rate." },
-                { icon: TrendingDown, label: "Slow recovery", desc: "If a new role takes longer — how much runway changes under a later return to income." },
-                { icon: Home, label: "Mortgage / rent pressure", desc: "How a rate rise or rent review affects the capital path." },
-                { icon: Users, label: "Household one-income", desc: "If one partner's income is temporarily the only income — how that changes the runway." },
-                { icon: Repeat, label: "Voluntary redundancy", desc: "How a VR package compares to statutory entitlement under these assumptions." },
-                { icon: TrendingUp, label: "Structural transition", desc: "A slower or lower-income recovery path modelled as an assumption — does not predict outcomes." },
-              ].map((scenario, i) => (
-                <div key={i} className="rounded-xl border bg-card p-5 hover:shadow-md transition-shadow"
-                  data-testid={`scenario-card-${i}`}>
-                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center mb-3">
-                    <scenario.icon className="w-4 h-4 text-primary" />
-                  </div>
-                  <p className="text-sm font-semibold mb-1.5">{scenario.label}</p>
-                  <p className="text-xs text-muted-foreground leading-relaxed">{scenario.desc}</p>
-                </div>
-              ))}
-            </div>
-            <div className="text-center">
-              <Button size="lg" className="btn-gold rounded-full px-8"
-                onClick={() => navigate("/wizard")} data-testid="button-scenarios-cta">
-                Build my private report — Free preview <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
             </div>
           </div>
         </section>
@@ -478,39 +569,37 @@ export default function LandingPage() {
                 <Card className="shadow-xl overflow-hidden"
                   style={{ outline: "2px solid hsl(38 72% 52%)", outlineOffset: "1px" }}>
                   <CardContent className="pt-7 pb-6">
-                    <div className="flex items-start justify-between mb-3">
-                      <div>
-                        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">{RUNWAY_REPORT_FULL}</p>
-                        <div className="flex items-baseline gap-2">
-                          <span className="text-3xl font-bold">£{RUNWAY_REPORT_PRICE_GBP}</span>
-                          <span className="text-sm text-muted-foreground">Two products · one payment</span>
-                        </div>
-                      </div>
-                    </div>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">{RUNWAY_REPORT_FULL}</p>
                     <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
                       {PRODUCT_COPY.dualProductLine}
                     </p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
                       <div className="rounded-lg border p-3 bg-primary/5">
-                        <p className="text-xs font-semibold mb-1.5">{COMMAND_CENTRE_NAME}</p>
-                        <p className="text-[11px] text-muted-foreground">Scenarios, capital path, sensitivity & stress tests</p>
+                        <p className="text-xs font-semibold mb-1.5">Improve your position hub</p>
+                        <p className="text-[11px] text-muted-foreground">{REDUNDANCY_PAY_MAXIMISER_NAME}, missing money, scenarios & consultation prep</p>
                       </div>
-                      <div className="rounded-lg border border-gold/30 p-3 bg-gold/5">
+                      <div className="rounded-lg border p-3 bg-primary/5">
+                        <p className="text-xs font-semibold mb-1.5">{COMMAND_CENTRE_NAME}</p>
+                        <p className="text-[11px] text-muted-foreground">Capital path, stress tests, mortgage & income scenarios</p>
+                      </div>
+                      <div className="rounded-lg border border-gold/30 p-3 bg-gold/5 sm:col-span-2">
                         <p className="text-xs font-semibold mb-1.5">{RUNWAY_BRIEF_NAME}</p>
-                        <p className="text-[11px] text-muted-foreground">Plain-English report from your figures</p>
+                        <p className="text-[11px] text-muted-foreground">Plain-English report with package and position commentary from your figures</p>
                       </div>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 mb-6">
                       {[
                         { text: "Everything in free preview", locked: false },
-                        { text: "Slow and severe scenarios", locked: true },
+                        { text: REDUNDANCY_PAY_MAXIMISER_NAME, locked: true },
+                        { text: "Missing money checklist", locked: true },
+                        { text: "Payout improvement scenarios", locked: true },
+                        { text: "Consultation Defence Pack", locked: true },
+                        { text: "Role Protection Planner", locked: true },
+                        { text: "Package clarification email templates", locked: true },
+                        { text: "Slow and severe income scenarios", locked: true },
                         { text: "Mortgage / housing pressure test", locked: true },
-                        { text: "Household resilience view", locked: true },
-                        { text: "Expense sensitivity ranking", locked: true },
                         { text: "Month-by-month capital path", locked: true },
-                        { text: "Voluntary redundancy comparison", locked: true },
-                        { text: "Structural transition scenario", locked: true },
-                        { text: `${RUNWAY_BRIEF_NAME} (plain English)`, locked: true },
+                        { text: `${RUNWAY_BRIEF_NAME} with position commentary`, locked: true },
                         { text: "Exportable private report", locked: true },
                       ].map((item, i) => (
                         <div key={i} className="flex items-center gap-2 text-sm">
@@ -521,11 +610,17 @@ export default function LandingPage() {
                         </div>
                       ))}
                     </div>
-                    <Button className="w-full btn-gold rounded-lg text-base py-5"
+                    <div className="text-center mb-5 pt-4 border-t">
+                      <p className="text-3xl font-bold">£{RUNWAY_REPORT_PRICE_GBP}</p>
+                      <p className="text-sm text-muted-foreground">One-off · 6 months access · no subscription</p>
+                    </div>
+                    <Button className={`w-full ${GOLD_CTA} rounded-lg py-3 min-h-12`}
                       onClick={() => navigate("/wizard")} data-testid="button-start-paid">
-                      {PRODUCT_COPY.unlockCta} <ArrowRight className="w-4 h-4 ml-2" />
+                      <span className="sm:hidden">{PRODUCT_COPY.unlockCtaMobile}</span>
+                      <span className="hidden sm:inline">{PRODUCT_COPY.unlockCta}</span>
+                      <ArrowRight className="w-4 h-4 ml-2 shrink-0" />
                     </Button>
-                    <p className="text-xs text-muted-foreground text-center mt-2">Command Centre + Private Brief · 6 months access · No subscription</p>
+                    <p className="text-xs text-muted-foreground text-center mt-2">{PRODUCT_COPY.unlockSupportingLine} · 6 months access</p>
                   </CardContent>
                 </Card>
               </div>
@@ -534,30 +629,42 @@ export default function LandingPage() {
         </section>
 
         {/* ── 7-DAY RESET ─────────────────────────────────────────────── */}
-        <section className="py-16 px-5" data-testid="section-reset-teaser"
-          style={{ background: "hsl(186 40% 12%)" }}>
+        <section
+          className="py-16 px-5 border-t"
+          data-testid="section-reset-teaser"
+          style={{
+            background: `linear-gradient(135deg, ${heroTheme.navy} 0%, ${heroTheme.navySoft} 55%, ${heroTheme.navyMid} 100%)`,
+            borderColor: heroTheme.border,
+          }}
+        >
           <div className="max-w-5xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
               <div>
-                <p className="text-xs font-semibold tracking-widest uppercase mb-4" style={{ color: "hsl(38 72% 58%)" }}>SUPPORTIVE NEXT STEP</p>
+                <p className="text-xs font-semibold tracking-widest uppercase mb-4" style={{ color: heroTheme.goldSoft }}>
+                  SUPPORTIVE NEXT STEP
+                </p>
                 <div className="flex items-start gap-4 mb-5">
-                  <div className="w-14 h-14 rounded-xl flex items-center justify-center shrink-0 font-serif font-bold text-2xl"
-                    style={{ background: "hsl(38 72% 52% / 0.18)", color: "hsl(38 72% 68%)" }}>7</div>
+                  <div
+                    className="w-14 h-14 rounded-xl flex items-center justify-center shrink-0 font-serif font-bold text-2xl"
+                    style={{ background: `${heroTheme.gold}2e`, color: heroTheme.goldSoft }}
+                  >
+                    7
+                  </div>
                   <div>
                     <h2 className="font-serif text-2xl sm:text-3xl font-bold text-white leading-snug">7-Day Redundancy Reset</h2>
-                    <p className="text-sm mt-1" style={{ color: "hsl(186 20% 55%)" }}>A guided 7-day plan to stabilise, plan and take control.</p>
+                    <p className="text-sm mt-1 text-slate-300">A guided 7-day plan to stabilise, plan and take control.</p>
                   </div>
                 </div>
-                <p className="text-sm leading-relaxed mb-6" style={{ color: "hsl(186 15% 60%)" }}>
-                  Share what's going on through the Private Reset Portal or WhatsApp. Receive a calm written response within 1 working day and a practical 7-day plan. No calls. No judgement. No open-ended subscription.
+                <p className="text-sm leading-relaxed mb-6 text-slate-300">
+                  Share what's going on through the Private Reset Portal. Receive a calm written response within 1 working day and a practical 7-day plan. No calls. No judgement. No open-ended subscription.
                 </p>
                 <Link href="/redundancy-reset" data-testid="button-reset-cta">
-                  <Button className="btn-gold rounded-full px-7">
-                    Start your 7-day reset <ArrowRight className="w-4 h-4 ml-2" />
+                  <Button className={`${GOLD_CTA} px-6 sm:px-7`}>
+                    Start your 7-day reset <ArrowRight className="w-4 h-4 ml-2 shrink-0" />
                   </Button>
                 </Link>
-                <p className="text-xs mt-3" style={{ color: "hsl(38 72% 55%)" }}>£79 launch offer · one-off support</p>
-                <p className="text-xs mt-2" style={{ color: "hsl(186 15% 38%)" }}>Practical written support only. Not financial, legal, debt, employment, medical or mental health advice.</p>
+                <p className="text-xs mt-3" style={{ color: heroTheme.goldSoft }}>£{RESET_PRICE_GBP_DISPLAY} · one-off support</p>
+                <p className="text-xs mt-2 text-slate-500">Practical written support only. Not financial, legal, debt, employment, medical or mental health advice.</p>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {[
@@ -565,10 +672,14 @@ export default function LandingPage() {
                   { label: "Clarity & confidence", body: "Reduce overwhelm and regain control." },
                   { label: "Complements your runway report", body: "Plan today. Model tomorrow." },
                 ].map((item, i) => (
-                  <div key={i} className="rounded-xl p-5" data-testid={`reset-benefit-${i}`}
-                    style={{ background: "hsl(186 40% 16%)", border: "1px solid hsl(186 35% 22%)" }}>
+                  <div
+                    key={i}
+                    className="rounded-xl p-5 border"
+                    data-testid={`reset-benefit-${i}`}
+                    style={{ background: "rgba(255,255,255,0.06)", borderColor: heroTheme.border }}
+                  >
                     <p className="text-sm font-semibold text-white mb-1.5">{item.label}</p>
-                    <p className="text-xs leading-relaxed" style={{ color: "hsl(186 15% 58%)" }}>{item.body}</p>
+                    <p className="text-xs leading-relaxed text-slate-400">{item.body}</p>
                   </div>
                 ))}
               </div>
@@ -577,16 +688,16 @@ export default function LandingPage() {
         </section>
 
         {/* ── UK GUIDES ───────────────────────────────────────────────── */}
-        <section className="py-14 px-5 bg-background" data-testid="section-guides">
+        <section className="py-14 px-5 bg-background" id="guides" data-testid="section-guides">
           <div className="max-w-5xl mx-auto">
             <h2 className="font-serif text-2xl font-bold text-center mb-2">UK Redundancy Guides</h2>
             <p className="text-center text-sm text-muted-foreground mb-7">Contextual reading alongside your runway report. Not financial advice.</p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <Link href="/statutory-redundancy-pay-calculator" data-testid="guide-card-statutory">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <Link href="/redundancy-pay-calculator-2026" data-testid="guide-card-statutory">
                 <div className="rounded-xl border bg-card p-5 hover:shadow-md transition-shadow h-full cursor-pointer">
                   <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2">Guide</p>
-                  <p className="font-semibold text-sm leading-snug mb-2">Statutory Redundancy Pay 2025</p>
-                  <p className="text-xs text-muted-foreground leading-relaxed">Age-band multipliers, the weekly cap, tax treatment and service limits.</p>
+                  <p className="font-semibold text-sm leading-snug mb-2">Statutory Redundancy Pay {GUIDE_CONTENT_YEAR}</p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">Age-band multipliers, the weekly cap, tax treatment and service limits — current-year assumptions.</p>
                 </div>
               </Link>
               <Link href="/redundancy-mortgage" data-testid="guide-card-mortgage">
@@ -603,6 +714,27 @@ export default function LandingPage() {
                   <p className="text-xs text-muted-foreground leading-relaxed">How VR compares to statutory, the runway implications, and key considerations.</p>
                 </div>
               </Link>
+              <Link href="/redundancy-package-calculator" data-testid="guide-card-package">
+                <div className="rounded-xl border bg-card p-5 hover:shadow-md transition-shadow h-full cursor-pointer">
+                  <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2">Calculator</p>
+                  <p className="font-semibold text-sm leading-snug mb-2">Redundancy package calculator</p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">Statutory, notice, holiday and enhanced pay in one package estimate.</p>
+                </div>
+              </Link>
+              <Link href="/how-long-will-my-redundancy-pay-last" data-testid="guide-card-runway">
+                <div className="rounded-xl border bg-card p-5 hover:shadow-md transition-shadow h-full cursor-pointer">
+                  <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2">Runway</p>
+                  <p className="font-semibold text-sm leading-snug mb-2">How long will redundancy pay last?</p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">Test package, savings and spending assumptions against household runway.</p>
+                </div>
+              </Link>
+              <Link href="/ai-redundancy-calculator" data-testid="guide-card-ai">
+                <div className="rounded-xl border bg-card p-5 hover:shadow-md transition-shadow h-full cursor-pointer">
+                  <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2">AI &amp; work</p>
+                  <p className="font-semibold text-sm leading-snug mb-2">AI redundancy readiness</p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">Research-led preparation if automation or restructuring is on the table — not job-loss predictions.</p>
+                </div>
+              </Link>
             </div>
           </div>
         </section>
@@ -615,13 +747,14 @@ export default function LandingPage() {
               {[
                 { q: "Is this financial advice?", a: "No. RedundancyCalculatorUK is a non-advisory modelling tool. It produces illustrative projections based entirely on the assumptions you enter. It does not constitute financial, legal, tax, employment, debt, or benefits advice. All outputs are estimates and may not reflect actual outcomes." },
                 { q: "Does this predict whether I will find work?", a: "No. The tool uses historical UK labour market percentiles as reference data to model reemployment timelines, but it does not predict individual job search outcomes. Projected timelines are illustrative only." },
-                { q: "Is my data private?", a: "Yes. All financial calculations run entirely in your browser. No sensitive financial data is transmitted to or stored on our servers. We only store a session token to manage access to paid report features." },
+                { q: "Is my data private?", a: PRIVACY_COPY.faqPrivacy },
                 { q: "Is statutory redundancy pay included?", a: "Yes. The calculator uses current UK statutory redundancy rules, including age-band multipliers, the current weekly pay cap, and the 20-year service cap. A two-year qualifying service minimum applies. Check GOV.UK for the most current thresholds." },
                 { q: "Can I model voluntary redundancy?", a: "Yes. The paid report includes a voluntary redundancy comparison scenario. You can enter a VR package amount alongside your statutory entitlement and see how each affects the runway under these assumptions." },
                 { q: "Can I use this with my partner?", a: "Yes. The income recovery step includes an optional partner income field. This adds partner monthly net income to the household runway model." },
-                { q: "What does the paid report unlock?", a: `The full ${RUNWAY_REPORT_FULL} (£${RUNWAY_REPORT_PRICE_GBP}, one-off) unlocks: slow and severe income scenarios, mortgage and housing pressure test, household resilience view, expense sensitivity ranking, month-by-month capital path, voluntary redundancy comparison, structural transition scenario, and exportable report. Access lasts 6 months.` },
+                { q: "What does the paid report unlock?", a: `The full ${RUNWAY_REPORT_FULL} (£${RUNWAY_REPORT_PRICE_GBP}, one-off) unlocks the Improve your position hub — including protection measures playbook, package maximiser checks, missing money checklist, payout improvement scenarios, consultation preparation tools, role protection planner, package clarification emails, plus Runway Command Centre dashboards, ${RUNWAY_BRIEF_NAME} with position commentary, and export. Modelling and preparation only — not legal or employment advice. Access lasts 6 months.` },
                 { q: "Is this a subscription?", a: `No. Both the ${RUNWAY_REPORT_FULL} (£${RUNWAY_REPORT_PRICE_GBP}) and the 7-Day Redundancy Reset are one-off payments. There are no recurring charges.` },
-                { q: "What is the 7-Day Redundancy Reset?", a: "A separate one-off product for people who have completed the runway calculator and want help understanding what to do next. You receive a guided private written intake, a first written response within 1 working day, a follow-up check-in, and a final Redundancy Next-Step Plan through the Private Reset Portal or WhatsApp. No calls." },
+                { q: "How do I get my report — PDF, email or online?", a: PRIVACY_COPY.exportDelivery },
+                { q: "What is the 7-Day Redundancy Reset?", a: "A separate one-off product for people who have completed the runway calculator and want help understanding what to do next. You receive a guided private written intake, a first written response within 1 working day, a follow-up check-in, and a final Redundancy Next-Step Plan through the Private Reset Portal. No calls." },
               ].map((item, i) => (
                 <AccordionItem key={i} value={`faq-${i}`}>
                   <AccordionTrigger className="text-left text-base text-foreground" data-testid={`faq-trigger-${i}`}>{item.q}</AccordionTrigger>
@@ -639,16 +772,22 @@ export default function LandingPage() {
           style={{ background: `linear-gradient(135deg, ${heroTheme.navy} 0%, ${heroTheme.navySoft} 55%, ${heroTheme.navyMid} 100%)` }}
         >
           <div className="max-w-2xl mx-auto text-center">
-            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-white mb-4">Model your runway now.</h2>
-            <p className="mb-8 text-sm text-slate-400">Free preview in minutes. Full private report unlocked for £39.</p>
+            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-white mb-4">
+              {PRODUCT_COPY.positioningHeadline}
+            </h2>
+            <p className="mb-8 text-sm text-slate-400 max-w-lg mx-auto">
+              Free statutory estimate in minutes. Full position tools and runway report — £{RUNWAY_REPORT_PRICE_GBP}, one-off.
+            </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-              <Button size="lg" className="btn-gold rounded-full px-8"
+              <Button size="lg" className={`${GOLD_CTA} px-6 sm:px-8`}
                 onClick={() => navigate("/wizard")} data-testid="button-bottom-cta">
-                Build my private report — Free preview <ArrowRight className="w-4 h-4 ml-2" />
+                <span className="sm:hidden">{PRODUCT_COPY.bottomCtaFreeMobile}</span>
+                <span className="hidden sm:inline">{PRODUCT_COPY.bottomCtaFree}</span>
+                <ArrowRight className="w-4 h-4 ml-2 shrink-0" />
               </Button>
-              <Button size="lg" variant="outline" className="rounded-full px-8 hover:text-white hover:bg-white/10 border-white/25 text-slate-300"
+              <Button size="lg" variant="outline" className="rounded-full px-6 sm:px-8 whitespace-normal h-auto min-h-10 py-2.5 inline-flex items-center justify-center text-center text-sm sm:text-base hover:text-white hover:bg-white/10 border-white/25 text-slate-300"
                 onClick={() => navigate("/wizard")} data-testid="button-bottom-cta-paid">
-                Unlock full report — £39
+                {PRODUCT_COPY.bottomCtaPaid}
               </Button>
             </div>
           </div>

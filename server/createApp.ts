@@ -1,6 +1,7 @@
 import express, { type Express, type Request, type Response, type NextFunction } from "express";
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
+import createMemoryStore from "memorystore";
 import { createServer, type Server } from "http";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
@@ -37,27 +38,41 @@ export async function createApp(): Promise<AppBundle> {
   app.set("trust proxy", 1);
   app.set("etag", false);
 
-  const PgSession = connectPgSimple(session);
-  app.use(
-    session({
-      store: new PgSession({
-        conString: process.env.DATABASE_URL,
-        createTableIfMissing: true,
-        tableName: "user_sessions",
-        pruneSessionInterval: 60 * 60,
-      }),
-      secret: process.env.SESSION_SECRET || "rruk-dev-secret",
-      resave: false,
-      saveUninitialized: false,
-      name: "rruk.sid",
-      cookie: {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 90 * 24 * 60 * 60 * 1000,
-        sameSite: "lax",
-      },
-    }),
-  );
+  if (process.env.NODE_ENV === "production") {
+    const secret = process.env.SESSION_SECRET?.trim();
+    if (!secret || secret === "change-me-in-production" || secret === "rruk-dev-secret") {
+      throw new Error("SESSION_SECRET must be set to a strong random value in production");
+    }
+  }
+
+  const isVercel = process.env.VERCEL === "1";
+  const sessionOptions: session.SessionOptions = {
+    secret: process.env.SESSION_SECRET || "rruk-dev-secret",
+    resave: false,
+    saveUninitialized: false,
+    name: "rruk.sid",
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 90 * 24 * 60 * 60 * 1000,
+      sameSite: "lax",
+    },
+  };
+
+  if (isVercel) {
+    const MemoryStore = createMemoryStore(session);
+    sessionOptions.store = new MemoryStore({ checkPeriod: 86_400_000 });
+  } else {
+    const PgSession = connectPgSimple(session);
+    sessionOptions.store = new PgSession({
+      conString: process.env.DATABASE_URL,
+      createTableIfMissing: true,
+      tableName: "user_sessions",
+      pruneSessionInterval: 60 * 60,
+    });
+  }
+
+  app.use(session(sessionOptions));
 
   app.use((req, res, next) => {
     const start = Date.now();
@@ -99,10 +114,11 @@ export async function createApp(): Promise<AppBundle> {
     return res.status(status).json({ message });
   });
 
-  const isVercel = process.env.VERCEL === "1";
   const isProduction = process.env.NODE_ENV === "production";
 
-  if (isProduction || isVercel) {
+  if (isVercel) {
+    // Static HTML/assets are served by Vercel from outputDirectory (dist/public).
+  } else if (isProduction) {
     serveStatic(app);
   } else {
     const { setupVite } = await import("./vite");

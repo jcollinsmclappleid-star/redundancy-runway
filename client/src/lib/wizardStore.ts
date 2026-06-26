@@ -58,12 +58,17 @@ function loadInputs(): RunwayInputs {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       const parsed = JSON.parse(saved);
-      return {
+      const merged = {
         ...defaultInputs,
         ...parsed,
         context: { ...defaultInputs.context, ...(parsed.context || {}) },
         redundancyPackage: { ...defaultInputs.redundancyPackage, ...(parsed.redundancyPackage || {}) },
       };
+      // Legacy: older sessions stored ~3 months from sector median; planning default is 6.
+      if (merged.monthsUntilNewJob > 0 && merged.monthsUntilNewJob < 6) {
+        merged.monthsUntilNewJob = 6;
+      }
+      return merged;
     }
   } catch {}
   return { ...defaultInputs };

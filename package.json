@@ -8,14 +8,14 @@
     "build": "tsx script/build.ts",
     "start": "NODE_ENV=production node --env-file=.env dist/index.cjs",
     "check": "tsc",
-    "test": "node --import tsx --test client/src/lib/engine.test.ts client/src/lib/complianceCopy.test.ts",
+    "test": "node --import tsx --test client/src/lib/engine.test.ts client/src/lib/complianceCopy.test.ts client/src/lib/position-enhancement/buildPositionEnhancementData.test.ts client/src/lib/private-runway-brief/buildBriefDocument.test.ts server/seo.test.ts",
     "db:push": "node --env-file=.env ./node_modules/drizzle-kit/bin.cjs push",
     "stripe:setup": "node --env-file=.env ./node_modules/tsx/dist/cli.mjs script/setup-stripe.ts",
     "stripe:publishable-key": "node --env-file=.env ./node_modules/tsx/dist/cli.mjs script/fetch-stripe-publishable.ts",
     "brief:example": "node --env-file=.env ./node_modules/tsx/dist/cli.mjs script/generate-example-brief.ts",
     "sitemap:generate": "node ./node_modules/tsx/dist/cli.mjs script/generate-sitemap.ts",
     "reset:seed": "node --env-file=.env ./node_modules/tsx/dist/cli.mjs script/seed-demo-reset.ts",
-    "resend:verify": "node --env-file=.env ./node_modules/tsx/dist/cli.mjs script/verify-resend.ts",
+    "resend:verify": "node --env-file=.env --env-file=.env.local ./node_modules/tsx/dist/cli.mjs script/verify-resend.ts",
     "env:sync-vercel": "bash script/sync-vercel-env.sh"
   },
   "dependencies": {
@@ -113,6 +113,7 @@
     "tailwindcss": "^3.4.17",
     "tsx": "^4.20.5",
     "typescript": "5.6.3",
+    "vercel": "^54.17.3",
     "vite": "^7.3.0"
   },
   "overrides": {

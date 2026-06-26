@@ -7,8 +7,9 @@ import { Logo } from "@/components/Logo";
 import { DisclaimerBanner } from "@/components/DisclaimerBanner";
 import { Footer } from "@/components/Footer";
 
-const SUPPORT_EMAIL = "support@redundancycalculatoruk.co.uk";
-const CANONICAL = "https://redundancycalculatoruk.co.uk/contact";
+import { SITE_URL, SUPPORT_EMAIL } from "@shared/site";
+
+const CANONICAL = `${SITE_URL}/contact`;
 
 export default function ContactPage() {
   return (
@@ -25,10 +26,10 @@ export default function ContactPage() {
         <meta property="og:title" content="Contact Us — RedundancyCalculatorUK" />
         <meta property="og:description" content="Get in touch with RedundancyCalculatorUK support." />
         <meta property="og:url" content={CANONICAL} />
-        <meta property="og:image" content="https://redundancycalculatoruk.co.uk/og-image.png" />
+        <meta property="og:image" content={`${SITE_URL}/og-image.png`} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Contact Us — RedundancyCalculatorUK" />
-        <meta name="twitter:image" content="https://redundancycalculatoruk.co.uk/og-image.png" />
+        <meta name="twitter:image" content={`${SITE_URL}/og-image.png`} />
       </Helmet>
 
       <div className="min-h-screen flex flex-col">

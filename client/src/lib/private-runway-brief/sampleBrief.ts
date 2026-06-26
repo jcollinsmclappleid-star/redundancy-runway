@@ -92,6 +92,24 @@ export const SAMPLE_PRIVATE_RUNWAY_NARRATIVE: PrivateRunwayBriefNarrative = {
       },
     ],
   },
+  positionEnhancementCommentary: {
+    summary:
+      "Under the sample assumptions, the enhanced package lifts the model total above the statutory-only baseline, but unpaid wages, bonus and payment timing are not fully confirmed in the figures entered.",
+    packageOpportunities: [
+      "Unpaid wages are not included — confirming final payroll items could change starting capital.",
+      "The employer or manual package figure should be checked against the settlement letter or offer breakdown.",
+      "Comparing statutory-only (~4 months on household costs) with the entered package (~10 months) shows how component gaps affect the picture.",
+      "Tax treatment is marked unclear — gross figures are used in this model until confirmed.",
+    ],
+    consultationReadiness:
+      "Under the sample assumptions, payment date and tax treatment are worth confirming with HR or payroll before relying on cash timing in this model. This is preparation support only — not legal or employment advice.",
+    leverageThemes: [
+      "Package components missing — clarifying missing items could improve the package total picture.",
+      "Enhanced or manual package — compare breakdown against the statutory estimate.",
+      "Payment date — confirm timing so cash availability aligns with household costs.",
+      "Payout improvement scenarios — different package totals could change how many months the money may last.",
+    ],
+  },
   capitalCompositionCommentary: {
     summary:
       "Under the sample assumptions, starting capital combines the redundancy package, cash savings and liquid investments. The enhanced package replaces the statutory estimate in the model total.",

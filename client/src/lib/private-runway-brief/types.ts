@@ -29,6 +29,12 @@ export interface PrivateRunwayBriefNarrative {
       explanation: string;
     }>;
   };
+  positionEnhancementCommentary?: {
+    summary: string;
+    packageOpportunities: string[];
+    consultationReadiness?: string;
+    leverageThemes: string[];
+  };
   capitalCompositionCommentary: {
     summary: string;
     itemComments: Array<{
@@ -258,10 +264,20 @@ export interface PrivateRunwayBriefPayload {
     label: string;
     status: string;
   }>;
+  positionEnhancement: {
+    situationType: "at_risk" | "post_redundancy" | "other";
+    topClarificationAreas: Array<{ itemKey: string; label: string; bucket: string }>;
+    missingMoneyKeys: string[];
+    scenarioInsight: string;
+    consultationPrepGaps: string[];
+    highValueLabels: string[];
+    leverageThemes: string[];
+  };
 }
 
 export interface StoredPrivateRunwayBrief {
-  narrative: PrivateRunwayBriefNarrative;
+  narrative?: PrivateRunwayBriefNarrative;
+  narrativeLite?: import("./briefDocumentTypes").BriefNarrativeLite;
   payloadFingerprint: string;
 }
 

@@ -279,7 +279,7 @@ function StepIncome({ inputs, setInputs }: { inputs: RunwayInputs; setInputs: (u
 
   const effectiveMedianMonths = useMemo(() => {
     const combined = Math.round((sectorData.medianWeeks + ageBandData.medianWeeks) / 2);
-    return Math.max(1, Math.round(weeksToMonths(combined)));
+    return Math.max(6, Math.round(weeksToMonths(combined)));
   }, [sectorData, ageBandData]);
 
   return (
@@ -415,16 +415,6 @@ function StepIncome({ inputs, setInputs }: { inputs: RunwayInputs; setInputs: (u
           )}
         </p>
       </div>
-
-      {inputs.currentMonthlyNetIncome <= 0 && gapIncome <= 0 && (
-        <div className="rounded-md border border-amber-200 bg-amber-50/80 p-3 flex items-start gap-2" data-testid="panel-income-nudge">
-          <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-          <p className="text-xs text-amber-900 leading-relaxed">
-            Prior income is not entered. Runway and resilience on the preview will assume capital drawdown only until you add
-            previous net income or gap-period income. The default job-gap assumption is 6 months once prior income is set.
-          </p>
-        </div>
-      )}
     </div>
   );
 }
@@ -659,6 +649,7 @@ export default function WizardPage() {
   function handleNext() {
     if (step < totalSteps - 1) {
       setStep(step + 1);
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
       navigate("/preview");
     }
@@ -667,6 +658,7 @@ export default function WizardPage() {
   function handleBack() {
     if (step > 0) {
       setStep(step - 1);
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
       navigate("/");
     }
@@ -699,17 +691,17 @@ export default function WizardPage() {
         <title>Build Your Redundancy Report — RedundancyCalculatorUK</title>
         <meta name="description" content="Enter your redundancy package, savings, income assumptions and monthly costs to build your private financial runway report. UK statutory calculation built in." />
         <meta name="robots" content="noindex, nofollow" />
-        <link rel="canonical" href="https://redundancycalculatoruk.co.uk/wizard" />
+        <link rel="canonical" href="https://www.redundancycalculatoruk.co.uk/wizard" />
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="RedundancyCalculatorUK" />
         <meta property="og:title" content="Build Your Redundancy Report — RedundancyCalculatorUK" />
         <meta property="og:description" content="Enter your redundancy package, savings, income assumptions and monthly costs to build your private financial runway report." />
-        <meta property="og:url" content="https://redundancycalculatoruk.co.uk/wizard" />
-        <meta property="og:image" content="https://redundancycalculatoruk.co.uk/og-image.png" />
+        <meta property="og:url" content="https://www.redundancycalculatoruk.co.uk/wizard" />
+        <meta property="og:image" content="https://www.redundancycalculatoruk.co.uk/og-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Build Your Redundancy Report — RedundancyCalculatorUK" />
         <meta name="twitter:description" content="Enter your redundancy package, savings, income assumptions and monthly costs to build your private financial runway report." />
-        <meta name="twitter:image" content="https://redundancycalculatoruk.co.uk/og-image.png" />
+        <meta name="twitter:image" content="https://www.redundancycalculatoruk.co.uk/og-image.png" />
       </Helmet>
       <DisclaimerBanner />
       <WizardShell

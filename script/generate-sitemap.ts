@@ -8,6 +8,7 @@
 import { readFileSync, writeFileSync } from "fs";
 import { resolve } from "path";
 import { SITE_URL } from "@shared/site";
+import { AI_REDUNDANCY_CLUSTER_SLUGS } from "@shared/aiRedundancySeo";
 
 const SEO_PAGES_FILE = resolve(
   import.meta.dirname,
@@ -23,6 +24,10 @@ const STATIC_ROUTES: Array<{ path: string; priority: string; changefreq: string 
   { path: "/", priority: "1.0", changefreq: "weekly" },
   { path: "/about", priority: "0.5", changefreq: "monthly" },
   { path: "/contact", priority: "0.5", changefreq: "monthly" },
+  { path: "/legal", priority: "0.4", changefreq: "yearly" },
+  { path: "/terms", priority: "0.4", changefreq: "yearly" },
+  { path: "/privacy", priority: "0.4", changefreq: "yearly" },
+  { path: "/methodology", priority: "0.5", changefreq: "monthly" },
   { path: "/redundancy-reset", priority: "0.7", changefreq: "monthly" },
   { path: "/redundancy-mortgage", priority: "0.8", changefreq: "monthly" },
 ];
@@ -35,15 +40,36 @@ const HIGH_PRIORITY_SLUGS = new Set([
   "redundancy-package-calculator",
   "redundancy-entitlement-calculator",
   "how-much-redundancy-pay-am-i-entitled-to",
+  "ai-redundancy-calculator",
+  "ai-job-risk-calculator",
+  "redundancy-readiness-calculator",
+  "at-risk-of-redundancy-calculator",
 ]);
 
+const MISSING_SEO_PAGES_FILE = resolve(
+  import.meta.dirname,
+  "..",
+  "client",
+  "src",
+  "pages",
+  "seo",
+  "missing-seo-page-content.ts",
+);
+
+function readSlugLinesFromFile(filePath: string): string[] {
+  const source = readFileSync(filePath, "utf8");
+  return [...source.matchAll(/^\s+slug: "([^"]+)"/gm)].map((match) => match[1]);
+}
+
 function readSeoCalculatorSlugs(): string[] {
-  const source = readFileSync(SEO_PAGES_FILE, "utf8");
-  const slugs = [...source.matchAll(/^\s+slug: "([^"]+)"/gm)].map((match) => match[1]);
+  const slugs = [
+    ...readSlugLinesFromFile(SEO_PAGES_FILE),
+    ...readSlugLinesFromFile(MISSING_SEO_PAGES_FILE),
+  ];
   if (slugs.length === 0) {
-    throw new Error(`No SEO slugs found in ${SEO_PAGES_FILE}`);
+    throw new Error(`No SEO slugs found in SEO page content files`);
   }
-  return slugs;
+  return [...new Set(slugs)];
 }
 
 function escapeXml(value: string) {
@@ -75,7 +101,7 @@ function main() {
 
   const seen = new Set(STATIC_ROUTES.map((route) => route.path));
 
-  for (const slug of readSeoCalculatorSlugs()) {
+  for (const slug of [...readSeoCalculatorSlugs(), ...AI_REDUNDANCY_CLUSTER_SLUGS]) {
     const path = `/${slug}`;
     if (seen.has(path)) continue;
     seen.add(path);

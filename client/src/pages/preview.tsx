@@ -10,7 +10,7 @@ import { ArrowRight, ArrowLeft, Layers, Check, Lock, Mail } from "lucide-react";
 import { useWizardStore } from "@/lib/wizardStore";
 import { computeRunway, computeEssentialOnlyComparison, computeRedundancyEstimate, computeScenarios, formatGBP, formatMonths } from "@/lib/engine";
 import { buildPreviewConsoleScenarios, getResilienceDisplay } from "@/lib/runwayAssumptions";
-import { Logo } from "@/components/Logo";
+import { SiteHeader } from "@/components/SiteHeader";
 import { DisclaimerBanner } from "@/components/DisclaimerBanner";
 import { RriGauge } from "@/components/rri-gauge";
 import { CapitalCompositionChart } from "@/components/capital-composition-chart";
@@ -97,23 +97,22 @@ export default function PreviewPage() {
         <title>Your Free Preview — RedundancyCalculatorUK</title>
         <meta name="description" content="Your free redundancy package estimate and runway preview — unlock the full report for stress tests and a plain-English brief." />
         <meta name="robots" content="noindex, nofollow" />
-        <link rel="canonical" href="https://redundancycalculatoruk.co.uk/preview" />
+        <link rel="canonical" href="https://www.redundancycalculatoruk.co.uk/preview" />
       </Helmet>
       <div className="min-h-screen bg-background">
         <DisclaimerBanner />
 
-        <header className="sticky top-0 z-40 flex items-center justify-between gap-4 px-6 py-4 border-b bg-background/95 backdrop-blur flex-wrap">
-          <Logo />
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={() => navigate("/wizard?step=0")} data-testid="button-add-package">
-              Add package details
-            </Button>
-            <Button variant="outline" onClick={() => navigate("/wizard")} data-testid="button-edit-inputs">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Edit assumptions
-            </Button>
-          </div>
-        </header>
+        <SiteHeader showCta={false} />
+
+        <div className="sticky top-[57px] z-30 flex items-center justify-end gap-2 px-6 py-2 border-b bg-background/95 backdrop-blur flex-wrap">
+          <Button variant="outline" size="sm" onClick={() => navigate("/wizard?step=0")} data-testid="button-add-package">
+            Add package details
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => navigate("/wizard")} data-testid="button-edit-inputs">
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Edit assumptions
+          </Button>
+        </div>
 
         <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-10">
           <PackageTotalHero inputs={inputs} />
@@ -186,7 +185,7 @@ export default function PreviewPage() {
                 <p className="text-xs text-muted-foreground">
                   {resilience.incomeModelled
                     ? "Full scenario range, stress tests and month-by-month paths are in the paid report."
-                    : "Add prior income in the wizard to model recovery paths and a fuller resilience score."}
+                    : "Runway is modelled as capital drawdown only. Income recovery paths unlock in the full report."}
                 </p>
               </div>
             </div>

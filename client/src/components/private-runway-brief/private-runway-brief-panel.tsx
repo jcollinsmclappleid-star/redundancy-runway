@@ -1,15 +1,18 @@
 import { useState, useCallback } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import type { RunwayInputs } from "@shared/schema";
 import type { PrivateRunwayBriefNarrative } from "@/lib/private-runway-brief/types";
+import type { BriefNarrativeLite } from "@/lib/private-runway-brief/briefDocumentTypes";
 import { buildPayload } from "@/lib/private-runway-brief/buildPayload";
 import { buildBriefDashboardData } from "@/lib/private-runway-brief/buildBriefDashboardData";
+import { buildBriefDocument } from "@/lib/private-runway-brief/buildBriefDocument";
+import { buildTemplateNarrativeForPanels } from "@/lib/private-runway-brief/buildBriefDocument";
 import { formatBriefPlainText } from "@/lib/private-runway-brief/formatBriefPlainText";
 import { usePrivateRunwayBrief } from "@/hooks/use-private-runway-brief";
 import { getSessionToken } from "@/lib/sessionToken";
 import { PrivateRunwayBriefReport } from "./private-runway-brief-report";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
   AlertDialog,
@@ -32,7 +35,9 @@ import {
   Loader2,
   LayoutDashboard,
 } from "lucide-react";
-import { RUNWAY_BRIEF_NAME } from "@shared/product";
+import { RUNWAY_BRIEF_NAME, PRIVACY_COPY, BRIEF_OPENAI_CONSENT_KEY } from "@shared/product";
+import type { BriefAiMode } from "@shared/briefAiPolicy";
+import { useAccess } from "@/hooks/use-access";
 
 function ConfidenceBadge({ inputs }: { inputs: RunwayInputs }) {
   const dashboard = buildBriefDashboardData(inputs);
@@ -51,16 +56,69 @@ function ConfidenceBadge({ inputs }: { inputs: RunwayInputs }) {
 
 interface PrivateRunwayBriefPanelProps {
   inputs: RunwayInputs;
+  prefilledNarrative?: PrivateRunwayBriefNarrative;
+  prefilledLite?: BriefNarrativeLite;
+  demoMode?: boolean;
 }
 
-export function PrivateRunwayBriefPanel({ inputs }: PrivateRunwayBriefPanelProps) {
-  const { narrative, status, setStatus, isStale, saveBrief, fingerprint } = usePrivateRunwayBrief(inputs);
+export function PrivateRunwayBriefPanel({
+  inputs,
+  prefilledNarrative,
+  prefilledLite,
+  demoMode = false,
+}: PrivateRunwayBriefPanelProps) {
+  const { hasAccess: paidAccess } = useAccess();
+  const hasPaidAccess = demoMode ? false : paidAccess;
+
+  const {
+    narrative: storedNarrative,
+    narrativeLite: storedLite,
+    status,
+    setStatus,
+    isStale,
+    saveBrief,
+    saveBriefLite,
+    fingerprint,
+  } = usePrivateRunwayBrief(inputs);
+
+  const narrativeLite = prefilledLite ?? storedLite;
+  const legacyNarrative = prefilledNarrative ?? storedNarrative;
+
+  const { data: briefConfig } = useQuery<{ aiMode: BriefAiMode }>({
+    queryKey: ["/api/brief-config"],
+    queryFn: async () => {
+      const res = await fetch("/api/brief-config");
+      if (!res.ok) return { aiMode: "lite" as const };
+      return res.json();
+    },
+    staleTime: 300_000,
+  });
+
+  const aiMode = briefConfig?.aiMode ?? "lite";
+  const showAiEnhance = aiMode !== "off" && !prefilledNarrative && hasPaidAccess;
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [confirmRegenerate, setConfirmRegenerate] = useState(false);
+  const [showOpenAiConsent, setShowOpenAiConsent] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const generate = useCallback(async () => {
+  const hasOpenAiConsent = () => {
+    try {
+      return localStorage.getItem(BRIEF_OPENAI_CONSENT_KEY) === "1";
+    } catch {
+      return false;
+    }
+  };
+
+  const saveOpenAiConsent = () => {
+    try {
+      localStorage.setItem(BRIEF_OPENAI_CONSENT_KEY, "1");
+    } catch {
+      /* ignore */
+    }
+  };
+
+  const enhanceSummary = useCallback(async () => {
     setErrorMessage(null);
     setStatus("loading");
     try {
@@ -70,39 +128,56 @@ export function PrivateRunwayBriefPanel({ inputs }: PrivateRunwayBriefPanelProps
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ sessionToken: getSessionToken(), payload }),
       });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.message || `Request failed (${res.status})`);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.message ?? `Request failed (${res.status})`);
+
+      if (data.narrativeLite) {
+        saveBriefLite(data.narrativeLite as BriefNarrativeLite, fingerprint);
+      } else if (data.narrative) {
+        saveBrief(data.narrative as PrivateRunwayBriefNarrative, fingerprint);
+      } else {
+        throw new Error("Unexpected brief response");
       }
-      const data: { narrative: PrivateRunwayBriefNarrative } = await res.json();
-      saveBrief(data.narrative, fingerprint);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Something went wrong. Please try again.";
       setErrorMessage(msg);
-      setStatus(narrative ? "stale" : "error");
+      setStatus(narrativeLite ? "stale" : "error");
     }
-  }, [inputs, fingerprint, saveBrief, setStatus, narrative]);
+  }, [inputs, fingerprint, saveBrief, saveBriefLite, setStatus, narrativeLite]);
 
-  const handleGenerate = () => {
-    if (narrative && (status === "done" || status === "stale")) {
+  const handleEnhance = () => {
+    if (!hasOpenAiConsent()) {
+      setShowOpenAiConsent(true);
+      return;
+    }
+    if (narrativeLite && (status === "done" || status === "stale")) {
       setConfirmRegenerate(true);
     } else {
-      generate();
+      enhanceSummary();
     }
   };
 
-  const handlePrint = () => {
-    window.print();
+  const handleOpenAiConsent = () => {
+    saveOpenAiConsent();
+    setShowOpenAiConsent(false);
+    if (narrativeLite && (status === "done" || status === "stale")) {
+      setConfirmRegenerate(true);
+    } else {
+      enhanceSummary();
+    }
   };
 
+  const handlePrint = () => window.print();
+
   const handleCopy = async () => {
-    if (!narrative) return;
-    await navigator.clipboard.writeText(formatBriefPlainText(inputs, narrative));
+    const dashboard = buildBriefDashboardData(inputs);
+    const document = buildBriefDocument(inputs, { narrativeLite: narrativeLite ?? undefined });
+    const panelNarrative =
+      legacyNarrative ?? buildTemplateNarrativeForPanels(inputs, document, dashboard);
+    await navigator.clipboard.writeText(formatBriefPlainText(inputs, panelNarrative));
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
-
-  const showReport = narrative && (status === "done" || status === "stale");
 
   return (
     <div className="space-y-5" data-testid="section-private-runway-brief">
@@ -114,111 +189,112 @@ export function PrivateRunwayBriefPanel({ inputs }: PrivateRunwayBriefPanelProps
           <div>
             <h2 className="text-base font-semibold text-white">{RUNWAY_BRIEF_NAME}</h2>
             <p className="text-xs text-white/50 mt-0.5">
-              Your Command Centre shows the model. Your Brief explains the figures in plain English.
+              Structured report from your figures — expert guidance, interactive navigation.
             </p>
           </div>
         </div>
         <ConfidenceBadge inputs={inputs} />
       </div>
 
-      {isStale && narrative && (
+      {errorMessage && (
+        <div className="flex items-start gap-2 p-3 rounded-lg bg-rose-50 border border-rose-200">
+          <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+          <p className="text-sm text-rose-700">{errorMessage}</p>
+        </div>
+      )}
+
+      {isStale && !prefilledNarrative && (
         <div
           className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-lg bg-amber-50 border border-amber-200"
           data-testid="banner-brief-stale"
         >
           <p className="text-sm text-amber-900">
-            Your assumptions have changed. Regenerate your {RUNWAY_BRIEF_NAME} to reflect the latest figures.
+            Your assumptions have changed. The report below updates automatically; re-enhance the executive summary if you use AI.
           </p>
-          <Button size="sm" variant="outline" className="border-amber-300 shrink-0" onClick={() => setConfirmRegenerate(true)}>
-            <RefreshCw className="w-3.5 h-3.5 mr-1.5" />
-            Regenerate brief
-          </Button>
         </div>
       )}
 
-      {status === "idle" || (status === "error" && !narrative) ? (
-        <Card className="border-gold/20" data-testid="card-brief-generate">
-          <CardContent className="p-5 space-y-4">
-            {errorMessage && (
-              <div className="flex items-start gap-2 p-3 rounded-lg bg-rose-50 border border-rose-200">
-                <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
-                <p className="text-sm text-rose-700">{errorMessage}</p>
-              </div>
-            )}
-            <div className="grid sm:grid-cols-2 gap-2 text-xs">
-              {[
-                "Dashboard metric cards",
-                "Runway path chart",
-                "Scenario range bars",
-                "Capital composition",
-                "Monthly pressure map",
-                "Sensitivity drivers",
-                "Assumption checklist",
-                "Professional questions",
-              ].map((label) => (
-                <div key={label} className="flex items-center gap-2 text-foreground/70">
-                  <span className="w-1 h-1 rounded-full bg-gold" />
-                  {label}
-                </div>
-              ))}
-            </div>
-            <div className="flex items-start gap-3 p-3.5 rounded-lg bg-primary/5 border border-primary/10">
-              <Sparkles className="w-4 h-4 text-primary/60 shrink-0 mt-0.5" />
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Only de-identified model figures are sent when you click generate — no names, contact details, employers or documents. Stored locally in your browser only.
-              </p>
-            </div>
-            <Button className="btn-gold" onClick={handleGenerate} data-testid="button-generate-brief">
-              <Sparkles className="w-4 h-4 mr-2" />
-              Generate {RUNWAY_BRIEF_NAME}
-            </Button>
-            <p className="text-[10px] text-muted-foreground">Usually takes 10–20 seconds · Max 3 generations per hour</p>
-          </CardContent>
-        </Card>
-      ) : status === "loading" ? (
-        <Card className="border-gold/20" data-testid="card-brief-loading">
-          <CardContent className="p-6 flex items-center gap-3">
-            <Loader2 className="w-5 h-5 animate-spin text-primary" />
-            <p className="text-sm text-muted-foreground">Generating your {RUNWAY_BRIEF_NAME} — this usually takes 10–20 seconds…</p>
-          </CardContent>
-        </Card>
-      ) : null}
-
-      {showReport && narrative && (
-        <>
-          <div
-            className="sticky top-0 z-20 flex flex-wrap gap-2 p-3 -mx-1 mb-2 bg-background/95 backdrop-blur border border-gold/20 rounded-lg print:hidden"
-            data-testid="brief-action-bar"
+      <div
+        className="sticky top-0 z-20 flex flex-wrap gap-2 p-3 -mx-1 mb-2 bg-background/95 backdrop-blur border border-gold/20 rounded-lg print:hidden"
+        data-testid="brief-action-bar"
+      >
+        <Button variant="outline" size="sm" onClick={handlePrint} data-testid="button-brief-print">
+          <Printer className="w-3.5 h-3.5 mr-1.5" />
+          Print
+        </Button>
+        <Button variant="outline" size="sm" onClick={handleCopy} data-testid="button-brief-copy">
+          {copied ? <Check className="w-3.5 h-3.5 mr-1.5" /> : <Copy className="w-3.5 h-3.5 mr-1.5" />}
+          {copied ? "Copied" : "Copy summary"}
+        </Button>
+        {showAiEnhance && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleEnhance}
+            disabled={status === "loading"}
+            data-testid="button-brief-enhance"
           >
-            <Button variant="outline" size="sm" onClick={handlePrint} data-testid="button-brief-print">
-              <Printer className="w-3.5 h-3.5 mr-1.5" />
-              Print
-            </Button>
-            <Button variant="outline" size="sm" onClick={handleCopy} data-testid="button-brief-copy">
-              {copied ? <Check className="w-3.5 h-3.5 mr-1.5" /> : <Copy className="w-3.5 h-3.5 mr-1.5" />}
-              {copied ? "Copied" : "Copy summary"}
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => setConfirmRegenerate(true)} data-testid="button-brief-regenerate">
-              <RefreshCw className="w-3.5 h-3.5 mr-1.5" />
-              Regenerate brief
-            </Button>
-            <Link href="/results">
-              <Button variant="outline" size="sm" data-testid="button-brief-command-centre">
-                <LayoutDashboard className="w-3.5 h-3.5 mr-1.5" />
-                Command Centre
-              </Button>
-            </Link>
-          </div>
-          <PrivateRunwayBriefReport inputs={inputs} narrative={narrative} />
-        </>
+            {status === "loading" ? (
+              <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+            ) : (
+              <Sparkles className="w-3.5 h-3.5 mr-1.5" />
+            )}
+            {narrativeLite?.aiEnhanced ? "Re-enhance summary" : "Enhance summary (optional)"}
+          </Button>
+        )}
+        <Link href="/results">
+          <Button variant="outline" size="sm" data-testid="button-brief-command-centre">
+            <LayoutDashboard className="w-3.5 h-3.5 mr-1.5" />
+            Command Centre
+          </Button>
+        </Link>
+      </div>
+
+      {!prefilledNarrative && aiMode === "off" && (
+        <p className="text-xs text-muted-foreground print:hidden">
+          Report built from expert templates and your model figures. AI enhancement is off.
+        </p>
       )}
+
+      {showAiEnhance && hasOpenAiConsent() && (
+        <p className="text-xs text-muted-foreground print:hidden" data-testid="brief-openai-notice">
+          Optional AI enhancement uses OpenAI with de-identified model figures only — not your name or employer.
+        </p>
+      )}
+
+      <PrivateRunwayBriefReport
+        inputs={inputs}
+        narrative={legacyNarrative}
+        narrativeLite={narrativeLite}
+        demoMode={demoMode}
+      />
+
+      <AlertDialog open={showOpenAiConsent} onOpenChange={setShowOpenAiConsent}>
+        <AlertDialogContent data-testid="dialog-brief-openai-consent">
+          <AlertDialogHeader>
+            <AlertDialogTitle>{PRIVACY_COPY.briefOpenAiConsentTitle}</AlertDialogTitle>
+            <AlertDialogDescription className="text-left space-y-3">
+              <span className="block">{PRIVACY_COPY.briefOpenAi}</span>
+              <span className="block text-muted-foreground">
+                You only need to confirm this once on this device. The report works without AI — templates and your figures always render the numbers.
+              </span>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Not now</AlertDialogCancel>
+            <AlertDialogAction onClick={handleOpenAiConsent} data-testid="button-brief-openai-consent">
+              I understand — enhance summary
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <AlertDialog open={confirmRegenerate} onOpenChange={setConfirmRegenerate}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Regenerate {RUNWAY_BRIEF_NAME}?</AlertDialogTitle>
+            <AlertDialogTitle>Re-enhance executive summary?</AlertDialogTitle>
             <AlertDialogDescription>
-              Regenerating will replace the current brief with a new version based on your latest figures.
+              This replaces only the AI executive headline and key observations. The rest of the report stays on expert templates and your figures.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -226,10 +302,10 @@ export function PrivateRunwayBriefPanel({ inputs }: PrivateRunwayBriefPanelProps
             <AlertDialogAction
               onClick={() => {
                 setConfirmRegenerate(false);
-                generate();
+                enhanceSummary();
               }}
             >
-              Regenerate brief
+              Re-enhance
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

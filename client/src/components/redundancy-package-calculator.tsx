@@ -1,10 +1,13 @@
 import { useMemo } from "react";
+import { useLocation } from "wouter";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { PoundSterling, Info, AlertTriangle } from "lucide-react";
+import { PoundSterling, Info, AlertTriangle, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { formatGBP, computeRedundancyEstimate, UK_STATUTORY_REDUNDANCY } from "@/lib/engine";
+import { PRODUCT_COPY, RUNWAY_REPORT_PRICE_GBP } from "@shared/product";
 import type { RunwayInputs } from "@shared/schema";
 
 function CurrencyInput({ label, value, onChange, tooltip, id }: {
@@ -59,13 +62,26 @@ function NumberInput({ label, value, onChange, tooltip, id, min = 0, max, placeh
       </div>
       <Input
         id={id}
-        type="number"
-        min={min}
-        max={max}
-        value={value || ""}
+        type="text"
+        inputMode="numeric"
+        value={value > 0 ? String(value) : ""}
         onChange={(e) => {
-          let v = Number(e.target.value) || 0;
-          v = Math.max(min, v);
+          const raw = e.target.value.replace(/[^\d]/g, "");
+          if (raw === "") {
+            onChange(0);
+            return;
+          }
+          let v = Number(raw);
+          if (!Number.isFinite(v)) return;
+          if (max !== undefined) v = Math.min(max, v);
+          onChange(v);
+        }}
+        onBlur={(e) => {
+          const raw = e.target.value.replace(/[^\d]/g, "");
+          if (raw === "") return;
+          let v = Number(raw);
+          if (!Number.isFinite(v) || v === 0) return;
+          if (v < min) v = min;
           if (max !== undefined) v = Math.min(max, v);
           onChange(v);
         }}
@@ -84,6 +100,7 @@ interface RedundancyPackageCalculatorProps {
 }
 
 export function RedundancyPackageCalculator({ inputs, setInputs, compact = false }: RedundancyPackageCalculatorProps) {
+  const [, navigate] = useLocation();
   const pkg = inputs.redundancyPackage;
   const isVoluntaryRedundancy = inputs.context.employmentStatus === "voluntary_redundancy";
 
@@ -96,6 +113,42 @@ export function RedundancyPackageCalculator({ inputs, setInputs, compact = false
 
   return (
     <div className="space-y-4">
+      {!compact && (
+        <div className="rounded-lg border border-gold/25 bg-gold/5 p-3 space-y-3" data-testid="panel-wizard-unlock-teaser">
+          <div>
+            <p className="text-xs font-semibold text-primary leading-snug">
+              {PRODUCT_COPY.previewUnlockHeadline}
+            </p>
+            <p className="text-[11px] text-muted-foreground leading-relaxed mt-1">
+              {PRODUCT_COPY.previewUnlockSub}
+            </p>
+          </div>
+          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+            {PRODUCT_COPY.previewUnlockAngles.map((angle) => (
+              <li
+                key={angle.id}
+                className="rounded-md bg-background/60 border border-gold/15 px-2.5 py-2"
+                data-testid={`wizard-unlock-angle-${angle.id}`}
+              >
+                <p className="text-[10px] font-semibold text-primary leading-snug">{angle.title}</p>
+                <p className="text-[10px] text-muted-foreground leading-snug mt-0.5 line-clamp-2">{angle.desc}</p>
+              </li>
+            ))}
+          </ul>
+          <Button
+            type="button"
+            size="sm"
+            variant="outline"
+            className="h-auto min-h-8 whitespace-normal py-1.5 text-xs border-gold/40"
+            onClick={() => navigate("/unlock")}
+            data-testid="button-wizard-whats-in-full-report"
+          >
+            See what unlocks — £{RUNWAY_REPORT_PRICE_GBP}
+            <ArrowRight className="w-3 h-3 ml-1.5 shrink-0" />
+          </Button>
+        </div>
+      )}
+
       {!compact && (
         <div className="rounded-md bg-muted/50 p-3">
           <p className="text-xs text-muted-foreground">

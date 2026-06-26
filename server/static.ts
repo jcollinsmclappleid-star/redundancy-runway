@@ -5,9 +5,9 @@ import { applyRouteSeoToHtml } from "./seo";
 
 function resolveDistPublic(): string {
   const candidates = [
+    path.resolve(process.cwd(), "dist", "public"),
     path.resolve(__dirname, "public"),
     path.resolve(__dirname, "..", "dist", "public"),
-    path.resolve(process.cwd(), "dist", "public"),
   ];
   for (const candidate of candidates) {
     if (fs.existsSync(candidate)) {

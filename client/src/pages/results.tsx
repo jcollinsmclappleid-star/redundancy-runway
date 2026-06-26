@@ -63,7 +63,9 @@ import { PackageChecksDashboard } from "@/components/package-dashboard/PackageCh
 import { usePrivateRunwayBrief } from "@/hooks/use-private-runway-brief";
 import { formatBriefPlainText } from "@/lib/private-runway-brief/formatBriefPlainText";
 import { RunwayReportBrand } from "@/components/RunwayReportBrand";
-import { COMMAND_CENTRE_NAME, RUNWAY_REPORT_FULL, RUNWAY_REPORT_SEO } from "@shared/product";
+import type { RunwayInputs } from "@shared/schema";
+import type { PrivateRunwayBriefNarrative } from "@/lib/private-runway-brief/types";
+import { COMMAND_CENTRE_NAME, RUNWAY_REPORT_FULL, RUNWAY_REPORT_PRICE_GBP, RUNWAY_REPORT_SEO } from "@shared/product";
 
 function StabilityBadge({ band, score }: { band: RunwayResult["stabilityBand"]; score: number }) {
   const variant = band === "Stable" ? "default" : band === "Watch" ? "secondary" : "destructive";
@@ -83,11 +85,22 @@ export default function ResultsPage() {
   );
 }
 
-function ResultsPageContent() {
+export function ResultsPageContent({
+  isDemo = false,
+  overrideInputs,
+  demoBriefNarrative,
+}: {
+  isDemo?: boolean;
+  overrideInputs?: RunwayInputs;
+  demoBriefNarrative?: PrivateRunwayBriefNarrative;
+} = {}) {
   const [, navigate] = useLocation();
-  const { inputs } = useWizardStore();
-  const { hasAccess } = useAccess();
-  const { narrative } = usePrivateRunwayBrief(inputs);
+  const { inputs: wizardInputs } = useWizardStore();
+  const inputs = overrideInputs ?? wizardInputs;
+  const { hasAccess: paidAccess } = useAccess();
+  const hasAccess = isDemo || paidAccess;
+  const { narrative: liveNarrative } = usePrivateRunwayBrief(inputs);
+  const narrative = isDemo ? demoBriefNarrative : liveNarrative;
   const [copied, setCopied] = useState(false);
 
   const result = useMemo(() => computeRunway(inputs), [inputs]);
@@ -185,7 +198,7 @@ function ResultsPageContent() {
   };
 
   useEffect(() => {
-    if (!hasAccess) return;
+    if (!hasAccess || isDemo) return;
     apiRequest("POST", "/api/calculations", {
       sessionToken: getSessionToken(),
       inputs,
@@ -194,25 +207,28 @@ function ResultsPageContent() {
 
   return (
     <>
+      {!isDemo && (
       <Helmet>
         <title>Your {RUNWAY_REPORT_FULL} — RedundancyCalculatorUK</title>
         <meta name="description" content="Your full private redundancy runway report — capital trajectory, income recovery scenarios, mortgage sensitivity, expense analysis and stress testing." />
         <meta name="robots" content="noindex, nofollow" />
-        <link rel="canonical" href="https://redundancycalculatoruk.co.uk/results" />
+        <link rel="canonical" href="https://www.redundancycalculatoruk.co.uk/results" />
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="RedundancyCalculatorUK" />
         <meta property="og:title" content={`Your ${RUNWAY_REPORT_FULL} — RedundancyCalculatorUK`} />
         <meta property="og:description" content="Your full private redundancy runway report — capital trajectory, income recovery scenarios, mortgage sensitivity, expense analysis and stress testing." />
-        <meta property="og:url" content="https://redundancycalculatoruk.co.uk/results" />
-        <meta property="og:image" content="https://redundancycalculatoruk.co.uk/og-image.png" />
+        <meta property="og:url" content="https://www.redundancycalculatoruk.co.uk/results" />
+        <meta property="og:image" content="https://www.redundancycalculatoruk.co.uk/og-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={`Your ${RUNWAY_REPORT_FULL} — RedundancyCalculatorUK`} />
         <meta name="twitter:description" content="Your full private redundancy runway report — capital trajectory, income recovery scenarios, mortgage sensitivity, expense analysis and stress testing." />
-        <meta name="twitter:image" content="https://redundancycalculatoruk.co.uk/og-image.png" />
+        <meta name="twitter:image" content="https://www.redundancycalculatoruk.co.uk/og-image.png" />
       </Helmet>
+      )}
     <div className="min-h-screen bg-background" data-testid="page-results">
-      <DisclaimerBanner />
+      {!isDemo && <DisclaimerBanner />}
 
+      {!isDemo && (
       <header className="border-b px-8 py-4">
         <div className="max-w-6xl mx-auto flex items-center justify-between gap-4 flex-wrap">
           <div className="flex items-center gap-4">
@@ -248,6 +264,16 @@ function ResultsPageContent() {
           </div>
         </div>
       </header>
+      )}
+
+      {isDemo && (
+        <div className="rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-950 print:hidden mx-4 sm:mx-8 mt-4 max-w-6xl" data-testid="banner-report-demo">
+          <p className="font-medium">Sample report preview</p>
+          <p className="text-xs text-amber-900/80 mt-1">
+            Illustrative baseline figures and report structure only — position playbooks, runway dashboards and the full brief unlock with your figures (£{RUNWAY_REPORT_PRICE_GBP}).
+          </p>
+        </div>
+      )}
 
       <main className="max-w-6xl mx-auto p-4 sm:p-8 space-y-8">
         {/* Navy hero summary — white workspace */}
@@ -552,7 +578,7 @@ function ResultsPageContent() {
           </TabsContent>
 
           <TabsContent value="brief">
-            <PrivateRunwayBriefPanel inputs={inputs} />
+            <PrivateRunwayBriefPanel inputs={inputs} prefilledNarrative={isDemo ? demoBriefNarrative : undefined} demoMode={isDemo} />
           </TabsContent>
         </Tabs>
 

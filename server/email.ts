@@ -1,3 +1,5 @@
+import { REPORT_PRODUCT_NAME } from "./stripeConfig";
+
 const FROM_DOMAIN = "redundancycalculatoruk.co.uk";
 const defaultFrom = `noreply@${FROM_DOMAIN}`;
 const fromEmail = process.env.ACCESS_EMAIL_FROM || process.env.RESEND_FROM_EMAIL || defaultFrom;
@@ -56,7 +58,7 @@ export async function sendPurchaseConfirmationEmail(
   const accessUrl = `${origin}/access?token=${encodeURIComponent(sessionToken)}`;
   const html = emailWrapper(`
     <h1 style="margin:0 0 8px;color:#0f1b2d;font-size:24px;">Your report access is ready</h1>
-    <p style="margin:0 0 24px;color:#475569;font-size:15px;line-height:1.6;">Thank you for your purchase. Open your Private Runway Report, update your assumptions, and download your summary any time before ${htmlEscape(formatDate(expiresAt))}.</p>
+    <p style="margin:0 0 24px;color:#475569;font-size:15px;line-height:1.6;">Thank you for your purchase. Open your ${htmlEscape(REPORT_PRODUCT_NAME)}, update your assumptions, and download your summary any time before ${htmlEscape(formatDate(expiresAt))}.</p>
     <p style="margin:0 0 24px;"><a href="${accessUrl}" style="display:inline-block;background:#c9a84c;color:#fff;padding:14px 28px;border-radius:8px;font-weight:700;text-decoration:none;">Open my report</a></p>
     <p style="margin:0;color:#94a3b8;font-size:12px;word-break:break-all;">${htmlEscape(accessUrl)}</p>
     <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;" />
@@ -69,7 +71,7 @@ export async function sendMagicLinkEmail(email: string, token: string, origin: s
   const verifyUrl = `${origin}/api/auth/verify?token=${encodeURIComponent(token)}`;
   const html = emailWrapper(`
     <h1 style="margin:0 0 8px;color:#0f1b2d;font-size:24px;">Sign in to your report</h1>
-    <p style="margin:0 0 24px;color:#475569;font-size:15px;line-height:1.6;">Click below to open your Private Runway Report. This link expires in 1 hour and works once.</p>
+    <p style="margin:0 0 24px;color:#475569;font-size:15px;line-height:1.6;">Click below to open your ${htmlEscape(REPORT_PRODUCT_NAME)}. This link expires in 1 hour and works once.</p>
     <p style="margin:0 0 24px;"><a href="${verifyUrl}" style="display:inline-block;background:#c9a84c;color:#fff;padding:14px 28px;border-radius:8px;font-weight:700;text-decoration:none;">Sign in</a></p>
     <p style="margin:0;color:#94a3b8;font-size:12px;word-break:break-all;">${htmlEscape(verifyUrl)}</p>
   `);

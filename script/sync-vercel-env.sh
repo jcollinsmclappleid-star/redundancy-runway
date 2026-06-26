@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Push .env variables to Vercel Preview environment (not Production).
+# Push .env variables to Vercel Preview and Production.
 # Usage: npm run env:sync-vercel
+# Never syncs DEV_GRANT_REPORT_ACCESS (local dev only).
 set -euo pipefail
 
 if [[ ! -f .env ]]; then
@@ -8,7 +9,8 @@ if [[ ! -f .env ]]; then
   exit 1
 fi
 
-VERCEL_CMD="${VERCEL_CMD:-npx vercel}"
+VERCEL_CMD="${VERCEL_CMD:-./node_modules/.bin/vercel}"
+SCOPE="${VERCEL_SCOPE:-jcollinsmclappleid-stars-projects}"
 
 if ! $VERCEL_CMD whoami >/dev/null 2>&1; then
   echo "Vercel CLI not authenticated. Run: npx vercel login"
@@ -18,6 +20,7 @@ fi
 ENV_KEYS=(
   DATABASE_URL
   SESSION_SECRET
+  BRIEF_AI_MODE
   RESEND_API_KEY
   ACCESS_EMAIL_FROM
   ADMIN_PASSWORD
@@ -29,17 +32,26 @@ ENV_KEYS=(
   STRIPE_WEBHOOK_SECRET
 )
 
-echo "Syncing Preview env vars to linked Vercel project (skipping Production)..."
+push_env_to_vercel() {
+  local target="$1"
+  echo "Syncing ${target}..."
+  for key in "${ENV_KEYS[@]}"; do
+    value="$(grep -E "^${key}=" .env | head -1 | cut -d= -f2- | tr -d '\r' || true)"
+    value="${value#\"}"
+    value="${value%\"}"
+    if [[ -z "${value}" ]]; then
+      echo "  skip ${key} (empty in .env)"
+      continue
+    fi
+    printf '%s' "$value" | $VERCEL_CMD env add "$key" "$target" --force --scope "$SCOPE" 2>/dev/null || \
+      printf '%s' "$value" | $VERCEL_CMD env add "$key" "$target" --scope "$SCOPE"
+    echo "  set ${key}"
+  done
+}
 
-for key in "${ENV_KEYS[@]}"; do
-  value="$(grep -E "^${key}=" .env | head -1 | cut -d= -f2- || true)"
-  if [[ -z "${value}" ]]; then
-    echo "  skip ${key} (empty in .env)"
-    continue
-  fi
-  printf '%s' "$value" | $VERCEL_CMD env add "$key" preview --force --scope jcollinsmclappleid-stars-projects 2>/dev/null || \
-    printf '%s' "$value" | $VERCEL_CMD env add "$key" preview --scope jcollinsmclappleid-stars-projects
-  echo "  set ${key} (preview)"
-done
+push_env_to_vercel preview
+echo ""
+push_env_to_vercel production
 
-echo "Done. Deploy preview with: vercel deploy"
+echo ""
+echo "Done. Deploy production with: npx vercel --prod"

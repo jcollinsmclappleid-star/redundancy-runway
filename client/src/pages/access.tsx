@@ -6,6 +6,7 @@ import { Logo } from "@/components/Logo";
 import { DisclaimerBanner } from "@/components/DisclaimerBanner";
 import { setSessionToken } from "@/lib/sessionToken";
 import type { RunwayInputs } from "@shared/schema";
+import { RUNWAY_REPORT_PRICE_GBP } from "@shared/product";
 
 export default function AccessPage() {
   const [, navigate] = useLocation();
@@ -81,7 +82,7 @@ export default function AccessPage() {
               <h1 className="font-serif text-xl font-semibold">Assumptions restored</h1>
               <p className="text-sm text-muted-foreground mb-4">Your saved figures are back. Unlock the full report to view all scenarios and download your summary.</p>
               <Button className="btn-gold w-full" onClick={() => navigate("/preview")}>Continue to preview</Button>
-              <Button variant="outline" className="w-full" onClick={() => navigate("/unlock")}>Unlock full report — £39</Button>
+              <Button variant="outline" className="w-full" onClick={() => navigate("/unlock")}>Unlock full report — £{RUNWAY_REPORT_PRICE_GBP}</Button>
             </>
           )}
           {status === "error" && (

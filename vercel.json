@@ -3,16 +3,40 @@
   "version": 2,
   "buildCommand": "npm run build",
   "installCommand": "npm install",
+  "outputDirectory": "dist/public",
   "framework": null,
   "regions": ["lhr1"],
+  "redirects": [
+    {
+      "source": "/statutory-redundancy-pay",
+      "destination": "/statutory-redundancy-pay-calculator",
+      "permanent": true
+    },
+    {
+      "source": "/voluntary-redundancy",
+      "destination": "/voluntary-redundancy-calculator",
+      "permanent": true
+    },
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "permanent": true
+    }
+  ],
   "functions": {
-    "api/index.ts": {
+    "api/[[...path]].ts": {
       "maxDuration": 60,
-      "memory": 1024
+      "includeFiles": "dist/vercel-handler.cjs"
+    },
+    "api/html.ts": {
+      "includeFiles": "dist/seo-handler.cjs"
     }
   },
   "rewrites": [
-    { "source": "/(.*)", "destination": "/api" }
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/api/html?pathname=$1"
+    }
   ],
   "git": {
     "deploymentEnabled": {

@@ -8,6 +8,7 @@ import { Logo } from "@/components/Logo";
 import { DisclaimerBanner } from "@/components/DisclaimerBanner";
 import { Footer } from "@/components/Footer";
 import { formatGBP, UK_STATUTORY_REDUNDANCY } from "@/lib/engine";
+import { GUIDE_CONTENT_YEAR } from "@shared/site";
 
 export default function RedundancyMortgagePage() {
   return (
@@ -15,14 +16,14 @@ export default function RedundancyMortgagePage() {
       <Helmet>
         <title>Redundancy and Your Mortgage: What to Model Before You Panic | RedundancyCalculatorUK</title>
         <meta name="description" content="How redundancy affects your mortgage — what to consider around payment holidays, rate exposure and capital runway. Model your own housing scenario with the free UK redundancy calculator." />
-        <link rel="canonical" href="https://redundancycalculatoruk.co.uk/redundancy-mortgage" />
+        <link rel="canonical" href="https://www.redundancycalculatoruk.co.uk/redundancy-mortgage" />
         <meta property="og:type" content="article" />
         <meta property="og:site_name" content="RedundancyCalculatorUK" />
         <meta property="og:title" content="Redundancy and Your Mortgage: What to Model Before You Panic" />
         <meta property="og:description" content="How redundancy affects your mortgage — what to consider around payment holidays, rate exposure and capital runway. Model your own housing scenario with the free UK redundancy calculator." />
-        <meta property="og:url" content="https://redundancycalculatoruk.co.uk/redundancy-mortgage" />
-        <meta property="og:image" content="https://redundancycalculatoruk.co.uk/og-image.png" />
-        <meta name="twitter:image" content="https://redundancycalculatoruk.co.uk/og-image.png" />
+        <meta property="og:url" content="https://www.redundancycalculatoruk.co.uk/redundancy-mortgage" />
+        <meta property="og:image" content="https://www.redundancycalculatoruk.co.uk/og-image.png" />
+        <meta name="twitter:image" content="https://www.redundancycalculatoruk.co.uk/og-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Redundancy and Your Mortgage: What to Model Before You Panic" />
         <meta name="twitter:description" content="How redundancy affects your mortgage — what to consider around payment holidays, rate exposure and capital runway." />
@@ -31,9 +32,9 @@ export default function RedundancyMortgagePage() {
           "@type": "Article",
           "headline": "Redundancy and Your Mortgage: What to Model Before You Panic",
           "description": "How redundancy affects your mortgage — payment holidays, rate exposure and capital runway modelling.",
-          "publisher": { "@type": "Organization", "name": "RedundancyCalculatorUK", "url": "https://redundancycalculatoruk.co.uk" },
+          "publisher": { "@type": "Organization", "name": "RedundancyCalculatorUK", "url": "https://www.redundancycalculatoruk.co.uk" },
           "dateModified": "2025-04-01",
-          "mainEntityOfPage": "https://redundancycalculatoruk.co.uk/redundancy-mortgage"
+          "mainEntityOfPage": "https://www.redundancycalculatoruk.co.uk/redundancy-mortgage"
         })}</script>
       </Helmet>
 
@@ -214,9 +215,9 @@ export default function RedundancyMortgagePage() {
               <div className="border-t pt-6" data-testid="section-related-links">
                 <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-3">Related guides</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-                  <Link href="/statutory-redundancy-pay-calculator" data-testid="link-guide-statutory">
+                  <Link href="/redundancy-pay-calculator-2026" data-testid="link-guide-statutory">
                     <div className="rounded-lg border p-4 hover:shadow-sm transition-shadow">
-                      <p className="text-sm font-medium mb-1">Statutory Redundancy Pay 2025</p>
+                      <p className="text-sm font-medium mb-1">Statutory Redundancy Pay {GUIDE_CONTENT_YEAR}</p>
                       <p className="text-xs text-muted-foreground">Age-band multipliers, the {formatGBP(UK_STATUTORY_REDUNDANCY.weeklyPayCap)} weekly cap, tax treatment and service limits.</p>
                     </div>
                   </Link>

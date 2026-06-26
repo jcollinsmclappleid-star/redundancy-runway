@@ -13,7 +13,8 @@ import {
   SAMPLE_PRIVATE_RUNWAY_NARRATIVE,
   EXAMPLE_RUNWAY_INPUTS,
 } from "@/lib/private-runway-brief/sampleExample";
-import { PRODUCT_COPY, RUNWAY_BRIEF_NAME, RUNWAY_REPORT_FULL } from "@shared/product";
+import { PRODUCT_COPY, RUNWAY_BRIEF_NAME, RUNWAY_REPORT_FULL, REDUNDANCY_PAY_MAXIMISER_NAME } from "@shared/product";
+import { MaximiserExampleStrip } from "./MaximiserExampleStrip";
 
 const THEME_LABELS: Record<string, string> = {
   starting_capital: "Starting capital",
@@ -67,6 +68,16 @@ export function BriefExampleEmbed({
         </div>
 
         <CardContent className="p-4 sm:p-6 space-y-6 bg-[hsl(40_30%_98%)]">
+          <MaximiserExampleStrip />
+          <div className="rounded-lg border border-gold/15 bg-white p-3">
+            <p className="text-[10px] uppercase tracking-wide text-primary font-semibold mb-2">
+              {REDUNDANCY_PAY_MAXIMISER_NAME} + runway brief
+            </p>
+            <p className="text-xs text-muted-foreground leading-relaxed mb-3">
+              Section 2 of the paid report leads with the maximiser — then package breakdown, runway dashboards and position playbooks.
+            </p>
+          </div>
+
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
             <div className="rounded-lg border border-gold/15 bg-white p-3">
               <p className="text-[9px] uppercase text-muted-foreground mb-1">Statutory est.</p>
@@ -155,11 +166,18 @@ export function BriefExampleEmbed({
               </Button>
             </Link>
             {showFullExampleLink && (
-              <Link href="/brief-example" className="flex-1">
-                <Button variant="outline" className="w-full" data-testid="button-brief-example-full">
-                  View full example brief
-                </Button>
-              </Link>
+              <>
+                <Link href="/report-example" className="flex-1">
+                  <Button variant="outline" className="w-full" data-testid="button-brief-example-report">
+                    Full report example
+                  </Button>
+                </Link>
+                <Link href="/brief-example" className="flex-1">
+                  <Button variant="outline" className="w-full" data-testid="button-brief-example-full">
+                    Example brief only
+                  </Button>
+                </Link>
+              </>
             )}
           </div>
         </CardContent>

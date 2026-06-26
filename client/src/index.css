@@ -180,6 +180,13 @@
     @apply border-border;
   }
 
+  html,
+  body,
+  #root {
+    overflow-x: clip;
+    max-width: 100%;
+  }
+
   body {
     @apply font-sans antialiased bg-background text-foreground;
   }

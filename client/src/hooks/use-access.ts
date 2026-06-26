@@ -11,6 +11,7 @@ interface AccessStatus {
   reason?: string;
   expiresAt?: string;
   purchasedAt?: string;
+  devGranted?: boolean;
 }
 
 interface ServerSession {
@@ -20,6 +21,7 @@ interface ServerSession {
   expiresAt?: string;
   purchasedAt?: string;
   sessionToken?: string;
+  devGranted?: boolean;
 }
 
 export function useAccess() {
@@ -78,6 +80,7 @@ export function useAccess() {
   const email = serverAccess?.email;
   const expiresAt = serverAccess?.expiresAt ?? localAccess?.expiresAt;
   const reason = localAccess?.reason;
+  const devGranted = serverAccess?.devGranted ?? localAccess?.devGranted ?? false;
   const isLoading = serverSessionQuery.isLoading || (!serverAccess?.hasAccess && localQuery.isLoading);
 
   return {
@@ -87,6 +90,7 @@ export function useAccess() {
     email,
     expiresAt,
     reason,
+    devGranted,
     sessionToken,
     refresh,
     logout,

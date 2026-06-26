@@ -1,4 +1,5 @@
 import type { PrivateRunwayBriefPayload } from "../../client/src/lib/private-runway-brief/types";
+import { buildBriefLiteEnhancementInstructions } from "../../shared/briefEnhancementPrompt";
 
 function fmt(n: number) {
   return `£${n.toLocaleString("en-GB")}`;
@@ -100,5 +101,43 @@ ${payload.weakInputs.length > 0 ? payload.weakInputs.map((w) => `  - ${w.input}:
 EXECUTIVE SUMMARY THEMES (use themeKey for qualitativeFindings — report on model logic, no numbers in your response):
 ${payload.executiveSummaryThemeKeys.map((k) => `  - ${k}`).join("\n")}
 
+POSITION ENHANCEMENT (for positionEnhancementCommentary — no amounts; no entitlement claims):
+  Situation type: ${payload.positionEnhancement.situationType}
+  Scenario insight key: ${payload.positionEnhancement.scenarioInsight}
+  High-value clarification labels: ${payload.positionEnhancement.highValueLabels.join(", ") || "None flagged"}
+  Missing money keys: ${payload.positionEnhancement.missingMoneyKeys.join(", ") || "None"}
+  Consultation prep gaps: ${payload.positionEnhancement.consultationPrepGaps.join(", ") || "None"}
+  Leverage themes: ${payload.positionEnhancement.leverageThemes.join(", ")}
+  Top clarification areas:
+${payload.positionEnhancement.topClarificationAreas.map((a) => `    - ${a.label} [${a.bucket}]`).join("\n") || "    None"}
+
 Return valid JSON matching the narrative schema now. No numbers in your response.`;
+}
+
+export function buildPrivateRunwayBriefLiteUserPrompt(
+  payload: PrivateRunwayBriefPayload,
+  allowedThemeKeys: string[],
+): string {
+  const enhancement = buildBriefLiteEnhancementInstructions(allowedThemeKeys);
+
+  return `Generate ONLY the executive overlay for a Private Runway Brief. Do NOT include numbers in your response.
+
+allowedThemeKeys: ${allowedThemeKeys.join(", ")}
+
+SITUATION: ${payload.positionEnhancement.situationType}
+CONFIDENCE: ${payload.confidenceDisplayLabel}
+FOCUS THEMES (pick up to 3 from allowedThemeKeys): ${payload.executiveSummaryThemeKeys.join(", ")}
+PACKAGE GAPS: ${payload.positionEnhancement.missingMoneyKeys.join(", ") || "none"}
+HIGH-VALUE LABELS: ${payload.positionEnhancement.highValueLabels.join(", ") || "none"}
+CONSULTATION PREP GAPS: ${payload.positionEnhancement.consultationPrepGaps.join(", ") || "none"}
+LEVERAGE THEMES: ${payload.positionEnhancement.leverageThemes.join(", ") || "none"}
+HOUSING PRESSURE: ${payload.pressure.housingPercentOfEssentials ?? "n/a"}% of essentials
+STABILITY: ${payload.baseline.stabilityBand}
+EMPLOYMENT STATUS: ${payload.context.employmentStatus}
+
+Sections 4 and 7 already contain full deterministic playbooks (package verification, maximiser, consultation prep, HR questions). The executive overlay should point to those themes without repeating checklist content.
+
+${enhancement}
+
+Return JSON with executiveHeadline and executiveObservations (max 3).`;
 }

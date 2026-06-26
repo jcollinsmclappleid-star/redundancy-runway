@@ -15,8 +15,6 @@ import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 
 const BOUNDARY_NOTE = "This is practical written support only. It is not financial, legal, debt, employment, medical or mental health advice.";
-const WHATSAPP_CONTACT_NUMBER = "+447700900000";
-const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_CONTACT_NUMBER.replace(/[^0-9]/g, "")}`;
 
 type StepKind = "contact" | "chips" | "textarea";
 
@@ -83,8 +81,6 @@ const INTAKE_STEPS: IntakeStep[] = [
 interface IntakeState {
   name: string;
   email: string;
-  contactMethod: "whatsapp" | "webchat";
-  whatsappNumber: string;
   answers: Record<string, string>;
 }
 
@@ -135,12 +131,9 @@ export default function RedundancyResetIntakePage() {
   const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
   const [portalUrl, setPortalUrl] = useState(portalToken ? `/redundancy-reset/portal/${portalToken}` : "");
-  const [submittedContactMethod, setSubmittedContactMethod] = useState<"whatsapp" | "webchat">("webchat");
   const [data, setData] = useState<IntakeState>({
     name: "",
     email: "",
-    contactMethod: "webchat",
-    whatsappNumber: "",
     answers: {},
   });
 
@@ -167,18 +160,13 @@ export default function RedundancyResetIntakePage() {
         throw new Error("No checkout session found. Please complete payment via the product page.");
       }
 
-      const intakeAnswers: Record<string, string> = {
-        ...state.answers,
-      };
-      if (state.contactMethod === "whatsapp" && state.whatsappNumber) {
-        intakeAnswers.whatsappNumber = state.whatsappNumber;
-      }
+      const intakeAnswers: Record<string, string> = { ...state.answers };
 
       const response = await apiRequest("POST", "/api/resets", {
         stripeSessionId,
         name: state.name,
         email: state.email,
-        contactMethod: state.contactMethod,
+        contactMethod: "webchat" as const,
         intakeAnswers,
       });
 
@@ -188,8 +176,7 @@ export default function RedundancyResetIntakePage() {
       }
       return response.json();
     },
-    onSuccess: (response, variables) => {
-      setSubmittedContactMethod(variables.contactMethod);
+    onSuccess: (response) => {
       setPortalUrl(response.portalUrl ?? portalUrl);
       setSubmitted(true);
       window.localStorage.removeItem(storageKey(stripeSessionId));
@@ -206,7 +193,6 @@ export default function RedundancyResetIntakePage() {
     if (isContactStep) {
       if (!data.name.trim()) return false;
       if (!data.email.trim()) return false;
-      if (data.contactMethod === "whatsapp" && !data.whatsappNumber.trim()) return false;
       return true;
     }
     return (data.answers[currentStep.id] ?? "").trim().length > 0;
@@ -272,24 +258,6 @@ export default function RedundancyResetIntakePage() {
               Your first written response will be prepared within 1 working day.
             </p>
 
-            {submittedContactMethod === "whatsapp" && (
-              <Card className="mb-5 border-primary/20 bg-primary/5 text-left" data-testid="card-whatsapp-contact">
-                <CardContent className="pt-4 pb-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <MessageSquare className="w-4 h-4 text-primary" />
-                    <p className="text-sm font-medium">Your written response can arrive via WhatsApp</p>
-                  </div>
-                  <p className="text-xs text-muted-foreground mb-3 leading-relaxed">
-                    Save this number so you recognise the response. This is not live chat, so you do not need to wait on this page.
-                  </p>
-                  <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-primary text-primary-foreground text-sm font-medium px-4 py-2 rounded-md transition-colors">
-                    <MessageSquare className="w-4 h-4" />
-                    {WHATSAPP_CONTACT_NUMBER}
-                  </a>
-                </CardContent>
-              </Card>
-            )}
-
             <TimelineCard submitted />
             <div className="rounded-md border border-primary/15 bg-muted/30 p-3 my-5 text-left" data-testid="reminder-boundaries">
               <p className="text-xs text-muted-foreground leading-relaxed">{BOUNDARY_NOTE}</p>
@@ -345,7 +313,7 @@ export default function RedundancyResetIntakePage() {
         <title>7-Day Redundancy Reset - Intake | RedundancyCalculatorUK</title>
         <meta name="description" content="Complete your 7-Day Redundancy Reset intake privately and receive a written response within 1 working day." />
         <meta name="robots" content="noindex, nofollow" />
-        <link rel="canonical" href="https://redundancycalculatoruk.co.uk/redundancy-reset/intake" />
+        <link rel="canonical" href="https://www.redundancycalculatoruk.co.uk/redundancy-reset/intake" />
       </Helmet>
       <div className="min-h-screen flex flex-col bg-background">
         <DisclaimerBanner />
@@ -380,7 +348,7 @@ export default function RedundancyResetIntakePage() {
                   <div className="space-y-4">
                     <div className="rounded-md border p-3">
                       <p className="text-xs text-muted-foreground mb-1">Name and contact</p>
-                      <p className="text-sm font-medium">{data.name} · {data.email} · {data.contactMethod === "webchat" ? "Private Reset Portal" : "WhatsApp"}</p>
+                      <p className="text-sm font-medium">{data.name} · {data.email} · Private Reset Portal</p>
                     </div>
                     {INTAKE_STEPS.filter((item) => item.kind !== "contact").map((item) => (
                       <div key={item.id} className="rounded-md border p-3">
@@ -408,35 +376,15 @@ export default function RedundancyResetIntakePage() {
                         <Input id="email" type="email" value={data.email} onChange={(event) => setData((prev) => ({ ...prev, email: event.target.value }))} placeholder="you@example.com" data-testid="input-email" />
                         <p className="text-xs text-muted-foreground mt-1.5">Used to recover your Private Reset Portal if you change device or lose the link.</p>
                       </div>
-                      <div>
-                        <Label className="text-sm mb-2 block">Preferred written response route</Label>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                          {(["webchat", "whatsapp"] as const).map((method) => (
-                            <button
-                              key={method}
-                              type="button"
-                              onClick={() => setData((prev) => ({ ...prev, contactMethod: method }))}
-                              className={`min-h-24 flex items-start gap-3 p-4 rounded-lg border text-left transition-colors ${
-                                data.contactMethod === method ? "border-primary bg-primary/5" : "border-border hover:border-primary/40"
-                              }`}
-                              data-testid={`button-contact-${method}`}
-                            >
-                              {method === "webchat" ? <Shield className="w-4 h-4 text-primary mt-0.5 shrink-0" /> : <MessageSquare className="w-4 h-4 text-primary mt-0.5 shrink-0" />}
-                              <span>
-                                <span className="block text-sm font-medium">{method === "webchat" ? "Private Reset Portal" : "WhatsApp"}</span>
-                                <span className="block text-xs text-muted-foreground mt-1">{method === "webchat" ? "Your written response appears in your private portal." : "Receive written messages. No calls or live chat."}</span>
-                              </span>
-                            </button>
-                          ))}
+                      <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 flex gap-3">
+                        <Shield className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                        <div>
+                          <p className="text-sm font-medium">Private Reset Portal</p>
+                          <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                            Your written response and 7-day plan will appear in your private portal. You will receive a secure link after payment — not live chat or calls.
+                          </p>
                         </div>
                       </div>
-                      {data.contactMethod === "whatsapp" && (
-                        <div>
-                          <Label htmlFor="whatsapp" className="text-sm mb-1.5 block">Your WhatsApp number</Label>
-                          <Input id="whatsapp" value={data.whatsappNumber} onChange={(event) => setData((prev) => ({ ...prev, whatsappNumber: event.target.value }))} placeholder="e.g. 07700 900000" data-testid="input-whatsapp" />
-                          <p className="text-xs text-muted-foreground mt-1.5">Used only to deliver your written response and plan.</p>
-                        </div>
-                      )}
                     </div>
                   )}
 
