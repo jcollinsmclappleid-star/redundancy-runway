@@ -46,10 +46,7 @@ function restoreApiUrl(req: VercelRequest) {
 }
 
 export default async function vercelHandler(req: VercelRequest, res: VercelResponse) {
-  const url = req.url ?? "";
-
-  // SPA + per-route SEO HTML (rewrite sends pathname query)
-  if (req.query.pathname !== undefined || url.startsWith("/api/html")) {
+  if (req.query.pathname !== undefined) {
     return serveSeoHtml(req, res);
   }
 
@@ -58,9 +55,9 @@ export default async function vercelHandler(req: VercelRequest, res: VercelRespo
   }
 
   const handlerPath = join(process.cwd(), "dist/vercel-handler.cjs");
-  const { getVercelHandler } = require(handlerPath) as {
-    getVercelHandler: () => Promise<(req: VercelRequest, res: VercelResponse) => Promise<unknown>>;
+  const { getVercelApp } = require(handlerPath) as {
+    getVercelApp: () => Promise<import("express").Express>;
   };
-  const handler = await getVercelHandler();
-  return handler(req, res);
+  const app = await getVercelApp();
+  return app(req, res);
 }

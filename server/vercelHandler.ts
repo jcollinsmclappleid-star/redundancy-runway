@@ -1,14 +1,14 @@
-import serverless from "serverless-http";
 import { createApp } from "./createApp";
+import type { Express } from "express";
 
-let handler: ReturnType<typeof serverless> | undefined;
+let app: Express | undefined;
 
-export async function getVercelHandler() {
-  if (!handler) {
+export async function getVercelApp() {
+  if (!app) {
     process.env.NODE_ENV = "production";
     process.env.VERCEL = "1";
-    const { app } = await createApp();
-    handler = serverless(app);
+    const bundle = await createApp();
+    app = bundle.app;
   }
-  return handler;
+  return app;
 }
