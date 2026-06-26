@@ -6,6 +6,7 @@ Disallow: /results
 Disallow: /unlock
 Disallow: /access
 Disallow: /recover
+Disallow: /report-access
 Disallow: /payment-success
 Disallow: /brief-example
 Disallow: /report-example

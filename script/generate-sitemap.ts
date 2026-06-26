@@ -2,8 +2,7 @@
  * Generates public/sitemap.xml from SEO page slugs and static public routes.
  * Run: npm run sitemap:generate
  *
- * Slugs are parsed from client/src/pages/seo/redundancy-calculator-pages.tsx
- * (the same source as the seoCalculatorPages export) to avoid importing React at build time.
+ * Slugs are parsed from SEO content source files to avoid importing React at build time.
  */
 import { readFileSync, writeFileSync } from "fs";
 import { resolve } from "path";
@@ -19,6 +18,8 @@ const SEO_PAGES_FILE = resolve(
   "seo",
   "redundancy-calculator-pages.tsx",
 );
+
+const APP_ROUTES_FILE = resolve(import.meta.dirname, "..", "client", "src", "App.tsx");
 
 const STATIC_ROUTES: Array<{ path: string; priority: string; changefreq: string }> = [
   { path: "/", priority: "1.0", changefreq: "weekly" },
@@ -56,15 +57,50 @@ const MISSING_SEO_PAGES_FILE = resolve(
   "missing-seo-page-content.ts",
 );
 
+const NOINDEX_ROUTE_PREFIXES = [
+  "/admin",
+  "/access",
+  "/brief-example",
+  "/payment-success",
+  "/preview",
+  "/recover",
+  "/report-access",
+  "/report-example",
+  "/results",
+  "/unlock",
+  "/wizard",
+  "/redundancy-reset/intake",
+  "/redundancy-reset/portal",
+];
+
 function readSlugLinesFromFile(filePath: string): string[] {
   const source = readFileSync(filePath, "utf8");
   return [...source.matchAll(/^\s+slug: "([^"]+)"/gm)].map((match) => match[1]);
+}
+
+function readGuidePageSlugsFromFile(filePath: string): string[] {
+  const source = readFileSync(filePath, "utf8");
+  return [...source.matchAll(/guidePage\(\s*"([^"]+)"/gm)].map((match) => match[1]);
+}
+
+function isIndexableLiteralRoute(path: string): boolean {
+  if (path.includes(":")) return false;
+  return !NOINDEX_ROUTE_PREFIXES.some((prefix) => path === prefix || path.startsWith(`${prefix}/`));
+}
+
+function readIndexableRoutesFromApp(): string[] {
+  const source = readFileSync(APP_ROUTES_FILE, "utf8");
+  return [...source.matchAll(/<Route\s+path="([^"]+)"/g)]
+    .map((match) => match[1])
+    .filter(isIndexableLiteralRoute)
+    .map((path) => (path === "/" ? path : path.replace(/\/+$/, "")));
 }
 
 function readSeoCalculatorSlugs(): string[] {
   const slugs = [
     ...readSlugLinesFromFile(SEO_PAGES_FILE),
     ...readSlugLinesFromFile(MISSING_SEO_PAGES_FILE),
+    ...readGuidePageSlugsFromFile(MISSING_SEO_PAGES_FILE),
   ];
   if (slugs.length === 0) {
     throw new Error(`No SEO slugs found in SEO page content files`);
@@ -101,10 +137,16 @@ function main() {
 
   const seen = new Set(STATIC_ROUTES.map((route) => route.path));
 
-  for (const slug of [...readSeoCalculatorSlugs(), ...AI_REDUNDANCY_CLUSTER_SLUGS]) {
-    const path = `/${slug}`;
+  const sitemapPaths = [
+    ...readSeoCalculatorSlugs().map((slug) => `/${slug}`),
+    ...AI_REDUNDANCY_CLUSTER_SLUGS.map((slug) => `/${slug}`),
+    ...readIndexableRoutesFromApp(),
+  ];
+
+  for (const path of sitemapPaths) {
     if (seen.has(path)) continue;
     seen.add(path);
+    const slug = path.slice(1);
     const priority = HIGH_PRIORITY_SLUGS.has(slug) ? "0.95" : "0.8";
     entries.push(urlEntry(path, priority, "monthly", lastmod));
   }

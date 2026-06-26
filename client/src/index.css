@@ -294,6 +294,19 @@
     transform: translateY(0);
   }
 
+  /* Warm gold panel — preview/unlock highlight sections */
+  .unlock-gold-panel {
+    border-radius: 1rem;
+    border: 2px solid hsl(38 72% 47% / 0.42) !important;
+    background: linear-gradient(
+      145deg,
+      hsl(42 78% 94%) 0%,
+      hsl(38 62% 90%) 48%,
+      hsl(42 72% 93%) 100%
+    ) !important;
+    box-shadow: none !important;
+  }
+
   /* Hero image overlay — brand navy palette */
   .hero-overlay {
     background: linear-gradient(
@@ -323,8 +336,23 @@
     .print\\:hidden {
       display: none !important;
     }
-    [data-testid="page-results"] {
+    body.report-print-mode [data-testid="page-results"] {
       background: white !important;
+    }
+    body.report-print-mode #improve-position-hub,
+    body.report-print-mode .report-print-section {
+      display: block !important;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    body.report-print-mode [role="tabpanel"] {
+      display: block !important;
+      visibility: visible !important;
+      height: auto !important;
+      overflow: visible !important;
+    }
+    body.report-print-mode [data-state="inactive"][role="tabpanel"] {
+      display: block !important;
     }
     .print-friendly-brief,
     #private-runway-brief-report {

@@ -68,18 +68,18 @@ export default function LandingPage() {
   return (
     <>
       <Helmet>
-        <title>RedundancyCalculatorUK | UK Statutory Redundancy Pay & Runway Calculator</title>
-        <meta name="description" content="UK redundancy pay calculator — estimate statutory redundancy pay, notice pay, holiday pay and your full package. See how many months the money may last and unlock tools to improve your position. Not financial advice." />
-        <link rel="canonical" href={`${SITE_URL}/`} />
+        <title>RedundancyCalculatorUK | Maximise Redundancy Pay & Check Your Runway</title>
+        <meta name="description" content="Check what could be in your redundancy package, see how many months it may cover, and prepare questions before HR or signing. UK statutory redundancy, notice, holiday, enhanced pay and runway modelling. Not financial advice." />
+        <link rel="canonical" href={SITE_URL} />
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="RedundancyCalculatorUK" />
-        <meta property="og:title" content="RedundancyCalculatorUK | UK Statutory Redundancy Pay & Runway Calculator" />
-        <meta property="og:description" content="UK redundancy pay calculator — statutory pay, package components and how long the money may last on your household costs. Private modelling from your figures." />
-        <meta property="og:url" content={`${SITE_URL}/`} />
+        <meta property="og:title" content="RedundancyCalculatorUK | Maximise Redundancy Pay & Check Your Runway" />
+        <meta property="og:description" content="Check your redundancy package, model runway months and prepare the questions to ask before you sign. Private modelling from your figures." />
+        <meta property="og:url" content={SITE_URL} />
         <meta property="og:image" content={`${SITE_URL}/og-image.png`} />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="RedundancyCalculatorUK | UK Statutory Redundancy Pay & Runway Calculator" />
-        <meta name="twitter:description" content="UK redundancy pay calculator — statutory pay, package components and how long the money may last on your household costs. Private modelling from your figures." />
+        <meta name="twitter:title" content="RedundancyCalculatorUK | Maximise Redundancy Pay & Check Your Runway" />
+        <meta name="twitter:description" content="Check your redundancy package, model runway months and prepare the questions to ask before you sign. Private modelling from your figures." />
         <meta name="twitter:image" content={`${SITE_URL}/og-image.png`} />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org", "@type": "Organization",
@@ -340,7 +340,7 @@ export default function LandingPage() {
         <section className="py-16 px-5 bg-surface border-b" data-testid="section-payout-first">
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-10">
-              <p className="text-[10px] uppercase tracking-[0.2em] text-primary font-semibold mb-3">Package + runway</p>
+              <p className="text-[10px] uppercase tracking-[0.2em] text-primary font-semibold mb-3">Maximise package + runway</p>
               <h2 className="font-display text-3xl sm:text-4xl font-bold mb-3">
                 {PRODUCT_COPY.payoutSectionHeading}
               </h2>
@@ -350,12 +350,12 @@ export default function LandingPage() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {[
-                { icon: Calculator, title: "Where could the package total go higher?", desc: "Statutory baseline with notice, holiday and enhanced components modelled separately — ranked by runway months gained." },
-                { icon: TrendingDown, title: "How many months left?", desc: "Baseline runway on your household costs, with slow and severe scenarios." },
-                { icon: ListChecks, title: REDUNDANCY_PAY_MAXIMISER_NAME, desc: "Ranks uplift levers by runway impact — notice, holiday, enhanced and PILON-style assumptions." },
-                { icon: TrendingUp, title: "Which outcome is worth pushing for?", desc: "Payout scenarios compared side by side with months gained or lost." },
-                { icon: BarChart2, title: "Where does the money go?", desc: "Payout-to-runway bridge from package components to starting capital." },
-                { icon: Home, title: "What if costs rise?", desc: "Mortgage pressure, income gaps and stress-case runway modelling." },
+                { icon: Calculator, title: "What could be in the package?", desc: "Check statutory, notice, holiday, enhanced pay and missing lines before you rely on the headline number." },
+                { icon: TrendingDown, title: "How many months could it cover?", desc: "Turn package, savings and household costs into baseline, slow and severe runway scenarios." },
+                { icon: ListChecks, title: REDUNDANCY_PAY_MAXIMISER_NAME, desc: "Ranks package lines by potential payout and runway impact — so you know what to verify first." },
+                { icon: TrendingUp, title: "Which payout outcome matters?", desc: "Compare statutory-only, employer offer and improved-package scenarios side by side." },
+                { icon: BarChart2, title: "How does payout become runway?", desc: "Bridge each package component into starting capital and month-by-month survivability." },
+                { icon: Home, title: "What if costs rise?", desc: "Model mortgage pressure, income gaps and expense stress cases before the gap begins." },
               ].map((card) => (
                 <Card key={card.title} className="border-gold/15">
                   <CardContent className="pt-5 pb-5">
@@ -383,8 +383,8 @@ export default function LandingPage() {
           <div className="max-w-3xl mx-auto text-center">
             <p className="text-[10px] uppercase tracking-[0.2em] text-primary font-semibold mb-2">Adapts to your situation</p>
             <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-              Already redundant? The report emphasises package breakdown, payout scenarios and runway impact. At risk of redundancy?
-              Consultation prep, role protection and alternative-role tools surface first — all included in the same £{RUNWAY_REPORT_PRICE_GBP} report.
+              Already redundant? The report leads with package breakdown, payout scenarios and runway impact. At risk of redundancy?
+              It brings consultation questions, role protection and evidence prep forward — all included in the same £{RUNWAY_REPORT_PRICE_GBP} report.
             </p>
             <Button variant="outline" className="rounded-full" onClick={() => scrollTo("whats-included")}>
               View full package contents
@@ -430,24 +430,24 @@ export default function LandingPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
               <div>
                 <h2 className="font-serif text-3xl sm:text-4xl font-bold mb-6 leading-snug">
-                  You need three answers — not just a statutory figure.
+                  You need three answers before you rely on the package.
                 </h2>
                 <div className="space-y-3 mb-6">
                   {[
                     {
                       icon: Calculator,
-                      headline: "Where could your package total go higher?",
-                      line: "Decompose statutory, notice, holiday and enhanced lines — model uplift scenarios and rank runway impact.",
+                      headline: "What could be included in your package?",
+                      line: "Check statutory, notice, holiday, enhanced pay and missing lines — then rank what to verify first.",
                     },
                     {
                       icon: Calendar,
-                      headline: "How long will the money last?",
-                      line: "Runway months on your real household costs.",
+                      headline: "How long could it last?",
+                      line: "Runway months from your package, savings, income assumptions and household costs.",
                     },
                     {
                       icon: MessageSquare,
-                      headline: "What should you ask HR?",
-                      line: "Consultation prep and evidence — not legal advice.",
+                      headline: "What should you ask before signing?",
+                      line: "Questions, evidence prompts and consultation preparation — not legal advice.",
                     },
                   ].map((card) => (
                     <div
@@ -478,12 +478,12 @@ export default function LandingPage() {
         <section className="py-16 px-5 bg-surface border-y" data-testid="section-report-explorer">
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-10">
-              <p className="text-[10px] uppercase tracking-[0.2em] text-primary font-semibold mb-3">Explore the report</p>
+              <p className="text-[10px] uppercase tracking-[0.2em] text-primary font-semibold mb-3">What you get</p>
               <h2 className="font-display text-3xl sm:text-4xl font-bold mb-3">
-                See what your private report includes
+                See the report that checks your package, runway and next questions
               </h2>
               <p className="text-muted-foreground max-w-lg mx-auto text-sm leading-relaxed">
-                Sample dashboards for package breakdown, runway path and your plain-English brief — start free, unlock when you are ready.
+                Sample the package maximiser, runway dashboards and plain-English brief — start free, unlock when you are ready.
               </p>
             </div>
             <LandingReportExplorer />
@@ -501,9 +501,9 @@ export default function LandingPage() {
               <div className="hidden sm:block absolute top-9 left-[calc(16.67%+1rem)] right-[calc(16.67%+1rem)] h-px bg-border" />
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-10">
                 {[
-                  { step: "1", title: "Tell us your situation", desc: "Enter your redundancy package, savings, income assumptions and monthly costs. UK statutory redundancy calculation is built in.", icon: Calculator },
-                  { step: "2", title: "Build your report", desc: "See your baseline runway, capital path over time, and how the model changes under different income recovery assumptions.", icon: TrendingDown },
-                  { step: "3", title: "Explore the scenarios", desc: "Compare stress cases, mortgage pressure, household resilience, voluntary redundancy alternatives and expense sensitivity.", icon: Layers },
+                  { step: "1", title: "Enter your package and costs", desc: "Add statutory inputs, notice, holiday, enhanced assumptions, savings, income and monthly household costs.", icon: Calculator },
+                  { step: "2", title: "Check the package", desc: "See what is included, what may be missing and how different payout outcomes change your starting capital.", icon: TrendingDown },
+                  { step: "3", title: "Plan the runway and next questions", desc: "Compare runway scenarios, stress cases, mortgage pressure and preparation prompts before you sign.", icon: Layers },
                 ].map((item) => (
                   <div key={item.step} className="flex flex-col items-center text-center" data-testid={`card-step-${item.step}`}>
                     <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm mb-6 relative z-10 shadow-md text-white"
@@ -526,9 +526,9 @@ export default function LandingPage() {
         <section className="py-16 px-5 bg-muted" id="pricing" data-testid="section-pricing">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="font-serif text-3xl sm:text-4xl font-bold mb-3">Simple, one-off pricing</h2>
+              <h2 className="font-serif text-3xl sm:text-4xl font-bold mb-3">Start free. Unlock the full package check when you need it.</h2>
               <p className="text-muted-foreground text-sm max-w-md mx-auto">
-                Start free. Unlock the full private report for a one-off payment — no subscription, ever.
+                Free preview first. Full private report for a one-off payment — no subscription, ever.
               </p>
             </div>
 
@@ -576,7 +576,7 @@ export default function LandingPage() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
                       <div className="rounded-lg border p-3 bg-primary/5">
                         <p className="text-xs font-semibold mb-1.5">Improve your position hub</p>
-                        <p className="text-[11px] text-muted-foreground">{REDUNDANCY_PAY_MAXIMISER_NAME}, missing money, scenarios & consultation prep</p>
+                      <p className="text-[11px] text-muted-foreground">{REDUNDANCY_PAY_MAXIMISER_NAME}, missing money, payout scenarios & consultation prep</p>
                       </div>
                       <div className="rounded-lg border p-3 bg-primary/5">
                         <p className="text-xs font-semibold mb-1.5">{COMMAND_CENTRE_NAME}</p>

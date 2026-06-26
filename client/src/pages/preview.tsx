@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowRight, ArrowLeft, Layers, Check, Lock, Mail } from "lucide-react";
+import { ArrowRight, ArrowLeft, Layers, Check, Lock, Mail, TrendingUp, Shield, BookOpen, FileText } from "lucide-react";
 import { useWizardStore } from "@/lib/wizardStore";
 import { computeRunway, computeEssentialOnlyComparison, computeRedundancyEstimate, computeScenarios, formatGBP, formatMonths } from "@/lib/engine";
 import { buildPreviewConsoleScenarios, getResilienceDisplay } from "@/lib/runwayAssumptions";
@@ -21,11 +21,18 @@ import { apiRequest } from "@/lib/queryClient";
 import { getSessionToken } from "@/lib/sessionToken";
 import { PersonalRunwayPreviewGap } from "@/components/private-runway-brief/PersonalRunwayPreviewGap";
 import { StatutoryFreeSummary } from "@/components/package-dashboard/StatutoryFreeSummary";
-import { LockedPackagePreviewGrid } from "@/components/package-dashboard/LockedPackagePreviewGrid";
+import { GOLD_UNLOCK_SHELL_CLASS, LockedPackagePreviewGrid } from "@/components/package-dashboard/LockedPackagePreviewGrid";
 import { PackageTotalHero } from "@/components/preview/PackageTotalHero";
 import { PreviewIncomeAssumptionsPanel } from "@/components/preview/PreviewIncomeAssumptionsPanel";
-import { PRODUCT_COPY, RUNWAY_REPORT_PRICE_GBP } from "@shared/product";
+import { PRODUCT_COPY, REDUNDANCY_PAY_MAXIMISER_NAME, RUNWAY_REPORT_FULL, RUNWAY_REPORT_PRICE_GBP } from "@shared/product";
 import { WIDER_PACKAGE_TEASER, DASHBOARD_DISCLAIMER } from "@shared/complianceCopy";
+
+const PREVIEW_ANGLE_ICONS = {
+  package: TrendingUp,
+  runway: Shield,
+  prepare: FileText,
+  brief: BookOpen,
+} as const;
 
 export default function PreviewPage() {
   const [, navigate] = useLocation();
@@ -128,29 +135,60 @@ export default function PreviewPage() {
             </CardContent>
           </Card>
 
-          <LockedPackagePreviewGrid inputs={inputs} />
+          <LockedPackagePreviewGrid inputs={inputs} prominent />
 
-          <Card className="border-primary/20 bg-surface" data-testid="card-unlock-cta">
-            <CardContent className="pt-8 pb-8 text-center">
-              <h3 className="font-display font-semibold text-xl mb-2">{PRODUCT_COPY.unlockHeadline}</h3>
-              <p className="text-sm text-muted-foreground max-w-md mx-auto mb-4">
-                Go beyond the statutory estimate. Model the wider package, see how the payout feeds into your runway, and generate a plain-English brief from your figures.
-              </p>
-              <ul className="text-xs text-muted-foreground max-w-md mx-auto mb-6 space-y-1.5 text-left">
-                {PRODUCT_COPY.unlockModules.map((item) => (
-                  <li key={item} className="flex items-start gap-2">
-                    <Check className="w-3.5 h-3.5 text-gold shrink-0 mt-0.5" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <Button className="btn-gold w-full max-w-sm" onClick={() => navigate("/unlock")} data-testid="button-unlock">
-                Unlock full report — £{RUNWAY_REPORT_PRICE_GBP}
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
-              <p className="text-xs text-muted-foreground mt-4 max-w-sm mx-auto leading-relaxed">
-                One-off payment. No subscription. {DASHBOARD_DISCLAIMER}
-              </p>
+          <Card className={`${GOLD_UNLOCK_SHELL_CLASS} overflow-hidden`} data-testid="card-unlock-cta">
+            <CardContent className="pt-6 pb-6 sm:pt-7 sm:pb-7">
+              <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6 items-start">
+                <div>
+                  <Badge variant="outline" className="mb-3 border-gold/50 bg-gold/10 text-foreground">
+                    Full report unlock
+                  </Badge>
+                  <h3 className="font-display font-semibold text-2xl text-foreground mb-2">
+                    Unlock the {REDUNDANCY_PAY_MAXIMISER_NAME} and see what else could be in your package.
+                  </h3>
+                  <p className="text-sm text-muted-foreground max-w-2xl leading-relaxed mb-5">
+                    {PRODUCT_COPY.previewUnlockSub}
+                  </p>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {PRODUCT_COPY.previewUnlockAngles.map((angle) => {
+                      const Icon = PREVIEW_ANGLE_ICONS[angle.id];
+                      return (
+                        <div key={angle.id} className="rounded-xl border border-amber-200/80 bg-white p-3" data-testid={`preview-unlock-angle-${angle.id}`}>
+                          <div className="flex items-center gap-2 mb-1.5">
+                            <Icon className="w-4 h-4 text-gold shrink-0" />
+                            <p className="text-sm font-semibold text-foreground">{angle.title}</p>
+                          </div>
+                          <p className="text-[11px] text-muted-foreground leading-relaxed">{angle.desc}</p>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5 text-xs text-muted-foreground mt-5">
+                    {PRODUCT_COPY.unlockModules.slice(0, 8).map((item) => (
+                      <li key={item} className="flex items-start gap-2">
+                        <Check className="w-3.5 h-3.5 text-gold shrink-0 mt-0.5" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="rounded-2xl border border-amber-200/80 bg-white p-5 text-center">
+                  <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">{RUNWAY_REPORT_FULL}</p>
+                  <p className="text-4xl font-bold text-foreground mb-1">£{RUNWAY_REPORT_PRICE_GBP}</p>
+                  <p className="text-xs text-muted-foreground mb-4">One-off payment · 6 months access · no subscription</p>
+                  <Button className="btn-gold w-full" onClick={() => navigate("/unlock")} data-testid="button-unlock">
+                    Unlock maximiser + full report
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                  <p className="text-[10px] text-muted-foreground mt-4 leading-relaxed">
+                    {DASHBOARD_DISCLAIMER}
+                  </p>
+                </div>
+              </div>
             </CardContent>
           </Card>
 

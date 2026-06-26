@@ -20,7 +20,7 @@ export default function ReportExamplePage() {
           name="description"
           content={`Sample ${RUNWAY_REPORT_FULL} — interactive dashboards, improve-your-position tools and Private Brief. Illustrative only.`}
         />
-        <meta name="robots" content="noindex, follow" />
+        <meta name="robots" content="noindex, nofollow" />
       </Helmet>
       <div className="min-h-screen flex flex-col bg-background">
         <DisclaimerBanner />

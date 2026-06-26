@@ -1,14 +1,17 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useLocation } from "wouter";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { PoundSterling, Info, AlertTriangle, ArrowRight } from "lucide-react";
+import { PoundSterling, AlertTriangle, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { FieldHelp } from "@/components/ui/field-help";
 import { formatGBP, computeRedundancyEstimate, UK_STATUTORY_REDUNDANCY } from "@/lib/engine";
 import { PRODUCT_COPY, RUNWAY_REPORT_PRICE_GBP } from "@shared/product";
 import type { RunwayInputs } from "@shared/schema";
+import { EnhancedPackageAssumptionChips } from "@/components/wizard/enhanced-package-chips";
+import { GrossPayInput } from "@/components/wizard/gross-pay-input";
+import type { EnhancedAssumptionId } from "@/lib/enhanced-package-assumptions";
 
 function CurrencyInput({ label, value, onChange, tooltip, id }: {
   label: string; value: number; onChange: (v: number) => void; tooltip?: string; id: string;
@@ -17,14 +20,7 @@ function CurrencyInput({ label, value, onChange, tooltip, id }: {
     <div className="space-y-1.5">
       <div className="flex items-center gap-1.5">
         <Label htmlFor={id} className="text-sm">{label}</Label>
-        {tooltip && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Info className="w-3.5 h-3.5 text-muted-foreground cursor-help" />
-            </TooltipTrigger>
-            <TooltipContent className="max-w-xs text-xs">{tooltip}</TooltipContent>
-          </Tooltip>
-        )}
+        {tooltip && <FieldHelp text={tooltip} />}
       </div>
       <div className="relative">
         <PoundSterling className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
@@ -51,14 +47,7 @@ function NumberInput({ label, value, onChange, tooltip, id, min = 0, max, placeh
     <div className="space-y-1.5">
       <div className="flex items-center gap-1.5">
         <Label htmlFor={id} className="text-sm">{label}</Label>
-        {tooltip && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Info className="w-3.5 h-3.5 text-muted-foreground cursor-help" />
-            </TooltipTrigger>
-            <TooltipContent className="max-w-xs text-xs">{tooltip}</TooltipContent>
-          </Tooltip>
-        )}
+        {tooltip && <FieldHelp text={tooltip} />}
       </div>
       <Input
         id={id}
@@ -97,12 +86,15 @@ interface RedundancyPackageCalculatorProps {
   setInputs: (u: ((prev: RunwayInputs) => RunwayInputs) | Partial<RunwayInputs>) => void;
   /** Compact mode hides intro copy for SEO embeds */
   compact?: boolean;
+  /** Wizard step 0 — hide unlock teaser to reduce friction */
+  hideUnlockTeaser?: boolean;
 }
 
-export function RedundancyPackageCalculator({ inputs, setInputs, compact = false }: RedundancyPackageCalculatorProps) {
+export function RedundancyPackageCalculator({ inputs, setInputs, compact = false, hideUnlockTeaser = false }: RedundancyPackageCalculatorProps) {
   const [, navigate] = useLocation();
   const pkg = inputs.redundancyPackage;
   const isVoluntaryRedundancy = inputs.context.employmentStatus === "voluntary_redundancy";
+  const [enhancedAssumptionId, setEnhancedAssumptionId] = useState<EnhancedAssumptionId | null>(null);
 
   const updatePkg = (field: string, value: number | boolean) => {
     setInputs((prev) => ({ ...prev, redundancyPackage: { ...prev.redundancyPackage, [field]: value } }));
@@ -113,7 +105,7 @@ export function RedundancyPackageCalculator({ inputs, setInputs, compact = false
 
   return (
     <div className="space-y-4">
-      {!compact && (
+      {!compact && !hideUnlockTeaser && (
         <div className="rounded-lg border border-gold/25 bg-gold/5 p-3 space-y-3" data-testid="panel-wizard-unlock-teaser">
           <div>
             <p className="text-xs font-semibold text-primary leading-snug">
@@ -180,12 +172,10 @@ export function RedundancyPackageCalculator({ inputs, setInputs, compact = false
         </div>
       )}
 
-      <CurrencyInput
-        label="Weekly gross pay"
-        value={pkg.weeklyGrossPay}
-        onChange={(v) => updatePkg("weeklyGrossPay", v)}
-        id="weeklyGrossPay"
-        tooltip={`Gross weekly pay before deductions. Statutory redundancy is capped at ${formatGBP(UK_STATUTORY_REDUNDANCY.weeklyPayCap)}/week for redundancies on or after ${UK_STATUTORY_REDUNDANCY.effectiveFrom}.`}
+      <GrossPayInput
+        weeklyGrossPay={pkg.weeklyGrossPay}
+        onWeeklyChange={(v) => updatePkg("weeklyGrossPay", v)}
+        weeklyCapHint={`Gross pay before deductions. Statutory redundancy is capped at ${formatGBP(UK_STATUTORY_REDUNDANCY.weeklyPayCap)}/week for redundancies on or after ${UK_STATUTORY_REDUNDANCY.effectiveFrom}.`}
       />
       <NumberInput label="Notice period (weeks)" value={pkg.noticeWeeks} onChange={(v) => updatePkg("noticeWeeks", v)} id="noticeWeeks" min={0} max={52} tooltip="Contractual or statutory notice period in weeks. Notice pay is subject to income tax and National Insurance." />
       <NumberInput label="Accrued untaken holiday (weeks)" value={pkg.holidayWeeks} onChange={(v) => updatePkg("holidayWeeks", v)} id="holidayWeeks" min={0} max={10} tooltip="Untaken holiday to be paid out. Holiday pay is subject to income tax and National Insurance." />
@@ -197,21 +187,34 @@ export function RedundancyPackageCalculator({ inputs, setInputs, compact = false
         tooltip="Any wages owed but not yet paid. These are subject to income tax and National Insurance."
       />
 
-      <div className="flex items-center justify-between gap-4 p-3 rounded-md bg-muted/50">
-        <div>
-          <p className="text-sm font-medium">Enhanced package</p>
-          <p className="text-xs text-muted-foreground">Were you offered above the statutory minimum?</p>
-        </div>
-        <Switch
-          checked={pkg.enhancedPackage}
-          onCheckedChange={(v) => updatePkg("enhancedPackage", v)}
-          data-testid="switch-enhancedPackage"
-        />
-      </div>
-
-      {pkg.enhancedPackage && (
-        <CurrencyInput label="Enhanced redundancy amount" value={pkg.enhancedAmount} onChange={(v) => updatePkg("enhancedAmount", v)} id="enhancedAmount" tooltip="Total enhanced redundancy payment (replaces the statutory redundancy element in the estimate)" />
-      )}
+      <EnhancedPackageAssumptionChips
+        pkg={pkg}
+        selectedId={enhancedAssumptionId}
+        onSelect={(patch, id) => {
+          setEnhancedAssumptionId(id);
+          setInputs((prev) => ({
+            ...prev,
+            redundancyPackage: { ...prev.redundancyPackage, ...patch },
+          }));
+        }}
+      />
+      <CurrencyInput
+        label="Enhanced redundancy amount (optional override)"
+        value={pkg.enhancedAmount}
+        onChange={(v) => {
+          setEnhancedAssumptionId(null);
+          setInputs((prev) => ({
+            ...prev,
+            redundancyPackage: {
+              ...prev.redundancyPackage,
+              enhancedPackage: v > 0,
+              enhancedAmount: v,
+            },
+          }));
+        }}
+        id="enhancedAmount"
+        tooltip="Total enhanced redundancy payment (replaces the statutory redundancy element). Leave at £0 if you have no enhancement."
+      />
 
       <div className="flex items-center justify-between gap-4 p-3 rounded-md bg-muted/50">
         <div>

@@ -38,15 +38,6 @@ export function BriefReportShell({
               <Badge variant="outline" className="text-[10px] w-full justify-center">
                 Report v{document.version}
               </Badge>
-              {document.aiEnhanced ? (
-                <Badge variant="outline" className="text-[10px] w-full justify-center bg-violet-50 text-violet-800 border-violet-200">
-                  AI-enhanced summary
-                </Badge>
-              ) : (
-                <Badge variant="outline" className="text-[10px] w-full justify-center bg-teal-50 text-teal-800 border-teal-200">
-                  Expert templates + your figures
-                </Badge>
-              )}
             </div>
           </div>
         </aside>

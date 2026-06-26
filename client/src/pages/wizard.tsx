@@ -5,8 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, ArrowRight, PoundSterling, Info, AlertTriangle, CheckCircle, Briefcase, Wallet, Receipt, TrendingUp, Heart, Layers, Pencil } from "lucide-react";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { ArrowLeft, ArrowRight, PoundSterling, AlertTriangle, CheckCircle, Briefcase, Wallet, Receipt, TrendingUp, Heart, Layers, Pencil } from "lucide-react";
+import { FieldHelp } from "@/components/ui/field-help";
 import { useWizardStore } from "@/lib/wizardStore";
 import { getAllSectors, getSectorData } from "@/lib/sectorData";
 import { formatGBP, computeRedundancyEstimate } from "@/lib/engine";
@@ -14,10 +14,11 @@ import { RedundancyPackageCalculator } from "@/components/redundancy-package-cal
 import { PackageTotalHero } from "@/components/preview/PackageTotalHero";
 import { ukBenchmarks, getAgeBandData, formatWeeksAndMonths, weeksToMonths } from "@/lib/ukBenchmarks";
 import type { RunwayInputs, RedundancyPackageInputs } from "@shared/schema";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DisclaimerBanner } from "@/components/DisclaimerBanner";
 import { WizardShell } from "@/components/wizard/wizard-shell";
 import { EssentialExpenseChips } from "@/components/wizard/essential-expense-chips";
+import { FlexibleExpenseChips } from "@/components/wizard/flexible-expense-chips";
 import { IncomeAssumptionChips } from "@/components/wizard/income-assumption-chips";
 
 const STEPS = [
@@ -57,21 +58,17 @@ const WIZARD_STAGES = [
   { label: "Your Runway", steps: [4, 5, 6], stageNum: 4 },
 ];
 
-function CurrencyInput({ label, value, onChange, tooltip, id }: {
-  label: string; value: number; onChange: (v: number) => void; tooltip?: string; id: string;
+function CurrencyInput({ label, value, onChange, tooltip, id, required, onTouch }: {
+  label: string; value: number; onChange: (v: number) => void; tooltip?: string; id: string; required?: boolean; onTouch?: () => void;
 }) {
   return (
     <div className="space-y-1.5">
       <div className="flex items-center gap-1.5">
-        <Label htmlFor={id} className="text-sm">{label}</Label>
-        {tooltip && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Info className="w-3.5 h-3.5 text-muted-foreground cursor-help" />
-            </TooltipTrigger>
-            <TooltipContent className="max-w-xs text-xs">{tooltip}</TooltipContent>
-          </Tooltip>
-        )}
+        <Label htmlFor={id} className="text-sm">
+          {label}
+          {required && <span className="text-destructive ml-0.5" aria-hidden="true">*</span>}
+        </Label>
+        {tooltip && <FieldHelp text={tooltip} />}
       </div>
       <div className="relative">
         <PoundSterling className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
@@ -81,7 +78,11 @@ function CurrencyInput({ label, value, onChange, tooltip, id }: {
           min={0}
           step="1"
           value={value || ""}
-          onChange={(e) => onChange(Math.max(0, Number(e.target.value) || 0))}
+          onChange={(e) => {
+            onTouch?.();
+            onChange(Math.max(0, Number(e.target.value) || 0));
+          }}
+          onBlur={() => onTouch?.()}
           className="pl-8"
           placeholder="0"
           data-testid={`input-${id}`}
@@ -98,14 +99,7 @@ function NumberInput({ label, value, onChange, tooltip, id, min = 0, max, placeh
     <div className="space-y-1.5">
       <div className="flex items-center gap-1.5">
         <Label htmlFor={id} className="text-sm">{label}</Label>
-        {tooltip && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Info className="w-3.5 h-3.5 text-muted-foreground cursor-help" />
-            </TooltipTrigger>
-            <TooltipContent className="max-w-xs text-xs">{tooltip}</TooltipContent>
-          </Tooltip>
-        )}
+        {tooltip && <FieldHelp text={tooltip} />}
       </div>
       <Input
         id={id}
@@ -216,7 +210,7 @@ function StepContext({ inputs, setInputs }: { inputs: RunwayInputs; setInputs: (
 }
 
 function StepRedundancyPackage({ inputs, setInputs }: { inputs: RunwayInputs; setInputs: (u: ((prev: RunwayInputs) => RunwayInputs) | Partial<RunwayInputs>) => void }) {
-  return <RedundancyPackageCalculator inputs={inputs} setInputs={setInputs} />;
+  return <RedundancyPackageCalculator inputs={inputs} setInputs={setInputs} hideUnlockTeaser />;
 }
 
 function StepCapital({ inputs, setInputs }: { inputs: RunwayInputs; setInputs: (u: ((prev: RunwayInputs) => RunwayInputs) | Partial<RunwayInputs>) => void }) {
@@ -270,7 +264,11 @@ function StepCapital({ inputs, setInputs }: { inputs: RunwayInputs; setInputs: (
   );
 }
 
-function StepIncome({ inputs, setInputs }: { inputs: RunwayInputs; setInputs: (u: ((prev: RunwayInputs) => RunwayInputs) | Partial<RunwayInputs>) => void }) {
+function StepIncome({ inputs, setInputs, onTouchField }: {
+  inputs: RunwayInputs;
+  setInputs: (u: ((prev: RunwayInputs) => RunwayInputs) | Partial<RunwayInputs>) => void;
+  onTouchField: (field: "currentMonthlyNetIncome") => void;
+}) {
   const sectors = getAllSectors();
   const sectorData = useMemo(() => getSectorData(inputs.sector), [inputs.sector]);
   const ageBandData = useMemo(() => getAgeBandData(inputs.redundancyPackage.age), [inputs.redundancyPackage.age]);
@@ -292,7 +290,15 @@ function StepIncome({ inputs, setInputs }: { inputs: RunwayInputs; setInputs: (u
 
       <IncomeAssumptionChips onSelect={(patch) => setInputs(patch)} />
 
-      <CurrencyInput label="Previous monthly net income" value={inputs.currentMonthlyNetIncome} onChange={(v) => setInputs({ currentMonthlyNetIncome: v })} tooltip="Your previous take-home pay per month (used for scenario modelling)" id="currentMonthlyNetIncome" />
+      <CurrencyInput
+        label="Previous monthly net income"
+        value={inputs.currentMonthlyNetIncome}
+        onChange={(v) => setInputs({ currentMonthlyNetIncome: v })}
+        onTouch={() => onTouchField("currentMonthlyNetIncome")}
+        tooltip="Your previous take-home pay per month (used for scenario modelling). Enter £0 if you had no income."
+        id="currentMonthlyNetIncome"
+        required
+      />
       <CurrencyInput label="Replacement monthly income (gap period)" value={inputs.replacementMonthlyIncome} onChange={(v) => setInputs({ replacementMonthlyIncome: v })} tooltip="Any current part-time, freelance, or gig income during the gap period" id="replacementMonthlyIncome" />
       <CurrencyInput label="Benefit support estimate" value={inputs.benefitSupportEstimate} onChange={(v) => setInputs({ benefitSupportEstimate: v })} tooltip="Estimated monthly benefits if applicable. Eligibility is not assessed here — use as a planning assumption." id="benefitSupportEstimate" />
 
@@ -343,12 +349,7 @@ function StepIncome({ inputs, setInputs }: { inputs: RunwayInputs; setInputs: (u
       <div className="space-y-1.5">
         <div className="flex items-center gap-1.5">
           <Label htmlFor="monthsUntilNewJob" className="text-sm">Months until previous income level resumes (estimate)</Label>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Info className="w-3.5 h-3.5 text-muted-foreground cursor-help" />
-            </TooltipTrigger>
-            <TooltipContent className="max-w-xs text-xs">How long you estimate until your previous income level resumes. Used as a planning assumption for the model — not a prediction.</TooltipContent>
-          </Tooltip>
+          <FieldHelp text="How long you estimate until your previous income level resumes. Used as a planning assumption for the model — not a prediction." />
         </div>
         <Input
           id="monthsUntilNewJob"
@@ -362,22 +363,16 @@ function StepIncome({ inputs, setInputs }: { inputs: RunwayInputs; setInputs: (u
         />
         <p className="text-xs text-muted-foreground">After this period, the model assumes your previous income level resumes</p>
         {inputs.sector && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="outline"
-                size="sm"
-                className="mt-1"
-                onClick={() => setInputs({ monthsUntilNewJob: effectiveMedianMonths })}
-                data-testid="button-set-typical-timeline"
-              >
-                Set Typical Timeline as Assumption
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent className="max-w-xs text-xs">
-              Applies the median timeline for your sector and age group to your planning assumptions.
-            </TooltipContent>
-          </Tooltip>
+          <Button
+            variant="outline"
+            size="sm"
+            className="mt-1"
+            onClick={() => setInputs({ monthsUntilNewJob: effectiveMedianMonths })}
+            data-testid="button-set-typical-timeline"
+            title="Applies the median timeline for your sector and age group to your planning assumptions."
+          >
+            Set Typical Timeline as Assumption
+          </Button>
         )}
       </div>
 
@@ -419,7 +414,11 @@ function StepIncome({ inputs, setInputs }: { inputs: RunwayInputs; setInputs: (u
   );
 }
 
-function StepEssential({ inputs, setInputs }: { inputs: RunwayInputs; setInputs: (u: ((prev: RunwayInputs) => RunwayInputs) | Partial<RunwayInputs>) => void }) {
+function StepEssential({ inputs, setInputs, onTouchField }: {
+  inputs: RunwayInputs;
+  setInputs: (u: ((prev: RunwayInputs) => RunwayInputs) | Partial<RunwayInputs>) => void;
+  onTouchField: (field: "mortgageOrRent") => void;
+}) {
   const total = inputs.mortgageOrRent + inputs.utilities + inputs.food + inputs.councilTax + inputs.insurance + inputs.transport + inputs.debtRepayments + inputs.childcare + inputs.otherEssential;
   const housingPercent = total > 0 ? ((inputs.mortgageOrRent / total) * 100).toFixed(1) : "0.0";
 
@@ -433,7 +432,15 @@ function StepEssential({ inputs, setInputs }: { inputs: RunwayInputs; setInputs:
         onApply={(field, value) => setInputs({ [field]: value })}
       />
 
-      <CurrencyInput label="Mortgage or rent" value={inputs.mortgageOrRent} onChange={(v) => setInputs({ mortgageOrRent: v })} id="mortgageOrRent" />
+      <CurrencyInput
+        label="Mortgage or rent"
+        value={inputs.mortgageOrRent}
+        onChange={(v) => setInputs({ mortgageOrRent: v })}
+        onTouch={() => onTouchField("mortgageOrRent")}
+        id="mortgageOrRent"
+        required
+        tooltip="Enter £0 if you have no mortgage or rent cost."
+      />
       <CurrencyInput label="Council tax" value={inputs.councilTax} onChange={(v) => setInputs({ councilTax: v })} id="councilTax" tooltip="Monthly council tax payment. Divide your annual bill by 10 (council tax is typically paid over 10 months)." />
       <CurrencyInput label="Utilities" value={inputs.utilities} onChange={(v) => setInputs({ utilities: v })} tooltip="Gas, electricity, water, broadband, phone" id="utilities" />
       <CurrencyInput label="Food & groceries" value={inputs.food} onChange={(v) => setInputs({ food: v })} id="food" />
@@ -473,6 +480,8 @@ function StepFlexible({ inputs, setInputs }: { inputs: RunwayInputs; setInputs: 
       <div className="rounded-md bg-muted/50 p-3">
         <p className="text-xs text-muted-foreground">These figures are used to build your report assumptions. The model does not provide financial, tax, legal or employment advice.</p>
       </div>
+      <FlexibleExpenseChips inputs={inputs} onApply={(patch) => setInputs(patch)} />
+
       <CurrencyInput label="Subscriptions" value={inputs.subscriptions} onChange={(v) => setInputs({ subscriptions: v })} tooltip="Streaming, gym, magazines, software" id="subscriptions" />
       <CurrencyInput label="Leisure & entertainment" value={inputs.leisure} onChange={(v) => setInputs({ leisure: v })} tooltip="Eating out, entertainment, hobbies" id="leisure" />
       <CurrencyInput label="Travel & holidays" value={inputs.travel} onChange={(v) => setInputs({ travel: v })} id="travel" />
@@ -494,12 +503,7 @@ function StepFlexible({ inputs, setInputs }: { inputs: RunwayInputs; setInputs: 
       <div className="space-y-1.5">
         <div className="flex items-center gap-1.5">
           <Label htmlFor="emergencyBuffer" className="text-sm">Emergency buffer</Label>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Info className="w-3.5 h-3.5 text-muted-foreground cursor-help" />
-            </TooltipTrigger>
-            <TooltipContent className="max-w-xs text-xs">Minimum capital you want to keep as a buffer. The model will flag when capital approaches this level.</TooltipContent>
-          </Tooltip>
+          <FieldHelp text="Minimum capital you want to keep as a buffer. The model will flag when capital approaches this level." />
         </div>
         <div className="relative">
           <PoundSterling className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
@@ -628,9 +632,33 @@ function getValidationWarnings(inputs: RunwayInputs, step: number): string[] {
   return warnings;
 }
 
+type WizardTouchedFields = {
+  currentMonthlyNetIncome: boolean;
+  mortgageOrRent: boolean;
+};
+
+function getStepErrors(_inputs: RunwayInputs, step: number, touched: WizardTouchedFields): string[] {
+  const errors: string[] = [];
+  if (step === 3 && !touched.currentMonthlyNetIncome) {
+    errors.push("Enter your previous monthly net income before continuing — £0 is fine if you had no income.");
+  }
+  if (step === 4 && !touched.mortgageOrRent) {
+    errors.push("Enter your mortgage or rent before continuing — £0 is fine if not applicable.");
+  }
+  return errors;
+}
+
 export default function WizardPage() {
   const [, navigate] = useLocation();
   const { inputs, setInputs, step, setStep } = useWizardStore();
+  const [touchedFields, setTouchedFields] = useState<WizardTouchedFields>({
+    currentMonthlyNetIncome: false,
+    mortgageOrRent: false,
+  });
+
+  const markTouched = (field: keyof WizardTouchedFields) => {
+    setTouchedFields((prev) => (prev[field] ? prev : { ...prev, [field]: true }));
+  };
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -645,8 +673,13 @@ export default function WizardPage() {
   const totalSteps = STEPS.length;
 
   const warnings = useMemo(() => getValidationWarnings(inputs, step), [inputs, step]);
+  const stepErrors = useMemo(() => getStepErrors(inputs, step, touchedFields), [inputs, step, touchedFields]);
 
   function handleNext() {
+    if (stepErrors.length > 0) {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+      return;
+    }
     if (step < totalSteps - 1) {
       setStep(step + 1);
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -668,14 +701,20 @@ export default function WizardPage() {
     <StepRedundancyPackage key={0} inputs={inputs} setInputs={setInputs} />,
     <StepContext key={1} inputs={inputs} setInputs={setInputs} />,
     <StepCapital key={2} inputs={inputs} setInputs={setInputs} />,
-    <StepIncome key={3} inputs={inputs} setInputs={setInputs} />,
-    <StepEssential key={4} inputs={inputs} setInputs={setInputs} />,
+    <StepIncome key={3} inputs={inputs} setInputs={setInputs} onTouchField={markTouched} />,
+    <StepEssential key={4} inputs={inputs} setInputs={setInputs} onTouchField={markTouched} />,
     <StepFlexible key={5} inputs={inputs} setInputs={setInputs} />,
     <StepReview key={6} inputs={inputs} onEditStep={setStep} />,
   ];
 
-  const warningsBlock = warnings.length > 0 ? (
+  const warningsBlock = (warnings.length > 0 || stepErrors.length > 0) ? (
     <div className="mt-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 p-3">
+      {stepErrors.map((w, i) => (
+        <div key={`err-${i}`} className="flex items-start gap-2 text-xs text-destructive font-medium">
+          <AlertTriangle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+          <span>{w}</span>
+        </div>
+      ))}
       {warnings.map((w, i) => (
         <div key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
           <AlertTriangle className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />

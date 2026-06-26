@@ -163,6 +163,8 @@ export function LandingDashboardShowcase() {
                 chromeCaption="Runway Command Console"
                 footerText="Illustrative example · your report uses the figures you enter"
                 hideStress={false}
+                autoRotate
+                showInteractiveBadge
                 testId="landing-demo-preview-console"
               />
             </div>

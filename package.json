@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "NODE_ENV=development node --env-file=.env ./node_modules/tsx/dist/cli.mjs server/index.ts",
-    "build": "tsx script/build.ts",
+    "build": "npm run sitemap:generate && tsx script/build.ts",
     "start": "NODE_ENV=production node --env-file=.env dist/index.cjs",
     "check": "tsc",
     "test": "node --import tsx --test client/src/lib/engine.test.ts client/src/lib/complianceCopy.test.ts client/src/lib/position-enhancement/buildPositionEnhancementData.test.ts client/src/lib/private-runway-brief/buildBriefDocument.test.ts server/seo.test.ts",

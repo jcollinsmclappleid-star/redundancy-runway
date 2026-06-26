@@ -7,12 +7,17 @@ import { buildPositionEnhancementData } from "@/lib/position-enhancement/buildPo
 import { formatGBP } from "@/lib/engine";
 import { PRODUCT_COPY, REDUNDANCY_PAY_MAXIMISER_NAME } from "@shared/product";
 
+/** Shared warm gold shell for preview unlock sections */
+export const GOLD_UNLOCK_SHELL_CLASS = "unlock-gold-panel";
+
 interface LockedPackagePreviewGridProps {
   inputs: RunwayInputs;
   onUnlock?: () => void;
+  /** Gold highlight shell — used on the free preview page */
+  prominent?: boolean;
 }
 
-export function LockedPackagePreviewGrid({ inputs, onUnlock }: LockedPackagePreviewGridProps) {
+export function LockedPackagePreviewGrid({ inputs, onUnlock, prominent = false }: LockedPackagePreviewGridProps) {
   const [, navigate] = useLocation();
   const data = buildPackageDashboardData(inputs);
   const position = buildPositionEnhancementData(inputs);
@@ -71,12 +76,17 @@ export function LockedPackagePreviewGrid({ inputs, onUnlock }: LockedPackagePrev
     else navigate("/unlock");
   };
 
+  const shellClass = prominent ? `${GOLD_UNLOCK_SHELL_CLASS} p-6 sm:p-7` : "";
+  const cardClass = prominent
+    ? "relative rounded-xl border border-amber-200/80 bg-white overflow-hidden"
+    : "relative rounded-xl border border-slate-200 bg-white overflow-hidden";
+
   return (
-    <section className="space-y-4" data-testid="locked-package-preview-grid">
+    <section className={`space-y-4 ${shellClass}`.trim()} data-testid="locked-package-preview-grid">
       <div>
         <div className="flex items-center gap-2 mb-1">
-          <Lock className="w-3.5 h-3.5 text-amber-600" />
-          <h2 className="text-base font-semibold">{PRODUCT_COPY.unlockHeadline}</h2>
+          <Lock className="w-3.5 h-3.5 text-gold shrink-0" />
+          <h2 className={`text-base font-semibold ${prominent ? "text-foreground" : ""}`}>{PRODUCT_COPY.unlockHeadline}</h2>
         </div>
         <p className="text-sm text-muted-foreground">{PRODUCT_COPY.unlockSubcopy}</p>
         <p className="text-xs text-muted-foreground mt-2">
@@ -86,15 +96,12 @@ export function LockedPackagePreviewGrid({ inputs, onUnlock }: LockedPackagePrev
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {lockedCards.map((card) => (
-          <div
-            key={card.key}
-            className="relative rounded-xl border border-slate-200 bg-white overflow-hidden"
-          >
-            <div className="absolute top-3 right-3 w-7 h-7 rounded-full bg-amber-50 border border-amber-200/80 flex items-center justify-center pointer-events-none">
-              <Lock className="w-3.5 h-3.5 text-amber-600" aria-hidden />
+          <div key={card.key} className={cardClass}>
+            <div className="absolute top-3 right-3 w-7 h-7 rounded-full bg-gold/15 border border-gold/35 flex items-center justify-center pointer-events-none">
+              <Lock className="w-3.5 h-3.5 text-gold" aria-hidden />
             </div>
             <div className="p-4 pr-12">
-              <p className="text-sm font-semibold text-primary mb-1">{card.title}</p>
+              <p className={`text-sm font-semibold mb-1 ${prominent ? "text-foreground" : "text-primary"}`}>{card.title}</p>
               <p className="text-xs text-muted-foreground leading-relaxed mb-3">{card.teaser}</p>
               <p
                 className="text-xl font-bold text-primary tabular-nums blur-[5px] select-none pointer-events-none"

@@ -53,6 +53,7 @@ export function WizardShell({
   const StepIcon = meta.icon;
   const progress = ((step + 1) / totalSteps) * 100;
   const stage = wizardStages.find((s) => s.steps.includes(step));
+  const totalStages = wizardStages.length;
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -102,7 +103,10 @@ export function WizardShell({
               Sign in
             </Link>
             <span className="text-xs text-muted-foreground lg:hidden shrink-0" data-testid="text-step-progress-mobile">
-              {stage ? `Stage ${stage.stageNum} of 3` : ""} · Step {step + 1}/{totalSteps}
+              {stage ? `Stage ${stage.stageNum} of ${totalStages}` : ""} · Step {step + 1}/{totalSteps}
+            </span>
+            <span className="text-xs text-muted-foreground hidden lg:inline shrink-0" data-testid="text-step-progress-desktop">
+              {stage ? `${stage.label} · Stage ${stage.stageNum} of ${totalStages}` : ""} · Step {step + 1}/{totalSteps}
             </span>
           </div>
         </div>

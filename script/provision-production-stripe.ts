@@ -5,13 +5,30 @@
 import { randomBytes } from "crypto";
 import { readFileSync, writeFileSync } from "fs";
 import Stripe from "stripe";
-import { REPORT_PRICE_GBP, RESET_PRICE_GBP } from "../server/stripeConfig";
+import {
+  REPORT_PRICE_GBP,
+  RESET_PRICE_GBP,
+  REPORT_PRODUCT_NAME,
+  REPORT_PRODUCT_DESCRIPTION,
+  RESET_PRODUCT_NAME,
+  RESET_PRODUCT_DESCRIPTION,
+} from "../server/stripeConfig";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 const targetUrl = "https://redundancycalculatoruk.co.uk/api/stripe-webhook";
 
 const reportOld = await stripe.prices.retrieve(process.env.STRIPE_PRICE_REPORT!);
 const resetOld = await stripe.prices.retrieve(process.env.STRIPE_PRICE_RESET!);
+
+await stripe.products.update(reportOld.product as string, {
+  name: REPORT_PRODUCT_NAME,
+  description: REPORT_PRODUCT_DESCRIPTION,
+});
+await stripe.products.update(resetOld.product as string, {
+  name: RESET_PRODUCT_NAME,
+  description: RESET_PRODUCT_DESCRIPTION,
+});
+console.log("Synced Stripe product names to stripeConfig");
 
 const reportPrice =
   reportOld.unit_amount === REPORT_PRICE_GBP && reportOld.active

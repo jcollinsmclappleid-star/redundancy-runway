@@ -10,16 +10,11 @@ import {
   Check,
   ArrowLeft,
   TrendingDown,
-  Layers,
   Sliders,
-  Activity,
   FileText,
-  AlertTriangle,
   Download,
   BookOpen,
   Briefcase,
-  Scale,
-  ListChecks,
 } from "lucide-react";
 import { useWizardStore } from "@/lib/wizardStore";
 import {
@@ -31,7 +26,6 @@ import {
   computeMortgageSensitivity,
   computeProjectionRange,
   computeVoluntaryRedundancyComparison,
-  computeRedundancyEstimate,
   formatGBP,
   formatMonths,
 } from "@/lib/engine";
@@ -62,7 +56,11 @@ import { TaxSensitiveComponentsDashboard } from "@/components/package-dashboard/
 import { PackageChecksDashboard } from "@/components/package-dashboard/PackageChecksDashboard";
 import { usePrivateRunwayBrief } from "@/hooks/use-private-runway-brief";
 import { formatBriefPlainText } from "@/lib/private-runway-brief/formatBriefPlainText";
+import { triggerReportPdfDownload } from "@/lib/report/triggerReportPdf";
 import { RunwayReportBrand } from "@/components/RunwayReportBrand";
+import { ImprovePositionHub } from "@/components/position-enhancement/ImprovePositionHub";
+import { buildMaximiserInsights } from "@/lib/position-enhancement/buildMaximiserInsights";
+import { buildPackageDashboardData } from "@/lib/package-dashboard/buildPackageDashboardData";
 import type { RunwayInputs } from "@shared/schema";
 import type { PrivateRunwayBriefNarrative } from "@/lib/private-runway-brief/types";
 import { COMMAND_CENTRE_NAME, RUNWAY_REPORT_FULL, RUNWAY_REPORT_PRICE_GBP, RUNWAY_REPORT_SEO } from "@shared/product";
@@ -74,6 +72,226 @@ function StabilityBadge({ band, score }: { band: RunwayResult["stabilityBand"]; 
       <Badge variant={variant} data-testid="badge-stability">{band}</Badge>
       <span className="text-sm text-muted-foreground" data-testid="text-stability-score">{score}/100</span>
     </div>
+  );
+}
+
+type PackageDashboardData = ReturnType<typeof buildPackageDashboardData>;
+type MaximiserInsightsData = ReturnType<typeof buildMaximiserInsights>;
+
+function ExecutiveDecisionPanel({
+  result,
+  packageData,
+  maximiserInsights,
+  housingPercent,
+  onOpenTab,
+}: {
+  result: RunwayResult;
+  packageData: PackageDashboardData;
+  maximiserInsights: MaximiserInsightsData;
+  housingPercent: number;
+  onOpenTab: (tab: string) => void;
+}) {
+  const topOpportunity = maximiserInsights.rankedOpportunities[0];
+  const weakItems = packageData.checklist.filter((item) => item.status !== "entered" && item.status !== "not_applicable");
+  const firstMilestone = result.milestones[0];
+  const pressureLine = firstMilestone
+    ? `First pressure marker: month ${firstMilestone.month} — ${firstMilestone.description}`
+    : "No modelled capital threshold events within the projection period.";
+  const firstQuestion = weakItems[0]
+    ? `Ask HR/payroll to confirm: ${weakItems[0].label.toLowerCase()}.`
+    : "Ask HR/payroll for the written package breakdown before relying on the total.";
+
+  return (
+    <Card className="border-gold/35 bg-gold/5" data-testid="executive-decision-panel">
+      <CardHeader className="pb-3">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <CardTitle className="font-serif text-xl">What this report suggests you check first</CardTitle>
+            <p className="text-sm text-muted-foreground mt-1">
+              A decision layer from your package assumptions, runway result and verification gaps.
+            </p>
+          </div>
+          <Badge variant="outline" className="bg-white/70 border-gold/40 text-primary">
+            Executive readout
+          </Badge>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="rounded-xl border bg-white/80 p-4">
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Package check</p>
+            <p className="text-sm font-semibold text-primary">
+              {topOpportunity ? topOpportunity.label : "Written package breakdown"}
+            </p>
+            <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+              {topOpportunity?.summary ??
+                "Your model has the core package lines mapped. The next useful step is verifying the written breakdown against HR/payroll."}
+            </p>
+          </div>
+          <div className="rounded-xl border bg-white/80 p-4">
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Runway readout</p>
+            <p className="text-sm font-semibold text-primary">
+              {formatMonths(result.monthsUntilDepletion)} baseline runway
+            </p>
+            <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+              Monthly burn is {formatGBP(result.monthlyBurn)}. Housing is {housingPercent}% of essential costs under these assumptions.
+            </p>
+          </div>
+          <div className="rounded-xl border bg-white/80 p-4">
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Pressure point</p>
+            <p className="text-sm font-semibold text-primary">{result.stabilityBand} · {result.stabilityScore}/100</p>
+            <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{pressureLine}</p>
+          </div>
+          <div className="rounded-xl border bg-white/80 p-4">
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">First question to take forward</p>
+            <p className="text-sm font-semibold text-primary">{firstQuestion}</p>
+            <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+              This is a preparation prompt, not legal or employment advice.
+            </p>
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Button size="sm" className="btn-gold" onClick={() => document.getElementById("improve-position-hub")?.scrollIntoView({ behavior: "smooth", block: "start" })}>
+            Open maximiser
+          </Button>
+          <Button size="sm" variant="outline" onClick={() => onOpenTab("package")}>
+            Review package breakdown
+          </Button>
+          <Button size="sm" variant="outline" onClick={() => onOpenTab("brief")}>
+            Read plain-English brief
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function PackageScenarioNarrative({ insights }: { insights: MaximiserInsightsData }) {
+  const statutory = insights.scenarioLadder.find((s) => s.scenarioKey === "statutory_only");
+  const current = insights.scenarioLadder.find((s) => s.scenarioKey === "current_entered");
+  const best = insights.scenarioLadder
+    .filter((s) => s.packageTotal >= insights.currentPackageTotal)
+    .slice(-1)[0];
+
+  return (
+    <Card data-testid="package-scenario-narrative">
+      <CardHeader className="pb-3">
+        <CardTitle className="font-serif text-lg">Package scenarios: pounds into runway months</CardTitle>
+        <p className="text-xs text-muted-foreground">
+          Compare the statutory baseline, your current modelled package and the strongest higher-package scenario in this report.
+        </p>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {[
+            { label: "Statutory baseline", row: statutory },
+            { label: "Current package model", row: current },
+            { label: "Higher-package scenario", row: best },
+          ].map(({ label, row }) => (
+            <div key={label} className="rounded-xl border bg-muted/35 p-4">
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">{label}</p>
+              <p className="text-xl font-bold text-primary tabular-nums">{formatGBP(row?.packageTotal ?? 0)}</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {formatMonths(row?.baselineRunwayMonths ?? insights.currentRunwayMonths)} baseline runway
+              </p>
+              {row && row.deltaRunwayVsCurrent !== 0 && (
+                <p className="text-[10px] text-muted-foreground mt-1">
+                  {row.deltaRunwayVsCurrent > 0 ? "+" : ""}
+                  {formatMonths(row.deltaRunwayVsCurrent)} vs current model
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          The purpose is not to predict what you will receive. It shows why each package line matters: changes to redundancy, notice, holiday or enhanced pay flow directly into starting capital and the number of months the money may cover.
+        </p>
+      </CardContent>
+    </Card>
+  );
+}
+
+function BeforeYouSignChecklist({ packageData }: { packageData: PackageDashboardData }) {
+  const priorityItems = packageData.checklist
+    .filter((item) => item.status !== "not_applicable")
+    .slice(0, 6);
+
+  return (
+    <Card data-testid="before-you-sign-checklist">
+      <CardHeader className="pb-3">
+        <CardTitle className="font-serif text-lg">Before you sign: package verification checklist</CardTitle>
+        <p className="text-xs text-muted-foreground">
+          Use these prompts to request clarity before relying on the package total.
+        </p>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {priorityItems.map((item) => (
+            <div key={item.itemKey} className="rounded-lg border bg-card p-3">
+              <div className="flex items-start gap-2">
+                <Check className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm font-semibold text-foreground">{item.label}</p>
+                  <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{item.whyItMatters}</p>
+                  <p className="text-[10px] text-primary mt-2 leading-relaxed">Where to check: {item.whereToCheck}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="rounded-lg border border-amber-200 bg-amber-50/60 p-3">
+          <p className="text-xs font-semibold text-amber-950 mb-1">Suggested wording</p>
+          <p className="text-xs text-amber-900 leading-relaxed">
+            Please confirm how my redundancy package has been calculated, including statutory redundancy, notice/PILON, accrued holiday, enhanced terms, deductions, unpaid wages or bonuses, and expected payment timing.
+          </p>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function ThisWeekActionPlan({
+  result,
+  packageData,
+}: {
+  result: RunwayResult;
+  packageData: PackageDashboardData;
+}) {
+  const missingCount = packageData.checklist.filter((item) => item.status === "not_entered" || item.status === "verify").length;
+  const pressureAction =
+    result.monthsUntilDepletion <= 6
+      ? "Review essential costs and any flexible spend assumptions this week, because the baseline runway is relatively short."
+      : "Keep the current spending assumptions under review and use the slow scenario as the planning reference.";
+
+  return (
+    <Card data-testid="this-week-action-plan">
+      <CardHeader className="pb-3">
+        <CardTitle className="font-serif text-lg">What this means for you this week</CardTitle>
+        <p className="text-xs text-muted-foreground">Practical prompts from the model. Preparation support only, not advice.</p>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div className="rounded-lg bg-muted/40 border p-3">
+            <p className="text-xs font-semibold text-primary mb-1">1. Get the package in writing</p>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              {missingCount > 0
+                ? `${missingCount} package item${missingCount === 1 ? "" : "s"} need verification in your model.`
+                : "The main package items are mapped; verify the written breakdown matches them."}
+            </p>
+          </div>
+          <div className="rounded-lg bg-muted/40 border p-3">
+            <p className="text-xs font-semibold text-primary mb-1">2. Stress-test the runway</p>
+            <p className="text-xs text-muted-foreground leading-relaxed">{pressureAction}</p>
+          </div>
+          <div className="rounded-lg bg-muted/40 border p-3">
+            <p className="text-xs font-semibold text-primary mb-1">3. Prepare the conversation</p>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Take the checklist questions into HR, payroll or consultation conversations before signing or relying on the figure.
+            </p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -102,11 +320,14 @@ export function ResultsPageContent({
   const { narrative: liveNarrative } = usePrivateRunwayBrief(inputs);
   const narrative = isDemo ? demoBriefNarrative : liveNarrative;
   const [copied, setCopied] = useState(false);
+  const [activeTab, setActiveTab] = useState("package");
 
   const result = useMemo(() => computeRunway(inputs), [inputs]);
   const scenarios = useMemo(() => computeScenarios(inputs), [inputs]);
   const spendingImpacts = useMemo(() => computeSpendingImpact(inputs), [inputs]);
   const sensitivityResults = useMemo(() => computeSensitivity(inputs), [inputs]);
+  const packageData = useMemo(() => buildPackageDashboardData(inputs), [inputs]);
+  const maximiserInsights = useMemo(() => buildMaximiserInsights(inputs), [inputs]);
   const essentialComparison = useMemo(() => computeEssentialOnlyComparison(inputs), [inputs]);
   const mortgageSensitivity = useMemo(
     () => (inputs.mortgageOrRent > 0 ? computeMortgageSensitivity(inputs) : []),
@@ -115,17 +336,13 @@ export function ResultsPageContent({
   const projectionRange = useMemo(() => computeProjectionRange(inputs), [inputs]);
   const consoleScenarios = useMemo(() => buildRunwayConsoleScenarios(scenarios), [scenarios]);
   const composition = useMemo(() => {
-    const est = computeRedundancyEstimate(inputs.redundancyPackage);
-    const redundancyTotal = inputs.redundancyPackage.useManualOverride && inputs.redundancyPackage.manualOverrideAmount > 0
-      ? inputs.redundancyPackage.manualOverrideAmount
-      : est.totalEstimated;
     return [
       { label: "Cash savings", value: inputs.cashSavings, color: chartTheme.color.cash },
       { label: "Liquid investments", value: inputs.liquidInvestments, color: chartTheme.color.investments },
-      { label: "Redundancy package", value: redundancyTotal, color: chartTheme.color.redundancy },
+      { label: "Redundancy package", value: packageData.packageTotal, color: chartTheme.color.redundancy },
       { label: "Other one-off", value: inputs.otherOneOffIncome + (inputs.unpaidWages ?? 0), color: chartTheme.color.s4 },
     ].filter((c) => c.value > 0);
-  }, [inputs]);
+  }, [inputs, packageData.packageTotal]);
   const savingsPosition = useMemo(() => getSavingsPosition(result.startingCapital), [result.startingCapital]);
   const savingsLabel = useMemo(() => getSavingsPositionLabel(savingsPosition), [savingsPosition]);
   const housingPercent = useMemo(() => {
@@ -188,14 +405,31 @@ export function ResultsPageContent({
   }, [result, scenarios, narrative, inputs]);
 
   const handleDownloadReport = () => {
-    const blob = new Blob([buildSummaryText()], { type: "text/plain;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `redundancy-runway-report-${new Date().toISOString().slice(0, 10)}.txt`;
-    link.click();
-    URL.revokeObjectURL(url);
+    triggerReportPdfDownload();
   };
+
+  const handleOpenReportTab = useCallback((tab: string) => {
+    if (tab === "maximise") {
+      document.getElementById("improve-position-hub")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+
+    const groupedTab =
+      ["package", "entitlement", "bridge", "offer", "tax", "checklist"].includes(tab)
+        ? "package"
+        : ["trajectory", "scenarios", "milestones", "runway"].includes(tab)
+          ? "runway"
+          : ["spending", "stress"].includes(tab)
+            ? "stress"
+            : tab === "supplementary"
+              ? "assumptions"
+              : tab;
+
+    setActiveTab(groupedTab);
+    requestAnimationFrame(() => {
+      document.getElementById("report-dashboard-tabs")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }, []);
 
   useEffect(() => {
     if (!hasAccess || isDemo) return;
@@ -250,7 +484,7 @@ export function ResultsPageContent({
               data-testid="button-download-report"
             >
               <Download className="w-3.5 h-3.5 mr-1.5" />
-              Download
+              Download PDF
             </Button>
             <Button
               variant="outline"
@@ -329,6 +563,25 @@ export function ResultsPageContent({
           </div>
         </section>
 
+        <ExecutiveDecisionPanel
+          result={result}
+          packageData={packageData}
+          maximiserInsights={maximiserInsights}
+          housingPercent={housingPercent}
+          onOpenTab={handleOpenReportTab}
+        />
+
+        <div id="improve-position-hub">
+          <ImprovePositionHub inputs={inputs} onOpenTab={handleOpenReportTab} demoMode={isDemo} />
+        </div>
+
+        <PackageScenarioNarrative insights={maximiserInsights} />
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <BeforeYouSignChecklist packageData={packageData} />
+          <ThisWeekActionPlan result={result} packageData={packageData} />
+        </div>
+
         {/* Sticky scenario chips */}
         <div className="sticky top-[57px] z-30 -mx-4 sm:-mx-8 px-4 sm:px-8 py-2 bg-background/95 backdrop-blur border-b">
           <div className="flex gap-2 overflow-x-auto pb-1">
@@ -372,34 +625,6 @@ export function ResultsPageContent({
             />
           )}
         </div>
-
-        {/* 7-Day Reset CTAs */}
-        {showStrongerResetCta ? (
-          <Card className="mb-6 border-gold/40 bg-gold/10 shadow-md" data-testid="card-reset-cta-urgent">
-            <CardContent className="pt-6 pb-6">
-              <p className="text-base font-semibold mb-1">Private written support for the next step.</p>
-              <p className="text-sm text-muted-foreground mb-4 max-w-lg">
-                Your result may raise practical next-step questions. Get a private written plan for the next 7 days.
-              </p>
-              <Button className="btn-gold" onClick={() => navigate("/redundancy-reset")} data-testid="button-reset-cta-urgent">
-                Get my 7-day written reset
-                <ArrowLeft className="w-4 h-4 ml-2 rotate-180" />
-              </Button>
-            </CardContent>
-          </Card>
-        ) : (
-          <Card className="mb-6" data-testid="card-reset-cta-standard">
-            <CardContent className="pt-5 pb-5 flex items-center justify-between gap-4 flex-wrap">
-              <p className="text-sm text-muted-foreground max-w-md">
-                Your runway result shows the numbers. The 7-Day Redundancy Reset helps you organise what to do next.
-              </p>
-              <Button variant="outline" onClick={() => navigate("/redundancy-reset")} data-testid="button-reset-cta-standard">
-                Turn this into a 7-day plan
-                <ArrowLeft className="w-4 h-4 ml-2 rotate-180" />
-              </Button>
-            </CardContent>
-          </Card>
-        )}
 
         <Card className="mb-8" data-testid="card-projection-range">
           <CardHeader className="pb-2">
@@ -461,54 +686,22 @@ export function ResultsPageContent({
           )}
         </div>
 
-        <Tabs defaultValue="package" className="space-y-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6" id="report-dashboard-tabs">
           <div className="rounded-xl border bg-muted/30 p-2">
             <TabsList className="flex flex-wrap h-auto gap-1 bg-transparent w-full justify-start" data-testid="tabs-list">
               <TabsTrigger value="package" className="rounded-full text-xs gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground" data-testid="tab-package">
                 <Briefcase className="w-3 h-3 shrink-0" />
                 Package
               </TabsTrigger>
-              <TabsTrigger value="entitlement" className="rounded-full text-xs gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground" data-testid="tab-entitlement">
-                <Scale className="w-3 h-3 shrink-0" />
-                Entitlement estimate
-              </TabsTrigger>
-              <TabsTrigger value="bridge" className="rounded-full text-xs gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground" data-testid="tab-bridge">
-                <Layers className="w-3 h-3 shrink-0" />
-                Payout to runway
-              </TabsTrigger>
-              <TabsTrigger value="offer" className="rounded-full text-xs gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground" data-testid="tab-offer">
+              <TabsTrigger value="runway" className="rounded-full text-xs gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground" data-testid="tab-runway">
                 <TrendingDown className="w-3 h-3 shrink-0" />
-                Offer comparison
-              </TabsTrigger>
-              <TabsTrigger value="tax" className="rounded-full text-xs gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground" data-testid="tab-tax">
-                <FileText className="w-3 h-3 shrink-0" />
-                Tax-sensitive
-              </TabsTrigger>
-              <TabsTrigger value="checklist" className="rounded-full text-xs gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground" data-testid="tab-checklist">
-                <ListChecks className="w-3 h-3 shrink-0" />
-                Final pay checklist
-              </TabsTrigger>
-              <TabsTrigger value="trajectory" className="rounded-full text-xs gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground" data-testid="tab-trajectory">
-                <TrendingDown className="w-3 h-3 shrink-0" />
-                Capital path
-              </TabsTrigger>
-              <TabsTrigger value="scenarios" className="rounded-full text-xs gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground" data-testid="tab-scenarios">
-                <Layers className="w-3 h-3 shrink-0" />
-                Income recovery
-              </TabsTrigger>
-              <TabsTrigger value="milestones" className="rounded-full text-xs gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground" data-testid="tab-milestones">
-                <AlertTriangle className="w-3 h-3 shrink-0" />
-                Pressure points
-              </TabsTrigger>
-              <TabsTrigger value="spending" className="rounded-full text-xs gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground" data-testid="tab-spending">
-                <Sliders className="w-3 h-3 shrink-0" />
-                Expense sensitivity
+                Runway
               </TabsTrigger>
               <TabsTrigger value="stress" className="rounded-full text-xs gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground" data-testid="tab-stress">
-                <Activity className="w-3 h-3 shrink-0" />
-                Stress cases
+                <Sliders className="w-3 h-3 shrink-0" />
+                Stress tests
               </TabsTrigger>
-              <TabsTrigger value="supplementary" className="rounded-full text-xs gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground" data-testid="tab-supplementary">
+              <TabsTrigger value="assumptions" className="rounded-full text-xs gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground" data-testid="tab-assumptions">
                 <FileText className="w-3 h-3 shrink-0" />
                 Assumptions &amp; sources
               </TabsTrigger>
@@ -519,68 +712,80 @@ export function ResultsPageContent({
             </TabsList>
           </div>
 
-          <TabsContent value="package">
-            <RedundancyPackageDashboard inputs={inputs} />
+          <TabsContent value="package" className="report-print-section">
+            <div className="space-y-5">
+              <RedundancyPackageDashboard inputs={inputs} />
+              <StatutoryEntitlementEstimateDashboard inputs={inputs} />
+              <PackageToRunwayBridge inputs={inputs} />
+              <RedundancyOfferComparisonDashboard inputs={inputs} />
+              <TaxSensitiveComponentsDashboard inputs={inputs} />
+              <PackageChecksDashboard inputs={inputs} />
+            </div>
           </TabsContent>
 
-          <TabsContent value="entitlement">
-            <StatutoryEntitlementEstimateDashboard inputs={inputs} />
+          <TabsContent value="runway" className="report-print-section">
+            <div className="space-y-5">
+              <CapitalPathDashboard result={result} composition={composition} />
+              <IncomeRecoveryDashboard scenarios={scenarios} vrComparison={showVRComparison ? vrComparison : null} />
+              <PressurePointsDashboard result={result} essentialComparison={essentialComparison} />
+            </div>
           </TabsContent>
 
-          <TabsContent value="bridge">
-            <PackageToRunwayBridge inputs={inputs} />
+          <TabsContent value="stress" className="report-print-section">
+            <div className="space-y-5">
+              <StressCasesDashboard
+                result={result}
+                sensitivityResults={sensitivityResults}
+                mortgageSensitivity={mortgageSensitivity}
+                currentHousingCost={inputs.mortgageOrRent > 0 ? inputs.mortgageOrRent : undefined}
+              />
+              <ExpenseSensitivityDashboard spendingImpacts={spendingImpacts} />
+            </div>
           </TabsContent>
 
-          <TabsContent value="offer">
-            <RedundancyOfferComparisonDashboard inputs={inputs} />
+          <TabsContent value="assumptions" className="report-print-section">
+            <div className="space-y-5">
+              <ThisWeekActionPlan result={result} packageData={packageData} />
+              <AssumptionsDashboard
+                inputs={inputs}
+                startingCapital={result.startingCapital}
+                savingsLabel={savingsLabel}
+                housingPercent={housingPercent}
+              />
+            </div>
           </TabsContent>
 
-          <TabsContent value="tax">
-            <TaxSensitiveComponentsDashboard inputs={inputs} />
-          </TabsContent>
-
-          <TabsContent value="checklist">
-            <PackageChecksDashboard inputs={inputs} />
-          </TabsContent>
-
-          <TabsContent value="trajectory">
-            <CapitalPathDashboard result={result} composition={composition} />
-          </TabsContent>
-
-          <TabsContent value="scenarios">
-            <IncomeRecoveryDashboard scenarios={scenarios} vrComparison={showVRComparison ? vrComparison : null} />
-          </TabsContent>
-
-          <TabsContent value="milestones">
-            <PressurePointsDashboard result={result} essentialComparison={essentialComparison} />
-          </TabsContent>
-
-          <TabsContent value="spending">
-            <ExpenseSensitivityDashboard spendingImpacts={spendingImpacts} />
-          </TabsContent>
-
-          <TabsContent value="stress">
-            <StressCasesDashboard
-              result={result}
-              sensitivityResults={sensitivityResults}
-              mortgageSensitivity={mortgageSensitivity}
-              currentHousingCost={inputs.mortgageOrRent > 0 ? inputs.mortgageOrRent : undefined}
-            />
-          </TabsContent>
-
-          <TabsContent value="supplementary">
-            <AssumptionsDashboard
-              inputs={inputs}
-              startingCapital={result.startingCapital}
-              savingsLabel={savingsLabel}
-              housingPercent={housingPercent}
-            />
-          </TabsContent>
-
-          <TabsContent value="brief">
+          <TabsContent value="brief" className="report-print-section">
             <PrivateRunwayBriefPanel inputs={inputs} prefilledNarrative={isDemo ? demoBriefNarrative : undefined} demoMode={isDemo} />
           </TabsContent>
         </Tabs>
+
+        {showStrongerResetCta ? (
+          <Card className="border-gold/40 bg-gold/10 shadow-md" data-testid="card-reset-cta-urgent">
+            <CardContent className="pt-6 pb-6">
+              <p className="text-base font-semibold mb-1">Private written support for the next step.</p>
+              <p className="text-sm text-muted-foreground mb-4 max-w-lg">
+                Your result may raise practical next-step questions. Get a private written plan for the next 7 days.
+              </p>
+              <Button className="btn-gold" onClick={() => navigate("/redundancy-reset")} data-testid="button-reset-cta-urgent">
+                Get my 7-day written reset
+                <ArrowLeft className="w-4 h-4 ml-2 rotate-180" />
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          <Card data-testid="card-reset-cta-standard">
+            <CardContent className="pt-5 pb-5 flex items-center justify-between gap-4 flex-wrap">
+              <p className="text-sm text-muted-foreground max-w-md">
+                Your report shows the package and runway picture. The 7-Day Redundancy Reset helps you turn it into a short written action plan.
+              </p>
+              <Button variant="outline" onClick={() => navigate("/redundancy-reset")} data-testid="button-reset-cta-standard">
+                Turn this into a 7-day plan
+                <ArrowLeft className="w-4 h-4 ml-2 rotate-180" />
+              </Button>
+            </CardContent>
+          </Card>
+        )}
 
         <div className="mt-8 pt-6 border-t text-center space-y-2">
           <p className="text-xs text-muted-foreground">

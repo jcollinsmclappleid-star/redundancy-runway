@@ -1,4 +1,4 @@
-import { useState, useMemo, type ReactNode } from "react";
+import { useState, useMemo, useEffect, type ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sliders, Lock, Sparkles, ChevronRight, Eye, TrendingDown } from "lucide-react";
 import { AnimatedNumber } from "@/components/charts/animated-number";
@@ -33,6 +33,10 @@ export interface RunwayConsoleProps {
   unlockLabel?: string;
   testId?: string;
   defaultActiveIndex?: number;
+  /** Cycle through scenario chips automatically (pauses on hover or manual selection). */
+  autoRotate?: boolean;
+  autoRotateIntervalMs?: number;
+  showInteractiveBadge?: boolean;
 }
 
 const TONE_CLS: Record<RunwayConsoleScenario["tagTone"], string> = {
@@ -69,12 +73,30 @@ export function RunwayConsole({
   unlockLabel = "Open full runway report",
   testId = "runway-console",
   defaultActiveIndex = 0,
+  autoRotate = false,
+  autoRotateIntervalMs = 4500,
+  showInteractiveBadge = false,
 }: RunwayConsoleProps) {
   const [active, setActive] = useState(defaultActiveIndex);
   const [stress, setStress] = useState<Record<StressKey, boolean>>({ income: false, essentials: false, mortgage: false });
+  const [paused, setPaused] = useState(false);
+  const [userPicked, setUserPicked] = useState(false);
+  const safeScenarios = scenarios.length > 0 ? scenarios : [];
   const stressKey = `${stress.income ? 1 : 0}-${stress.essentials ? 1 : 0}-${stress.mortgage ? 1 : 0}`;
 
-  const safeScenarios = scenarios.length > 0 ? scenarios : [];
+  useEffect(() => {
+    if (!autoRotate || safeScenarios.length < 2 || paused || userPicked) return;
+    const timer = window.setInterval(() => {
+      setActive((prev) => (prev + 1) % safeScenarios.length);
+    }, autoRotateIntervalMs);
+    return () => window.clearInterval(timer);
+  }, [autoRotate, autoRotateIntervalMs, paused, userPicked, safeScenarios.length]);
+
+  const selectScenario = (index: number) => {
+    setUserPicked(true);
+    setActive(index);
+  };
+
   const base = safeScenarios[Math.min(active, Math.max(0, safeScenarios.length - 1))];
   const sc = useMemo(() => {
     if (!base) return null;
@@ -90,7 +112,12 @@ export function RunwayConsole({
   const endingCapital = sc.projection[sc.projection.length - 1] ?? 0;
 
   return (
-    <div className="relative w-full max-w-[700px] mx-auto" data-testid={testId}>
+    <div
+      className="relative w-full max-w-[700px] mx-auto"
+      data-testid={testId}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
       <div className="relative rounded-2xl bg-white dark:bg-white border border-slate-200 shadow-lg shadow-slate-900/10 overflow-hidden">
         <div className="flex items-center justify-between px-4 py-2.5 bg-slate-50 border-b border-slate-200">
           <div className="flex items-center gap-1.5">
@@ -101,12 +128,19 @@ export function RunwayConsole({
           <div className="flex items-center gap-1.5 text-[10px] font-mono text-slate-400">
             {locked ? <Eye className="w-3 h-3 text-gold/70" /> : <Sparkles className="w-3 h-3 text-gold/70" />}
             <span>{chromeCaption}{locked ? " — preview" : ""}</span>
+            {(showInteractiveBadge || autoRotate) && (
+              <span className="ml-1 rounded-full border border-emerald-300/60 bg-emerald-50 px-2 py-0.5 text-[9px] font-semibold text-emerald-700 font-sans tracking-normal">
+                Interactive
+              </span>
+            )}
           </div>
           <div className="w-12" />
         </div>
 
         <div className="px-4 pt-4 pb-3 border-b border-slate-100">
-          <p className="text-[9px] uppercase tracking-[0.18em] text-slate-400 font-medium mb-2">Switch income recovery path</p>
+          <p className="text-[9px] uppercase tracking-[0.18em] text-slate-400 font-medium mb-2">
+            {autoRotate && !userPicked ? "Cycling income recovery paths — tap to take control" : "Switch income recovery path"}
+          </p>
           <div className="flex gap-1.5 flex-wrap">
             {safeScenarios.map((s, i) => {
               const isActive = i === Math.min(active, safeScenarios.length - 1);
@@ -114,7 +148,7 @@ export function RunwayConsole({
                 <button
                   key={s.id}
                   type="button"
-                  onClick={() => setActive(i)}
+                  onClick={() => selectScenario(i)}
                   data-testid={`chip-scenario-${s.id}`}
                   aria-pressed={isActive}
                   className={`relative px-3 py-1.5 rounded-full text-[11px] font-medium transition-all border ${

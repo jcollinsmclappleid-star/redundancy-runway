@@ -25,15 +25,6 @@ export function StructuredExecutiveSummary({ document, dashboard, inputs }: Stru
           <Badge variant="outline" className="text-[10px] bg-white/10 text-white border-white/20">
             Focus: {exec.focusLabel}
           </Badge>
-          {exec.headlineSource === "ai" ? (
-            <Badge variant="outline" className="text-[10px] bg-violet-500/20 text-violet-100 border-violet-400/30">
-              AI-enhanced headline
-            </Badge>
-          ) : (
-            <Badge variant="outline" className="text-[10px] bg-teal-500/20 text-teal-100 border-teal-400/30">
-              Template headline
-            </Badge>
-          )}
         </div>
         <h2 className="font-serif text-lg sm:text-xl font-semibold text-white leading-snug">{exec.headline}</h2>
         <p className="text-xs text-white/70 mt-2 leading-relaxed">{exec.situationIntro}</p>
@@ -64,9 +55,6 @@ export function StructuredExecutiveSummary({ document, dashboard, inputs }: Stru
               >
                 <div className="flex items-center justify-between gap-2 mb-1.5">
                   <p className="text-xs font-semibold text-primary">{finding.title}</p>
-                  <Badge variant="outline" className="text-[9px] shrink-0">
-                    {finding.source === "ai" ? "AI" : finding.source === "template" ? "Guidance" : "Model"}
-                  </Badge>
                 </div>
                 <p className="text-xs text-foreground/85 leading-relaxed">{finding.body}</p>
               </div>

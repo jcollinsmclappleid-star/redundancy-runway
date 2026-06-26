@@ -22,6 +22,21 @@ function loadIndexHtml() {
 }
 
 const INDEX_HTML = loadIndexHtml();
+const NOINDEX_ROUTE_PREFIXES = [
+  "/admin",
+  "/access",
+  "/brief-example",
+  "/payment-success",
+  "/preview",
+  "/recover",
+  "/report-access",
+  "/report-example",
+  "/results",
+  "/unlock",
+  "/wizard",
+  "/redundancy-reset/intake",
+  "/redundancy-reset/portal",
+];
 
 function seoFor(pathname: string) {
   return applyRouteSeoToHtml(INDEX_HTML, pathname);
@@ -114,5 +129,19 @@ describe("sitemap.xml", () => {
     assert.ok(xml.includes(`${SITE_URL}/free-redundancy-calculator`));
     assert.ok(!xml.includes(`${SITE_URL}/wizard`));
     assert.ok(!xml.includes(`${SITE_URL}/statutory-redundancy-pay</loc>`));
+  });
+
+  it("includes all indexable literal client routes", () => {
+    const xml = readFileSync(resolve(import.meta.dirname, "..", "public", "sitemap.xml"), "utf8");
+    const appSource = readFileSync(resolve(import.meta.dirname, "..", "client", "src", "App.tsx"), "utf8");
+    const sitemapPaths = new Set([...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => new URL(match[1]).pathname));
+    const literalRoutes = [...appSource.matchAll(/<Route\s+path="([^"]+)"/g)]
+      .map((match) => match[1])
+      .filter((path) => !path.includes(":"))
+      .filter((path) => !NOINDEX_ROUTE_PREFIXES.some((prefix) => path === prefix || path.startsWith(`${prefix}/`)));
+
+    for (const path of literalRoutes) {
+      assert.ok(sitemapPaths.has(path), `Expected sitemap to include ${path}`);
+    }
   });
 });

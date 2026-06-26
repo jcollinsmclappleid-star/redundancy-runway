@@ -7,6 +7,7 @@ import { buildPackageDashboardData } from "@/lib/package-dashboard/buildPackageD
 import { formatGBP } from "@/lib/engine";
 import { FREE_STATUTORY_BOUNDARY, PACKAGE_DISCLAIMER } from "@shared/complianceCopy";
 import { PRODUCT_COPY, RUNWAY_REPORT_PRICE_GBP } from "@shared/product";
+import { GOLD_UNLOCK_SHELL_CLASS } from "@/components/package-dashboard/LockedPackagePreviewGrid";
 
 interface PackageTotalHeroProps {
   inputs: RunwayInputs;
@@ -92,32 +93,32 @@ export function PackageTotalHero({ inputs, showCta = true }: PackageTotalHeroPro
 
       {showCta && (
         <div
-          className="rounded-xl border border-gold/35 bg-gold/10 p-4 sm:p-5 mb-4"
+          className={`${GOLD_UNLOCK_SHELL_CLASS} p-4 sm:p-5 mb-4`}
           data-testid="panel-hero-unlock-sell"
         >
           <div className="flex items-start gap-2 mb-2">
             <Shield className="w-4 h-4 text-gold shrink-0 mt-0.5" />
             <div>
-              <p className="text-[10px] uppercase tracking-wider text-gold/90 font-semibold mb-1">
+              <p className="text-[10px] uppercase tracking-wider text-gold font-semibold mb-1">
                 Full private report
               </p>
-              <h2 className="text-base sm:text-lg font-semibold leading-snug text-white">
+              <h2 className="text-base sm:text-lg font-semibold leading-snug text-foreground">
                 {PRODUCT_COPY.previewUnlockHeadline}
               </h2>
             </div>
           </div>
-          <p className="text-sm text-white/75 leading-relaxed mb-4">
+          <p className="text-sm text-muted-foreground leading-relaxed mb-4">
             {PRODUCT_COPY.previewUnlockSub}
           </p>
           <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
             {PRODUCT_COPY.previewUnlockAngles.map((item) => (
               <li
                 key={item.id}
-                className="flex flex-col gap-0.5 rounded-lg bg-white/8 border border-white/10 px-3 py-2.5"
+                className="flex flex-col gap-0.5 rounded-xl border border-amber-200/80 bg-white px-3 py-2.5"
                 data-testid={`hero-unlock-angle-${item.id}`}
               >
-                <p className="text-xs font-semibold text-gold leading-snug">{item.title}</p>
-                <p className="text-[10px] text-white/65 leading-snug">{item.desc}</p>
+                <p className="text-xs font-semibold text-foreground leading-snug">{item.title}</p>
+                <p className="text-[10px] text-muted-foreground leading-snug">{item.desc}</p>
               </li>
             ))}
           </ul>
@@ -133,14 +134,14 @@ export function PackageTotalHero({ inputs, showCta = true }: PackageTotalHeroPro
             </Button>
             <Button
               variant="outline"
-              className="border-white/30 text-white hover:bg-white/10 hover:text-white whitespace-normal h-auto min-h-10 py-2.5"
+              className="border-gold/40 whitespace-normal h-auto min-h-10 py-2.5"
               onClick={() => navigate("/wizard?step=0")}
               data-testid="button-hero-edit-package"
             >
               Refine package assumptions
             </Button>
           </div>
-          <p className="text-[10px] text-white/50 mt-3">
+          <p className="text-[10px] text-muted-foreground mt-3">
             £{RUNWAY_REPORT_PRICE_GBP} one-off · 6 months access · {PRODUCT_COPY.unlockSupportingLine}
           </p>
         </div>

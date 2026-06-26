@@ -175,6 +175,8 @@ function ExplorerPanel({ tab }: { tab: ExplorerTabId }) {
             chromeCaption="Runway Command Console"
             footerText="Illustrative example · your report uses the figures you enter"
             hideStress={false}
+            autoRotate
+            showInteractiveBadge
             testId="landing-explorer-preview-console"
           />
         </div>
@@ -192,10 +194,10 @@ export function LandingReportExplorer() {
       <LandingMaximiserFeatureCallout />
 
       <div className="mb-4 rounded-xl border border-primary/15 bg-primary/5 px-4 py-3 text-center lg:text-left">
-        <p className="text-sm font-semibold text-primary mb-1">Interactive sample dashboards</p>
+        <p className="text-sm font-semibold text-primary mb-1">See what the full report gives you</p>
         <p className="text-xs text-muted-foreground leading-relaxed">
-          <span className="lg:hidden">Tap a tab below to switch views. Scroll inside each dashboard to explore charts and line items.</span>
-          <span className="hidden lg:inline">Select a module on the left to switch views. Each dashboard is live — scroll and explore the sample data.</span>
+          <span className="lg:hidden">Tap a tab below to preview package checks, runway dashboards and the plain-English brief.</span>
+          <span className="hidden lg:inline">Select a module on the left to preview the package check, runway path and plain-English brief your figures unlock.</span>
         </p>
       </div>
 
@@ -259,10 +261,10 @@ export function LandingReportExplorer() {
                   {RUNWAY_REPORT_FULL}
                 </p>
                 <p className="text-sm font-medium text-foreground">
-                  {tab === "package" && "Package completeness, line items and gaps to verify"}
-                  {tab === "capital" && "How starting capital depletes month by month"}
-                  {tab === "brief" && `${RUNWAY_BRIEF_NAME} — executive summary strip`}
-                  {tab === "preview" && "What you get free before unlock"}
+                  {tab === "package" && "Check what could be included, missing or worth verifying"}
+                  {tab === "capital" && "See how package and savings deplete month by month"}
+                  {tab === "brief" && `${RUNWAY_BRIEF_NAME} — your figures explained plainly`}
+                  {tab === "preview" && "Start free: statutory estimate and baseline runway"}
                 </p>
               </div>
               <span className="rounded-full border border-emerald-300/50 bg-emerald-50 px-3 py-1 text-[10px] font-semibold text-emerald-800">
@@ -282,7 +284,7 @@ export function LandingReportExplorer() {
       <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
         <Link href="/unlock">
           <Button className="btn-gold rounded-full whitespace-normal h-auto min-h-10 py-3 px-6">
-            Unlock your full report
+            Unlock my full package check
             <ArrowRight className="w-4 h-4 ml-2 shrink-0" />
           </Button>
         </Link>

@@ -18,7 +18,7 @@ export default function BriefExamplePage() {
       <Helmet>
         <title>{RUNWAY_BRIEF_NAME} — Example | RedundancyCalculatorUK</title>
         <meta name="description" content={`Example ${RUNWAY_BRIEF_NAME} — plain-English report from the ${RUNWAY_REPORT_FULL}. Illustrative sample only.`} />
-        <meta name="robots" content="noindex, follow" />
+        <meta name="robots" content="noindex, nofollow" />
         <link rel="canonical" href={`${SITE_URL}/brief-example`} />
       </Helmet>
       <div className="min-h-screen flex flex-col bg-background">

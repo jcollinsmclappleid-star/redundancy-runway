@@ -10,6 +10,8 @@ export function RunwayCommandCentrePreview() {
         hideStress
         chromeCaption="Runway Command Console"
         footerText="Illustrative example · your report uses your figures"
+        autoRotate
+        showInteractiveBadge
         testId="landing-problem-console"
       />
     </div>

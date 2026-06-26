@@ -36,12 +36,12 @@ export const PRIVACY_COPY = {
 export const PRODUCT_COPY = {
   briefHeadline: "Your figures, explained in plain English.",
   dualProductLine:
-    "Package tools to check what could be included. Position tools to prepare stronger questions. Runway dashboards to see how long the money may last. Your Redundancy Runway Brief explains it in plain English.",
+    "Check what could be in your redundancy package, see how many months it may cover, and prepare the questions to ask before you sign. Your Redundancy Runway Brief explains it in plain English.",
   sampleLabel: "Example only — your figures will depend on the assumptions entered.",
-  buildCta: "Calculate my redundancy pay",
-  buildCtaMobile: "Calculate redundancy pay",
-  seeIncludedCta: "See everything included",
-  seeIncludedCtaMobile: "What's included",
+  buildCta: "Check my package and runway",
+  buildCtaMobile: "Check package & runway",
+  seeIncludedCta: "See the full report",
+  seeIncludedCtaMobile: "Full report",
   unlockCta: `Unlock ${RUNWAY_REPORT_FULL}`,
   unlockCtaMobile: `Unlock full report — £${RUNWAY_REPORT_PRICE_GBP}`,
   maximiserUnlockCtaMobile: `Unlock maximiser — £${RUNWAY_REPORT_PRICE_GBP}`,
@@ -49,9 +49,9 @@ export const PRODUCT_COPY = {
   bottomCtaFreeMobile: "Start free preview",
   bottomCtaPaid: `Unlock full report — £${RUNWAY_REPORT_PRICE_GBP}`,
   fullScenarioCta: `See your full scenario range — £${RUNWAY_REPORT_PRICE_GBP}`,
-  unlockHeadline: "Unlock the tools to improve your redundancy position.",
+  unlockHeadline: "Unlock the tools to check the package, protect your runway and prepare before you sign.",
   unlockSubcopy:
-    "Go beyond the statutory estimate. The full report helps you check for missing package components, model better payout scenarios, prepare consultation questions, identify alternative-role options and understand how each outcome affects your runway.",
+    "Go beyond the statutory estimate. The full report helps you check notice, holiday, enhanced pay and missing lines, model payout scenarios, prepare consultation questions and understand how each outcome affects your runway.",
   unlockOutcomes: [
     "Identify components that could increase your package total",
     "Model payout scenarios and see the runway impact",
@@ -73,14 +73,14 @@ export const PRODUCT_COPY = {
     "Plain-English Redundancy Runway Brief",
   ] as const,
   /** Commercial positioning — safe, non-guarantee wording */
-  positioningHeadline: "Don't just calculate the minimum. Understand what could improve your redundancy position.",
-  positioningSupporting: "Maximise the package. Survive the gap. Prepare while you still can.",
+  positioningHeadline: "Maximise your redundancy package. See what you could get — and how long it may last.",
+  positioningSupporting: "Check the package. Protect your runway. Prepare before you sign.",
   positioningPaidValue:
-    "Your statutory estimate is only the starting point. The full report shows what could increase the package total, what to check before relying on the figure, and how different outcomes affect your runway.",
+    "Your statutory estimate is only the starting point. The full report shows which package lines to check, what could change the total, and how each outcome affects your runway.",
   /** Preview / wizard unlock sell — three core USPs plus supporting angles */
-  previewUnlockHeadline: "Maximise the package. Survive the gap. Prepare while you still can.",
+  previewUnlockHeadline: "Check the package. Protect your runway. Prepare before you sign.",
   previewUnlockSub:
-    "Your free preview is the statutory starting point. Unlock one private report for package maximisation, consultation preparation, runway stress tests and a plain-English brief from your figures.",
+    "Your free preview is the statutory starting point. Unlock one private report to check possible package gaps, compare payout scenarios, stress-test your runway and get a plain-English brief from your figures.",
   previewUnlockAngles: [
     {
       id: "package",
@@ -106,11 +106,11 @@ export const PRODUCT_COPY = {
   trustLine:
     "Statutory · notice · holiday · enhanced · runway scenarios",
   notAdvice: "Model output · not advice",
-  heroEyebrow: "UK STATUTORY REDUNDANCY PAY · RUNWAY CALCULATOR",
+  heroEyebrow: "REDUNDANCY PAY MAXIMISER · UK RUNWAY CALCULATOR",
   heroH1:
-    "UK redundancy pay calculator — how much could you be leaving on the table, and how long will the money actually last?",
+    "Maximise your redundancy package. See what you could get — and how long it may last.",
   heroSub:
-    "Model statutory redundancy pay, notice, holiday and enhanced pay in your full package, see runway months against real household costs, and prepare your position before consultation — from your own figures.",
+    "Start with a UK statutory estimate, then check notice, holiday, enhanced pay and missing lines. Turn the package into runway months against your real household costs, with preparation prompts before you speak to HR or sign.",
   heroSeoTerms: [
     "Statutory redundancy",
     "Notice & holiday",
@@ -118,9 +118,9 @@ export const PRODUCT_COPY = {
     "Runway months",
   ] as const,
   heroOutcomes: [
-    "Model full-package uplifts beyond the statutory baseline",
-    "See how many months you've really got before the pressure bites",
-    "Protect your position before HR makes the first move",
+    "Check whether notice, holiday, enhanced pay or missing lines could change the total",
+    "See how many months your package and savings may cover your household costs",
+    "Prepare questions and evidence before consultation, negotiation or signing",
   ] as const,
   heroAssurance: [
     { label: `One-off £${RUNWAY_REPORT_PRICE_GBP}`, sub: "6 months access · no subscription" },
@@ -135,9 +135,9 @@ export const PRODUCT_COPY = {
   ] as const,
   maximiserLanding: {
     eyebrow: "Flagship feature · full report",
-    headline: "Where could you get more money from your redundancy package?",
+    headline: "Check what could be in your redundancy package before you rely on the number.",
     subheadline:
-      "Most people stop at the statutory figure. The Redundancy Pay Maximiser ranks notice pay, holiday, enhancements and gaps to verify — and shows how many extra runway months each could buy.",
+      "Most people stop at the statutory figure. The Redundancy Pay Maximiser ranks notice pay, holiday, enhancements and gaps to verify — then shows how many extra runway months each line could buy.",
     statutoryOnlyLabel: "Statutory-only in model",
     fullPackageLabel: "Full package in model",
     runwayDeltaLabel: "Runway months gained in sample",
@@ -214,9 +214,9 @@ export const PRODUCT_COPY = {
       ],
     },
   },
-  payoutSectionHeading: "The numbers — then what to do with them.",
+  payoutSectionHeading: "Check what you could get. Then see how long it lasts.",
   payoutSectionBody:
-    "Most calculators stop at a statutory figure. RedundancyCalculatorUK answers whether your package is complete, how many runway months each outcome buys, and what to verify or ask before you rely on the number — with dashboards and playbooks behind every answer.",
+    "Most calculators stop at a statutory figure. RedundancyCalculatorUK checks the package lines that change the total, shows how many runway months each outcome buys, and gives you the questions to ask before you rely on the number.",
   positionTools: [
     {
       title: "Protection measures playbook",

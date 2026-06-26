@@ -50,12 +50,15 @@ export async function fulfillCheckoutSession(
 
       if (email) {
         const updated = await storage.getPurchaseByCheckoutSessionId(session.id);
-        sendPurchaseConfirmationEmail(
+        const emailed = await sendPurchaseConfirmationEmail(
           email,
           purchase.sessionToken,
           updated?.expiresAt ?? null,
           origin,
-        ).catch(console.error);
+        );
+        if (!emailed) {
+          console.error(`[checkout] Purchase confirmation not sent to ${email} — check Resend`);
+        }
       }
     }
 

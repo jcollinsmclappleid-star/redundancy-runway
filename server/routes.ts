@@ -241,6 +241,8 @@ export async function registerRoutes(
       const origin = getOrigin(req);
       const { getUncachableStripeClient } = await import("./stripeClient");
       const stripe = await getUncachableStripeClient();
+      const { syncStripeCatalogNames } = await import("./stripeProductSync");
+      await syncStripeCatalogNames(stripe);
 
       const placeholderExpiry = new Date();
       placeholderExpiry.setMonth(placeholderExpiry.getMonth() + 6);
@@ -331,10 +333,17 @@ export async function registerRoutes(
         return res.json({ sent: true });
       }
 
+      if (granted) {
+        await ensureGrantedProducts(email);
+      }
+
       const token = randomBytes(48).toString("hex");
       const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
       await storage.createMagicLink(email, token, expiresAt);
-      sendMagicLinkEmail(email, token, getOrigin(req)).catch(console.error);
+      const emailed = await sendMagicLinkEmail(email, token, getOrigin(req));
+      if (!emailed) {
+        console.error(`[auth] Magic link not sent to ${email} — RESEND_API_KEY missing or delivery failed`);
+      }
 
       return res.json({ sent: true });
     } catch (error) {
@@ -528,11 +537,16 @@ export async function registerRoutes(
       if (validPurchase) {
         const token = randomBytes(48).toString("hex");
         await storage.createMagicLink(email, token, new Date(Date.now() + 60 * 60 * 1000));
-        await sendMagicLinkEmail(email, token, origin);
+        const emailed = await sendMagicLinkEmail(email, token, origin);
+        if (!emailed) {
+          console.error(`[recover] Magic link not sent to ${email} — check Resend`);
+        }
         return res.json({
           success: true,
-          emailSent: true,
-          message: "If we found a paid report for that email, a sign-in link is on its way.",
+          emailSent: emailed,
+          message: emailed
+            ? "If we found a paid report for that email, a sign-in link is on its way."
+            : "Access found but email could not be sent. Try again shortly or contact support.",
           reportLinks: [],
           resetLinks: [],
         });
@@ -542,13 +556,18 @@ export async function registerRoutes(
         const granted = await ensureGrantedProducts(email);
         const token = randomBytes(48).toString("hex");
         await storage.createMagicLink(email, token, new Date(Date.now() + 60 * 60 * 1000));
-        await sendMagicLinkEmail(email, token, origin);
+        const emailed = await sendMagicLinkEmail(email, token, origin);
+        if (!emailed) {
+          console.error(`[recover] Granted magic link not sent to ${email} — check Resend`);
+        }
         const reportLink = `${origin}/access?token=${encodeURIComponent(granted.sessionToken)}`;
         const resetLink = `${origin}${granted.resetPortalUrl}`;
         return res.json({
           success: true,
-          emailSent: true,
-          message: "Sign-in link sent. Your report and Reset portal access are ready.",
+          emailSent: emailed,
+          message: emailed
+            ? "Sign-in link sent. Your report and Reset portal access are ready."
+            : "Access is ready but email could not be sent. Try again shortly or contact support.",
           reportLinks: [reportLink],
           resetLinks: [resetLink],
         });
@@ -635,6 +654,8 @@ export async function registerRoutes(
 
       const { getUncachableStripeClient } = await import("./stripeClient");
       const stripe = await getUncachableStripeClient();
+      const { syncStripeCatalogNames } = await import("./stripeProductSync");
+      await syncStripeCatalogNames(stripe);
 
       const origin = getOrigin(req);
       const sessionToken = parsed.data.sessionToken;
