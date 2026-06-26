@@ -26,20 +26,17 @@
   "functions": {
     "api/index.ts": {
       "maxDuration": 60,
-      "includeFiles": "dist/vercel-handler.cjs"
-    },
-    "api/html.ts": {
-      "includeFiles": "dist/seo-handler.cjs"
+      "includeFiles": "dist/vercel-handler.cjs,dist/seo-handler.cjs"
     }
   },
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/api/index"
+      "destination": "/api/index?__path=$1"
     },
     {
       "source": "/((?!api/).*)",
-      "destination": "/api/html?pathname=$1"
+      "destination": "/api/index?pathname=$1"
     }
   ],
   "git": {
