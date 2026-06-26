@@ -69,7 +69,7 @@ export default function UnlockPage() {
       </Helmet>
       <div className="min-h-screen flex flex-col bg-background">
         <DisclaimerBanner />
-        <SiteHeader />
+        <SiteHeader showCta={false} />
         <main className="flex-1 px-6 py-12">
           <div className="max-w-3xl mx-auto space-y-8">
           <Card className="w-full border-2 border-gold/40 overflow-hidden">
