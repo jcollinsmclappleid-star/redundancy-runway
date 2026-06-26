@@ -93,7 +93,7 @@ export function PackageTotalHero({ inputs, showCta = true }: PackageTotalHeroPro
 
       {showCta && (
         <div
-          className={`${GOLD_UNLOCK_SHELL_CLASS} p-4 sm:p-5 mb-4`}
+          className={`${GOLD_UNLOCK_SHELL_CLASS} p-4 sm:p-5 mb-4 min-w-0`}
           data-testid="panel-hero-unlock-sell"
         >
           <div className="flex items-start gap-2 mb-2">
@@ -122,19 +122,19 @@ export function PackageTotalHero({ inputs, showCta = true }: PackageTotalHeroPro
               </li>
             ))}
           </ul>
-          <div className="flex flex-col sm:flex-row flex-wrap gap-2">
+          <div className="flex flex-col gap-2 min-w-0">
             <Button
-              className="btn-gold whitespace-normal h-auto min-h-10 py-2.5 flex-1 sm:flex-none"
+              className="btn-gold whitespace-normal h-auto min-h-10 py-2.5 w-full min-w-0 max-w-full text-center justify-center px-3"
               onClick={() => navigate("/unlock")}
               data-testid="button-hero-unlock"
             >
               <span className="sm:hidden">{PRODUCT_COPY.unlockCtaMobile}</span>
-              <span className="hidden sm:inline">{PRODUCT_COPY.unlockCta}</span>
+              <span className="hidden sm:inline text-sm leading-snug">{PRODUCT_COPY.unlockCta}</span>
               <ArrowRight className="w-4 h-4 ml-2 shrink-0" />
             </Button>
             <Button
               variant="outline"
-              className="border-gold/40 whitespace-normal h-auto min-h-10 py-2.5"
+              className="border-gold/40 whitespace-normal h-auto min-h-10 py-2.5 w-full min-w-0"
               onClick={() => navigate("/wizard?step=0")}
               data-testid="button-hero-edit-package"
             >

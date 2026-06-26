@@ -14,7 +14,7 @@ import { RedundancyPackageCalculator } from "@/components/redundancy-package-cal
 import { PackageTotalHero } from "@/components/preview/PackageTotalHero";
 import { ukBenchmarks, getAgeBandData, formatWeeksAndMonths, weeksToMonths } from "@/lib/ukBenchmarks";
 import type { RunwayInputs, RedundancyPackageInputs } from "@shared/schema";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { DisclaimerBanner } from "@/components/DisclaimerBanner";
 import { WizardShell } from "@/components/wizard/wizard-shell";
 import { EssentialExpenseChips } from "@/components/wizard/essential-expense-chips";
@@ -637,6 +637,28 @@ type WizardTouchedFields = {
   mortgageOrRent: boolean;
 };
 
+const FIELD_ACK_KEY = "redundancy_runway_field_ack";
+
+function loadFieldAck(): WizardTouchedFields {
+  try {
+    const raw = localStorage.getItem(FIELD_ACK_KEY);
+    if (raw) return JSON.parse(raw) as WizardTouchedFields;
+  } catch {}
+  // Returning users with a saved session already entered these figures
+  try {
+    if (localStorage.getItem("redundancy_runway_inputs")) {
+      return { currentMonthlyNetIncome: true, mortgageOrRent: true };
+    }
+  } catch {}
+  return { currentMonthlyNetIncome: false, mortgageOrRent: false };
+}
+
+function persistFieldAck(ack: WizardTouchedFields) {
+  try {
+    localStorage.setItem(FIELD_ACK_KEY, JSON.stringify(ack));
+  } catch {}
+}
+
 function getStepErrors(_inputs: RunwayInputs, step: number, touched: WizardTouchedFields): string[] {
   const errors: string[] = [];
   if (step === 3 && !touched.currentMonthlyNetIncome) {
@@ -650,15 +672,39 @@ function getStepErrors(_inputs: RunwayInputs, step: number, touched: WizardTouch
 
 export default function WizardPage() {
   const [, navigate] = useLocation();
-  const { inputs, setInputs, step, setStep } = useWizardStore();
-  const [touchedFields, setTouchedFields] = useState<WizardTouchedFields>({
-    currentMonthlyNetIncome: false,
-    mortgageOrRent: false,
-  });
+  const { inputs, setInputs: setInputsStore, step, setStep } = useWizardStore();
+  const [touchedFields, setTouchedFields] = useState<WizardTouchedFields>(loadFieldAck);
 
-  const markTouched = (field: keyof WizardTouchedFields) => {
-    setTouchedFields((prev) => (prev[field] ? prev : { ...prev, [field]: true }));
-  };
+  const markTouched = useCallback((field: keyof WizardTouchedFields) => {
+    setTouchedFields((prev) => {
+      if (prev[field]) return prev;
+      const next = { ...prev, [field]: true };
+      persistFieldAck(next);
+      return next;
+    });
+  }, []);
+
+  const setInputs = useCallback(
+    (updater: Partial<RunwayInputs> | ((prev: RunwayInputs) => RunwayInputs)) => {
+      if (typeof updater === "function") {
+        setInputsStore((prev) => {
+          const next = updater(prev);
+          if (next.currentMonthlyNetIncome !== prev.currentMonthlyNetIncome) {
+            markTouched("currentMonthlyNetIncome");
+          }
+          if (next.mortgageOrRent !== prev.mortgageOrRent) {
+            markTouched("mortgageOrRent");
+          }
+          return next;
+        });
+        return;
+      }
+      if ("currentMonthlyNetIncome" in updater) markTouched("currentMonthlyNetIncome");
+      if ("mortgageOrRent" in updater) markTouched("mortgageOrRent");
+      setInputsStore(updater);
+    },
+    [setInputsStore, markTouched],
+  );
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -680,6 +726,8 @@ export default function WizardPage() {
       window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
       return;
     }
+    if (step === 3) markTouched("currentMonthlyNetIncome");
+    if (step === 4) markTouched("mortgageOrRent");
     if (step < totalSteps - 1) {
       setStep(step + 1);
       window.scrollTo({ top: 0, behavior: "smooth" });

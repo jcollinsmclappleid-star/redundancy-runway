@@ -305,6 +305,11 @@
       hsl(42 72% 93%) 100%
     ) !important;
     box-shadow: none !important;
+    overflow: hidden;
+  }
+
+  .unlock-gold-panel .btn-gold:hover {
+    transform: none;
   }
 
   /* Hero image overlay — brand navy palette */
